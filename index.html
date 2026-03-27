@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Celivo Demo</title>
+  <style>
+    :root {
+      --bg: #050507;
+      --card: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.1);
+      --text: #f4f4f7;
+      --muted: rgba(255,255,255,.62);
+      --accent1: #7c5cff;
+      --accent2: #3a8dff;
+      --ok: #37d67a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, rgba(124,92,255,.14), transparent 25%), var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 28px;
+    }
+    .phone {
+      height: 820px;
+      width: 390px;
+      border-radius: 38px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--border);
+      box-shadow: 0 30px 80px rgba(0,0,0,.55);
+      background: #09090d;
+    }
+    .bg {
+      position:absolute; inset:0;
+      background-size: cover;
+      background-position: center;
+      transition: .35s ease;
+    }
+    .overlay {
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(9,9,11,.25), rgba(9,9,11,.78) 35%, rgba(9,9,11,.95));
+      transition: .35s ease;
+    }
+    .screen { position:relative; z-index:2; height:100%; display:flex; flex-direction:column; }
+    .glass {
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 28px;
+    }
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding:18px 18px 10px; }
+    .iconbtn, .pill {
+      border:1px solid var(--border); background: rgba(255,255,255,.06); color:var(--text);
+      border-radius:18px;
+    }
+    .iconbtn { width:44px; height:44px; display:grid; place-items:center; cursor:pointer; }
+    .brand { display:flex; align-items:center; gap:10px; }
+    .brand-badge {
+      width:38px; height:38px; border-radius:16px; display:grid; place-items:center; font-weight:700;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      box-shadow: 0 10px 28px rgba(124,92,255,.28);
+    }
+    .brand-name { font-size: 28px; font-weight: 700; letter-spacing: -.03em; }
+    .avatar { width:44px; height:44px; border-radius:50%; border:1px solid rgba(124,92,255,.35); overflow:hidden; background:#1a1a24; }
+    .avatar img { width:100%; height:100%; object-fit:cover; }
+    .content { padding: 0 18px 18px; overflow:auto; }
+    .chips { display:flex; gap:10px; overflow:auto; padding-bottom:6px; margin-bottom:14px; }
+    .chip {
+      white-space:nowrap; padding:10px 14px; border-radius:999px; cursor:pointer;
+      border:1px solid var(--border); background: rgba(255,255,255,.06); color:var(--muted);
+    }
+    .chip.active { background: rgba(255,255,255,.14); color: white; }
+    .hero { padding:18px; margin-bottom:14px; }
+    .hero h3 { margin: 0 0 8px; font-size: 26px; }
+    .hero p { margin:0; color:var(--muted); line-height:1.55; }
+    .row { display:flex; gap:10px; margin-top:14px; }
+    .btn {
+      flex:1; cursor:pointer; border:none; color:white; border-radius:18px; padding:14px 16px; font-weight:700;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    }
+    .btn.secondary { background: rgba(255,255,255,.06); border:1px solid var(--border); }
+    .section-title { display:flex; align-items:center; gap:10px; font-size:28px; font-weight:700; margin: 18px 0 12px; }
+    .hlist { display:flex; gap:14px; overflow:auto; padding-bottom:6px; }
+    .room-card { min-width: 270px; overflow:hidden; border-radius: 28px; border:1px solid var(--border); cursor:pointer; background:rgba(0,0,0,.2); }
+    .room-cover { height: 150px; background-size:cover; background-position:center; }
+    .room-body { padding: 14px; background: linear-gradient(180deg, rgba(0,0,0,.1), rgba(0,0,0,.52)); }
+    .room-title { font-size: 28px; font-weight: 700; }
+    .muted { color: var(--muted); }
+    .active-dot { width:10px; height:10px; background:var(--ok); border-radius:50%; display:inline-block; }
+    .vlist { display:flex; flex-direction:column; gap:10px; }
+    .list-item {
+      display:flex; gap:12px; align-items:center; padding:10px; cursor:pointer;
+      border-radius:24px; border:1px solid var(--border); background: rgba(255,255,255,.06);
+    }
+    .thumb { width:78px; height:58px; border-radius:18px; background-size:cover; background-position:center; flex:none; }
+    .navbar { margin-top: 16px; display:grid; grid-template-columns: repeat(5, 1fr); gap:4px; padding:12px; }
+    .navitem { text-align:center; font-size:12px; color:rgba(255,255,255,.45); }
+    .navitem.active { color:white; }
+    .stream-media { margin: 0 18px; border-radius:28px; overflow:hidden; position:relative; border:1px solid var(--border); background:rgba(0,0,0,.2); }
+    .stream-box { aspect-ratio: 16/9; position:relative; }
+    .live-pill { position:absolute; left:12px; top:12px; z-index:3; background:#ef4444; color:white; border-radius:999px; font-size:12px; font-weight:800; padding:6px 10px; }
+    .stream-note { position:absolute; left:12px; bottom:12px; z-index:3; padding:8px 12px; font-size:13px; border-radius:999px; background:rgba(0,0,0,.4); backdrop-filter: blur(10px); }
+    .chat-overlay {
+      position:absolute; right:12px; bottom:84px; width:255px; z-index:4; border-radius:24px; overflow:hidden;
+      border:1px solid var(--border); background: rgba(255,255,255,.07); backdrop-filter: blur(14px);
+    }
+    .chat-head { padding:12px 14px; border-bottom:1px solid var(--border); font-weight:700; font-size:14px; }
+    .chat-feed { padding: 10px; display:flex; flex-direction:column; gap:8px; }
+    .chat-bubble {
+      padding:10px 12px; border-radius:18px; background: rgba(0,0,0,.2); font-size:13px; line-height:1.4;
+      animation: fadein .25s ease;
+    }
+    @keyframes fadein { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0);} }
+    .subhead { padding: 14px 18px 0; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .subhead h4 { margin:0; font-size:22px; }
+    .gradient-pill { padding:10px 14px; border-radius:999px; font-size:13px; font-weight:700; background: linear-gradient(135deg, var(--accent1), var(--accent2)); }
+    .message-stack { padding: 12px 18px 0; display:flex; flex-direction:column; gap:10px; flex:1; overflow:hidden; }
+    .message-card {
+      padding: 12px 14px; border-radius: 22px; border:1px solid var(--border);
+      background: rgba(255,255,255,.06); backdrop-filter: blur(12px);
+    }
+    .cta-row { padding: 12px 18px 0; display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; }
+    .cta { padding: 13px 8px; border-radius: 18px; font-weight: 700; font-size: 13px; border:1px solid var(--border); background: rgba(255,255,255,.06); color:white; cursor:pointer; }
+    .cta.primary { background: linear-gradient(135deg, var(--accent1), var(--accent2)); border:none; }
+    .composer { padding: 12px 18px 18px; }
+    .composer-wrap { display:flex; gap:8px; align-items:center; padding:8px; border-radius:24px; border:1px solid var(--border); background: rgba(0,0,0,.25); }
+    .composer input { flex:1; background:transparent; border:none; color:white; outline:none; font-size:15px; }
+    .composer input::placeholder { color: rgba(255,255,255,.35); }
+    .round { width:42px; height:42px; border:none; border-radius:18px; display:grid; place-items:center; cursor:pointer; color:white; background: rgba(255,255,255,.06); }
+    .round.send { background: linear-gradient(135deg, var(--accent1), var(--accent2)); }
+    .panel { padding-top: 20px; }
+    .panel h1 { margin: 0 0 8px; font-size: 48px; line-height:1.05; }
+    .panel p { color: var(--muted); font-size: 18px; line-height:1.7; max-width: 820px; }
+    .cards { display:grid; gap:18px; margin-top:24px; }
+    .panel-card { padding: 22px; }
+    .list-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px; }
+    .mini { padding:14px; border-radius:20px; border:1px solid var(--border); background:rgba(255,255,255,.05); }
+    .pricing { display:flex; flex-direction:column; gap:14px; }
+    .price-card { padding:20px; border-radius:28px; border:1px solid var(--border); background:rgba(255,255,255,.06); }
+    .price-card.popular { background: linear-gradient(180deg, rgba(124,92,255,.16), rgba(58,141,255,.09)); border-color: rgba(124,92,255,.34); }
+    .tag { display:inline-flex; margin-bottom:10px; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700; background:rgba(124,92,255,.18); color:#d9ccff; }
+    .price { font-size:42px; font-weight:800; margin:8px 0; }
+    .features { display:flex; flex-direction:column; gap:10px; margin-top:14px; color:var(--muted); }
+    .statgrid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px; }
+    .progress { height:8px; border-radius:999px; background: rgba(255,255,255,.08); overflow:hidden; }
+    .progress > span { display:block; height:100%; border-radius:999px; background: linear-gradient(135deg, var(--accent1), var(--accent2)); }
+    @media (max-width: 980px) {
+      .wrap { grid-template-columns: 1fr; justify-items:center; }
+      .panel { width:100%; }
+      .panel h1 { font-size: 38px; }
+      .list-grid, .statgrid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="phone">
+      <div class="bg" id="phoneBg"></div>
+      <div class="overlay" id="phoneOverlay"></div>
+      <div class="screen" id="screen"></div>
+    </div>
+
+    <div class="panel">
+      <div class="pill" style="display:inline-flex;padding:10px 14px;border-radius:999px;">Celivo deneme aplikasyonu</div>
+      <h1>Test edilebilir birleşik demo</h1>
+      <p>Anasayfa, oyun bazlı tema, canlı yayın sırasında kayan sohbet, premium ekranı ve yayıncı paneli tek demoda birleştirildi. Soldaki telefon ekranında doğrudan deneyebilirsin.</p>
+
+      <div class="cards">
+        <div class="glass panel-card">
+          <h3 style="margin:0 0 10px;font-size:28px;">Nasıl test edilir</h3>
+          <div class="features">
+            <div>• Kategoriyi değiştir ve arka planın otomatik değiştiğini gör.</div>
+            <div>• Trend odalardan birine tıkla ve canlı yayına gir.</div>
+            <div>• Mesaj yaz, kayan sohbet alanında görünsün.</div>
+            <div>• Premium ve Yayıncı Paneli ekranlarını aç.</div>
+          </div>
+        </div>
+        <div class="glass panel-card">
+          <h3 style="margin:0 0 14px;font-size:28px;">Bu demoda olanlar</h3>
+          <div class="list-grid">
+            <div class="mini">Oyun bazlı dinamik tema</div>
+            <div class="mini">Canlı yayın + kayan chat overlay</div>
+            <div class="mini">İzleyici mesaj gönderme</div>
+            <div class="mini">Bağış ve öne çıkar butonları</div>
+            <div class="mini">Premium üyelik ekranı</div>
+            <div class="mini">Yayıncı kazanç paneli</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const themes = {
+      valorant: {
+        label: 'Valorant',
+        accent1: '#ef4444', accent2: '#f43f5e',
+        bg: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1600&q=80',
+        overlay: 'linear-gradient(180deg, rgba(19,9,12,.25), rgba(19,9,12,.72) 35%, rgba(9,9,11,.96))'
+      },
+      fifa: {
+        label: 'EA FC / Futbol',
+        accent1: '#22c55e', accent2: '#84cc16',
+        bg: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1600&q=80',
+        overlay: 'linear-gradient(180deg, rgba(7,20,13,.25), rgba(7,20,13,.72) 35%, rgba(9,9,11,.96))'
+      },
+      cs2: {
+        label: 'CS2',
+        accent1: '#fb923c', accent2: '#f59e0b',
+        bg: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1600&q=80',
+        overlay: 'linear-gradient(180deg, rgba(23,17,10,.25), rgba(23,17,10,.72) 35%, rgba(9,9,11,.96))'
+      },
+      gta: {
+        label: 'GTA',
+        accent1: '#d946ef', accent2: '#7c3aed',
+        bg: 'https://images.unsplash.com/photo-1511884642898-4c92249e20b6?auto=format&fit=crop&w=1600&q=80',
+        overlay: 'linear-gradient(180deg, rgba(20,9,20,.25), rgba(20,9,20,.72) 35%, rgba(9,9,11,.96))'
+      }
+    };
+
+    const rooms = [
+      { id: 1, title: 'Futbol Sohbeti', active: 120, category: 'fifa', emoji: '⚽', streamer: 'MertSports' },
+      { id: 2, title: 'Genel Sohbet', active: 84, category: 'gta', emoji: '💬', streamer: 'Celivo Room' },
+      { id: 3, title: 'Valorant Squad', active: 66, category: 'valorant', emoji: '🎮', streamer: 'ShadowWolf' },
+      { id: 4, title: 'CS2 Taktik Odası', active: 41, category: 'cs2', emoji: '🎯', streamer: 'AimMaster' }
+    ];
+
+    let state = {
+      screen: 'home',
+      theme: 'valorant',
+      room: rooms[2],
+      messages: [
+        { user: 'Mert35', text: 'Yayın çok iyi akıyor 🔥', color: '#f9a8d4' },
+        { user: 'Ali_77', text: 'Bir sonraki maç hangi oyunda?', color: '#7dd3fc' },
+        { user: 'NovaGirl', text: 'Chat bayağı hareketli bugün', color: '#c4b5fd' },
+        { user: 'MaxPower', text: 'Selam millet 👋', color: '#86efac' },
+        { user: 'LunaStar', text: 'Arka plan teması efsane olmuş', color: '#fcd34d' },
+        { user: 'HazalKing', text: 'Bu özellik kesin tutar', color: '#fda4af' }
+      ]
+    };
+
+    const autoTexts = [
+      'Tema oyuna göre değişmesi çok iyi olmuş',
+      'Bir sonraki elde ne yapacaksın?',
+      'Chat şu an bayağı hareketli',
+      'Bağış özelliği açılınca daha da iyi olur',
+      'Oda tasarımı premium durmuş 👌',
+      'İzleyiciler aynı anda yazabiliyor olması iyi'
+    ];
+
+    const screenEl = document.getElementById('screen');
+    const phoneBg = document.getElementById('phoneBg');
+    const phoneOverlay = document.getElementById('phoneOverlay');
+    let streamInterval = null;
+
+    function setTheme(themeKey) {
+      state.theme = themeKey;
+      const t = themes[themeKey];
+      document.documentElement.style.setProperty('--accent1', t.accent1);
+      document.documentElement.style.setProperty('--accent2', t.accent2);
+      phoneBg.style.backgroundImage = `url(${t.bg})`;
+      phoneOverlay.style.background = t.overlay;
+    }
+
+    function renderHome() {
+      stopStream();
+      setTheme(state.theme);
+      screenEl.innerHTML = `
+        <div class="topbar">
+          <button class="iconbtn">⌕</button>
+          <div class="brand"><div class="brand-badge">C</div><div class="brand-name">celivo</div></div>
+          <div class="avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" alt="profil"></div>
+        </div>
+        <div class="content">
+          <div class="chips" id="chips"></div>
+          <div class="glass hero">
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;">
+              <div>
+                <div class="muted" style="font-size:13px">Bugünün özeti</div>
+                <h3>Canlı yayın + kayan sohbet deneyimi</h3>
+                <p>Oyun kategorisini değiştir, oda seç, yayına gir ve chat akışını test et.</p>
+              </div>
+              <div class="gradient-pill">Demo</div>
+            </div>
+            <div class="row">
+              <button class="btn" id="goPremium">Premium</button>
+              <button class="btn secondary" id="goPublisher">Yayıncı Paneli</button>
+            </div>
+          </div>
+          <div class="section-title">🔥 <span>Trend Odalar</span></div>
+          <div class="hlist" id="trendRooms"></div>
+          <div class="section-title">⚡ <span>Şu an aktif</span></div>
+          <div class="vlist" id="activeRooms"></div>
+          <div class="glass navbar">
+            <div class="navitem active">Anasayfa</div>
+            <div class="navitem">Keşfet</div>
+            <div class="navitem">Oda Aç</div>
+            <div class="navitem">Bildirim</div>
+            <div class="navitem">Profil</div>
+          </div>
+        </div>
+      `;
+
+      const chips = document.getElementById('chips');
+      Object.entries(themes).forEach(([key, t]) => {
+        const btn = document.createElement('button');
+        btn.className = `chip ${state.theme === key ? 'active' : ''}`;
+        btn.textContent = t.label;
+        btn.onclick = () => { state.theme = key; renderHome(); };
+        chips.appendChild(btn);
+      });
+
+      const trend = document.getElementById('trendRooms');
+      rooms.forEach(room => {
+        const el = document.createElement('div');
+        el.className = 'room-card';
+        el.innerHTML = `
+          <div class="room-cover" style="background-image:url(${themes[room.category].bg})"></div>
+          <div class="room-body">
+            <div style="font-size:30px;margin-bottom:4px">${room.emoji}</div>
+            <div class="room-title">${room.title}</div>
+            <div class="muted" style="margin-top:6px;font-size:14px">${room.streamer}</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:10px"><span class="active-dot"></span><span class="muted">${room.active} aktif</span></div>
+          </div>
+        `;
+        el.onclick = () => openRoom(room);
+        trend.appendChild(el);
+      });
+
+      const active = document.getElementById('activeRooms');
+      rooms.slice(1).forEach(room => {
+        const el = document.createElement('div');
+        el.className = 'list-item';
+        el.innerHTML = `
+          <div class="thumb" style="background-image:url(${themes[room.category].bg})"></div>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:18px">${room.title}</div>
+            <div class="muted">${room.active} aktif</div>
+          </div>
+        `;
+        el.onclick = () => openRoom(room);
+        active.appendChild(el);
+      });
+
+      document.getElementById('goPremium').onclick = () => { state.screen = 'premium'; render(); };
+      document.getElementById('goPublisher').onclick = () => { state.screen = 'publisher'; render(); };
+    }
+
+    function openRoom(room) {
+      state.room = room;
+      state.theme = room.category;
+      state.screen = 'stream';
+      render();
+    }
+
+    function renderStream() {
+      setTheme(state.theme);
+      screenEl.innerHTML = `
+        <div class="topbar">
+          <button class="iconbtn" id="backHome">‹</button>
+          <div style="text-align:center;flex:1">
+            <div style="font-weight:700;font-size:18px">${state.room.title}</div>
+            <div class="muted" style="font-size:13px">${themes[state.theme].label} • ${state.room.streamer}</div>
+          </div>
+          <div class="pill" style="padding:10px 12px;font-size:13px">👁 8.425</div>
+        </div>
+        <div class="stream-media">
+          <div class="stream-box">
+            <div class="live-pill">CANLI</div>
+            <div class="stream-note">İzleyiciler aynı anda yazıyor</div>
+            <div class="chat-overlay">
+              <div class="chat-head">Canlı Sohbet</div>
+              <div class="chat-feed" id="chatOverlayFeed"></div>
+            </div>
+          </div>
+        </div>
+        <div class="subhead">
+          <div>
+            <h4>Canlı Yorum Akışı</h4>
+            <div class="muted" style="font-size:13px">Mesajlar akar, kısa süre görünür ve yer değiştirir</div>
+          </div>
+          <div class="gradient-pill">${themes[state.theme].label}</div>
+        </div>
+        <div class="message-stack" id="messageStack"></div>
+        <div class="cta-row">
+          <button class="cta">🎁 Bağış</button>
+          <button class="cta">🎙 Sesli Katıl</button>
+          <button class="cta primary">Öne Çıkar</button>
+        </div>
+        <div class="composer">
+          <div class="composer-wrap">
+            <button class="round">☺</button>
+            <input id="chatInput" placeholder="Mesaj yaz..." />
+            <button class="round send" id="sendBtn">➤</button>
+          </div>
+        </div>
+      `;
+      document.getElementById('backHome').onclick = () => { state.screen = 'home'; render(); };
+      document.getElementById('sendBtn').onclick = sendMessage;
+      document.getElementById('chatInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+      paintMessages();
+      startStream();
+    }
+
+    function paintMessages() {
+      const overlay = document.getElementById('chatOverlayFeed');
+      const stack = document.getElementById('messageStack');
+      if (!overlay || !stack) return;
+      overlay.innerHTML = '';
+      stack.innerHTML = '';
+      const latest = state.messages.slice(-6);
+      latest.forEach((m, idx) => {
+        const div = document.createElement('div');
+        div.className = 'chat-bubble';
+        div.style.opacity = String(1 - (latest.length - idx - 1) * .12);
+        div.innerHTML = `<strong style="color:${m.color}">${m.user}:</strong> ${m.text}`;
+        overlay.appendChild(div);
+      });
+      state.messages.slice(-4).reverse().forEach((m, idx) => {
+        const div = document.createElement('div');
+        div.className = 'message-card';
+        div.style.opacity = String(1 - idx * .16);
+        div.style.transform = `scale(${1 - idx * .03})`;
+        div.innerHTML = `<div><strong style="color:${m.color}">${m.user}</strong> <span class="muted">• az önce</span></div><div style="margin-top:6px">${m.text}</div>`;
+        stack.appendChild(div);
+      });
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      if (!input || !input.value.trim()) return;
+      state.messages.push({ user: 'Sen', text: input.value.trim(), color: '#ffffff' });
+      state.messages = state.messages.slice(-20);
+      input.value = '';
+      paintMessages();
+    }
+
+    function startStream() {
+      stopStream();
+      streamInterval = setInterval(() => {
+        const users = ['NovaGirl', 'MaxPower', 'TechNerd', 'LunaStar', 'Mert35'];
+        const colors = ['#f9a8d4', '#7dd3fc', '#86efac', '#fcd34d', '#c4b5fd'];
+        state.messages.push({
+          user: users[Math.floor(Math.random() * users.length)],
+          text: autoTexts[Math.floor(Math.random() * autoTexts.length)],
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+        state.messages = state.messages.slice(-20);
+        paintMessages();
+      }, 2200);
+    }
+
+    function stopStream() {
+      if (streamInterval) clearInterval(streamInterval);
+      streamInterval = null;
+    }
+
+    function renderPremium() {
+      stopStream();
+      setTheme('valorant');
+      screenEl.innerHTML = `
+        <div class="topbar">
+          <button class="iconbtn" id="backHome">‹</button>
+          <div style="font-weight:700;font-size:20px">Premium</div>
+          <div style="width:44px"></div>
+        </div>
+        <div class="content">
+          <div class="glass hero" style="margin-bottom:14px">
+            <div style="font-size:28px;font-weight:700">Celivo üyelikleri</div>
+            <p style="margin-top:8px">Sohbeti büyüt, reklamı azalt, VIP odalara gir ve mesajlarını öne çıkar.</p>
+          </div>
+          <div class="pricing">
+            ${[
+              {name:'Free', price:'0₺', desc:'Temel erişim', features:['Sınırlı mesaj','Reklamlı kullanım','Açık odalar']},
+              {name:'Plus', price:'59₺', desc:'En popüler', features:['Sınırsız mesaj','Daha az reklam','Bazı VIP odalar','Günlük 1 öne çıkarma'], popular:true},
+              {name:'Pro', price:'129₺', desc:'Tam deneyim', features:['Reklamsız','Tüm VIP odalar','Özel yayınlar','Sınırsız öne çıkarma']}
+            ].map(p => `
+              <div class="price-card ${p.popular ? 'popular' : ''}">
+                ${p.popular ? '<div class="tag">En Popüler</div>' : ''}
+                <div style="font-size:28px;font-weight:700">${p.name}</div>
+                <div class="price">${p.price}<span style="font-size:16px;color:rgba(255,255,255,.4)"> / ay</span></div>
+                <div class="muted">${p.desc}</div>
+                <div class="features">${p.features.map(f => `<div>• ${f}</div>`).join('')}</div>
+                <button class="btn" style="width:100%;margin-top:16px">Planı Seç</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      document.getElementById('backHome').onclick = () => { state.screen = 'home'; render(); };
+    }
+
+    function renderPublisher() {
+      stopStream();
+      setTheme('gta');
+      screenEl.innerHTML = `
+        <div class="topbar">
+          <button class="iconbtn" id="backHome">‹</button>
+          <div style="font-weight:700;font-size:20px">Yayıncı Paneli</div>
+          <button class="iconbtn">⚙</button>
+        </div>
+        <div class="content">
+          <div class="glass hero">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+              <div>
+                <div class="muted" style="font-size:13px">Toplam Kazanç</div>
+                <div style="font-size:44px;font-weight:800;margin-top:4px">₺8.450</div>
+              </div>
+              <div class="pill" style="padding:8px 12px;color:#86efac">+12%</div>
+            </div>
+            <div class="list-grid" style="margin-top:16px;">
+              <div class="mini"><div class="muted">Bağış</div><div style="font-size:24px;font-weight:700;margin-top:4px">₺4.200</div></div>
+              <div class="mini"><div class="muted">Premium Payı</div><div style="font-size:24px;font-weight:700;margin-top:4px">₺2.150</div></div>
+              <div class="mini"><div class="muted">Bonus</div><div style="font-size:24px;font-weight:700;margin-top:4px">₺2.100</div></div>
+              <div class="mini"><div class="muted">Aktif İzleyici</div><div style="font-size:24px;font-weight:700;margin-top:4px">842</div></div>
+            </div>
+          </div>
+          <div class="glass panel-card" style="margin-top:14px;">
+            <h3 style="margin:0 0 12px;font-size:24px">Hedefler</h3>
+            ${[
+              ['20.000 dk izlenme',62],
+              ['1.000 aktif kullanıcı',84],
+              ['Bonus ödeme seviyesi',48]
+            ].map(([label, val]) => `
+              <div style="margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="muted">${label}</span><strong>%${val}</strong></div>
+                <div class="progress"><span style="width:${val}%"></span></div>
+              </div>
+            `).join('')}
+            <button class="btn" style="width:100%;margin-top:8px">Yeni Yayın Başlat</button>
+          </div>
+        </div>
+      `;
+      document.getElementById('backHome').onclick = () => { state.screen = 'home'; render(); };
+    }
+
+    function render() {
+      if (state.screen === 'home') renderHome();
+      if (state.screen === 'stream') renderStream();
+      if (state.screen === 'premium') renderPremium();
+      if (state.screen === 'publisher') renderPublisher();
+    }
+
+    setTheme(state.theme);
+    render();
+  </script>
+</body>
+</html>
