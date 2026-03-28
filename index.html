@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Celivo</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+body{
+margin:0;
+font-family:Inter;
+background:#0a0d16;
+color:#fff;
+}
+
+.container{
+width:90%;
+max-width:1200px;
+margin:auto;
+}
+
+/* NAV */
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 0;
+}
+
+.logo{
+font-size:28px;
+font-weight:800;
+background:linear-gradient(90deg,#4fd6ff,#8d4dff,#cf3fff);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+/* HERO */
+.hero{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:80px 0;
+flex-wrap:wrap;
+}
+
+.hero-text{
+max-width:500px;
+}
+
+.hero h1{
+font-size:56px;
+line-height:1.1;
+}
+
+.gradient{
+background:linear-gradient(90deg,#4fd6ff,#8d4dff,#cf3fff);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+.hero p{
+opacity:.8;
+margin-top:20px;
+}
+
+.buttons{
+margin-top:30px;
+}
+
+button{
+padding:14px 22px;
+border:none;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+margin-right:10px;
+}
+
+.primary{
+background:linear-gradient(90deg,#8d4dff,#4fd6ff);
+color:white;
+}
+
+.secondary{
+background:#1a1f2e;
+color:white;
+}
+
+/* LIVE */
+.live{
+margin-top:40px;
+}
+
+.live h2{
+font-size:28px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:2fr 1fr 1fr;
+gap:15px;
+margin-top:20px;
+}
+
+.card{
+background:#111;
+border-radius:16px;
+overflow:hidden;
+position:relative;
+cursor:pointer;
+transition:.3s;
+}
+
+.card:hover{
+transform:scale(1.02);
+}
+
+.card img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.big{
+grid-row:span 2;
+}
+
+.info{
+position:absolute;
+bottom:0;
+width:100%;
+padding:10px;
+background:linear-gradient(transparent,black);
+}
+
+.live-badge{
+color:white;
+background:red;
+padding:5px 10px;
+border-radius:20px;
+font-size:12px;
+animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+0%{opacity:1}
+50%{opacity:.5}
+100%{opacity:1}
+}
+
+.viewers{
+font-size:12px;
+opacity:.8;
+}
+
+.title{
+font-weight:bold;
+margin-top:5px;
+}
+
+/* ticker */
+.ticker{
+margin-top:20px;
+overflow:hidden;
+white-space:nowrap;
+}
+
+.ticker span{
+display:inline-block;
+padding-right:40px;
+animation:scroll 20s linear infinite;
+}
+
+@keyframes scroll{
+0%{transform:translateX(0)}
+100%{transform:translateX(-100%)}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<nav>
+<div class="logo">Celivo</div>
+<div>
+<button class="secondary">Giriş</button>
+<button class="primary">Kayıt Ol</button>
+</div>
+</nav>
+
+<section class="hero">
+
+<div class="hero-text">
+<h1>Sadece izleme.<br><span class="gradient">Yayının parçası ol.</span></h1>
+
+<p>Celivo’da yayın sadece izlenmez.<br>
+Sohbete katıl, sesli bağlan, yayının içine gir.</p>
+
+<div class="buttons">
+<button class="secondary">Yayınlara Katıl</button>
+<button class="primary">Hemen Yayına Başla</button>
+</div>
+</div>
+
+</section>
+
+<section class="live">
+
+<h2>Şu An Canlı</h2>
+<p>Şu anda platformda olan en aktif ve en kalabalık yayınlar.</p>
+
+<div class="cards">
+
+<div class="card big">
+<img src="https://images.unsplash.com/photo-1511512578047-dfb367046420">
+<div class="info">
+<div class="live-badge">CANLI</div>
+<div class="viewers">12.4K kişi izliyor</div>
+<div class="title">Radiant Push – Son 3 Maç</div>
+</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1557804506-669a67965ba0">
+<div class="info">
+<div class="live-badge">CANLI</div>
+<div class="viewers">6.8K kişi izliyor</div>
+<div class="title">Gece Muhabbeti #42</div>
+</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1547347298-4074fc3086f0">
+<div class="info">
+<div class="live-badge">CANLI</div>
+<div class="viewers">7.9K kişi izliyor</div>
+<div class="title">Derbi Öncesi Analiz</div>
+</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511512578047-dfb367046420">
+<div class="info">
+<div class="live-badge">CANLI</div>
+<div class="viewers">5.3K kişi izliyor</div>
+<div class="title">Ranked Solo Grind</div>
+</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1508098682722-e99c643e7485">
+<div class="info">
+<div class="live-badge">CANLI</div>
+<div class="viewers">4.7K kişi izliyor</div>
+<div class="title">Taraftar Odası</div>
+</div>
+</div>
+
+</div>
+
+<div class="ticker">
+<span>Radiant Push yayında • 12.4K kişi izliyor</span>
+<span>Gece Muhabbeti yayında • 6.8K kişi izliyor</span>
+<span>Derbi Analiz yayında • 7.9K kişi izliyor</span>
+</div>
+
+</section>
+
+</div>
+
+</body>
+</html>
