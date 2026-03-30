@@ -8,10 +8,8 @@
     :root {
       --bg: #050816;
       --card: #0d1326;
-      --card-2: #11192d;
       --text: #f8fafc;
       --muted: #97a3b6;
-      --line: rgba(255,255,255,.08);
       --grad-1: #48c6ff;
       --grad-2: #7c5cff;
       --grad-3: #c53cff;
@@ -20,6 +18,7 @@
     }
 
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -378,29 +377,31 @@
       </div>
 
       <form class="chat-form" id="chat-form">
-  <input
-    id="chat-input"
-    class="chat-input"
-    type="text"
-    placeholder="Mesajını yaz..."
-    maxlength="500"
-  />
-  <button id="send-btn" class="send-btn" type="submit">Gönder</button>
-</form>
-      <div class="hint">Mesaj göndermek için giriş yapmış olmalısın.</div>
+        <input
+          id="chat-input"
+          class="chat-input"
+          type="text"
+          placeholder="Mesajını yaz..."
+          maxlength="500"
+        />
+        <button id="send-btn" class="send-btn" type="submit">Gönder</button>
+      </form>
+
+      <div class="hint">Test modunda mesajlar sabit kullanıcı ile gönderilir.</div>
     </aside>
   </main>
 
-  <script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
     const SUPABASE_URL = 'https://nxxnhqtqvrkbdhltoijz.supabase.co';
-    const SUPABASE_PUBLISHABLE_KEY = 'BURAYA_SENIN_PUBLISHABLE_KEYIN';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0';
+    const TEST_USER_ID = 'cbb91492-39c9-48cf-a9e4-abe68b3cf823';
 
     const params = new URLSearchParams(window.location.search);
     const streamId = params.get('id');
 
     let supabaseClient = null;
-    let currentUser = null;
-    let currentStream = null;
     let chatChannel = null;
     let profileMap = {};
 
@@ -409,7 +410,7 @@
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/\"/g, '&quot;')
+        .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
     }
 
@@ -423,15 +424,13 @@
     }
 
     function renderStream(stream) {
-      currentStream = stream;
-
       document.getElementById('stream-title').textContent = stream.title || 'Canlı yayın';
       document.getElementById('stream-category').textContent = stream.category || 'Just Chatting';
       document.getElementById('stream-streamer').textContent = stream.streamer_name || 'Celivo yayıncısı';
       document.getElementById('stream-status').textContent = (stream.status || 'live').toUpperCase();
       document.getElementById('viewer-badge').textContent = `👁 ${formatViewers(Number(stream.viewer_count || 0))}`;
       document.getElementById('stream-desc').textContent =
-        `${stream.streamer_name || 'Bu yayıncı'} şu anda ${formatViewers(Number(stream.viewer_count || 0)).toLowerCase()} ile yayında. Chat’e katıl ve yayının parçası ol.`;
+        `${stream.streamer_name || 'Bu yayıncı'} şu anda ${formatViewers(Number(stream.viewer_count || 0)).toLowerCase()} ile yayında.`;
     }
 
     function renderMessages(messages) {
@@ -543,27 +542,26 @@
     }
 
     async function sendMessage(text) {
-  const clean = text.trim();
-  if (!clean) return;
+      const clean = text.trim();
+      if (!clean) return;
 
-  const { error } = await supabaseClient
-    .from('chat_messages')
-    .insert([
-      {
-        stream_id: streamId,
-        user_id: 'cbb91492-39c9-48cf-a9e4-abe68b3cf823',
-        message: clean
+      const { error } = await supabaseClient
+        .from('chat_messages')
+        .insert([
+          {
+            stream_id: streamId,
+            user_id: TEST_USER_ID,
+            message: clean
+          }
+        ]);
+
+      if (error) {
+        console.error(error);
+        alert('Mesaj gönderilemedi.');
+        return;
       }
-    ]);
 
-  if (error) {
-    console.error(error);
-    alert('Mesaj gönderilemedi.');
-    return;
-  }
-
-  await loadMessages();
-}
+      await loadMessages();
     }
 
     function subscribeChat() {
@@ -587,271 +585,45 @@
     }
 
     async function boot() {
-  if (!streamId) {
-    setStatus('Geçersiz yayın');
-    return;
-  }
+      if (!streamId) {
+        setStatus('Geçersiz yayın');
+        return;
+      }
 
-  setStatus('Yükleniyor...');
+      setStatus('Yükleniyor...');
 
-  await loadStream();
-  await loadMessages();
-  subscribeChat();
-  setStatus('Canlı bağlı');
+      await loadStream();
+      await loadMessages();
+      subscribeChat();
+      setStatus('Canlı bağlı');
 
-  const form = document.getElementById('chat-form');
-  const input = document.getElementById('chat-input');
+      const form = document.getElementById('chat-form');
+      const input = document.getElementById('chat-input');
 
-  if (!form || !input) {
-    console.error('chat-form veya chat-input bulunamadı');
-    return;
-  }
+      if (!form || !input) {
+        console.error('chat-form veya chat-input bulunamadı');
+        return;
+      }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    const value = input.value.trim();
-    if (!value) return;
+        const value = input.value.trim();
+        if (!value) return;
 
-    await sendMessage(value);
-    input.value = '';
-  });
-}
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-const SUPABASE_URL = 'https://nxxnhqtqvrkbdhltoijz.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0';
-const TEST_USER_ID = 'cbb91492-39c9-48cf-a9e4-abe68b3cf823';
-
-const params = new URLSearchParams(window.location.search);
-const streamId = params.get('id');
-
-let supabaseClient = null;
-let chatChannel = null;
-let profileMap = {};
-
-function safeText(value, fallback = '') {
-  return String(value ?? fallback)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-function formatViewers(count) {
-  if (count >= 1000) return `${(count / 1000).toFixed(1)}K kişi izliyor`;
-  return `${count} kişi izliyor`;
-}
-
-function setStatus(text) {
-  document.getElementById('chat-status').textContent = text;
-}
-
-function renderStream(stream) {
-  document.getElementById('stream-title').textContent = stream.title || 'Canlı yayın';
-  document.getElementById('stream-category').textContent = stream.category || 'Just Chatting';
-  document.getElementById('stream-streamer').textContent = stream.streamer_name || 'Celivo yayıncısı';
-  document.getElementById('stream-status').textContent = (stream.status || 'live').toUpperCase();
-  document.getElementById('viewer-badge').textContent = `👁 ${formatViewers(Number(stream.viewer_count || 0))}`;
-  document.getElementById('stream-desc').textContent =
-    `${stream.streamer_name || 'Bu yayıncı'} şu anda ${formatViewers(Number(stream.viewer_count || 0)).toLowerCase()} ile yayında.`;
-}
-
-function renderMessages(messages) {
-  const box = document.getElementById('messages');
-
-  if (!messages.length) {
-    box.innerHTML = '<div class="empty">Henüz mesaj yok. İlk mesajı sen gönder.</div>';
-    return;
-  }
-
-  box.innerHTML = messages.map(msg => `
-    <div class="message">
-      <div class="message-user">${safeText(msg.username || msg.user_id || 'Kullanıcı')}</div>
-      <div class="message-text">${safeText(msg.message || '')}</div>
-    </div>
-  `).join('');
-
-  box.scrollTop = box.scrollHeight;
-}
-
-async function appendMessage(msg) {
-  let username = msg.user_id || 'Kullanıcı';
-
-  if (profileMap[msg.user_id]) {
-    username = profileMap[msg.user_id];
-  } else if (msg.user_id) {
-    const { data: profile } = await supabaseClient
-      .from('profiles')
-      .select('username')
-      .eq('id', msg.user_id)
-      .maybeSingle();
-
-    if (profile?.username) {
-      profileMap[msg.user_id] = profile.username;
-      username = profile.username;
+        await sendMessage(value);
+        input.value = '';
+      });
     }
-  }
 
-  const box = document.getElementById('messages');
-  const empty = box.querySelector('.empty');
-  if (empty) box.innerHTML = '';
-
-  const item = document.createElement('div');
-  item.className = 'message';
-  item.innerHTML = `
-    <div class="message-user">${safeText(username)}</div>
-    <div class="message-text">${safeText(msg.message || '')}</div>
-  `;
-  box.appendChild(item);
-  box.scrollTop = box.scrollHeight;
-}
-
-async function loadStream() {
-  if (!streamId) {
-    document.getElementById('stream-title').textContent = 'Yayın bulunamadı';
-    document.getElementById('stream-desc').textContent = 'Geçerli bir yayın kimliği gelmedi.';
-    return;
-  }
-
-  const { data, error } = await supabaseClient
-    .from('streams')
-    .select('*')
-    .eq('id', streamId)
-    .maybeSingle();
-
-  if (error || !data) {
-    console.error(error);
-    document.getElementById('stream-title').textContent = 'Yayın yüklenemedi';
-    document.getElementById('stream-desc').textContent = 'Bu yayın bulunamadı veya kaldırılmış olabilir.';
-    return;
-  }
-
-  renderStream(data);
-}
-
-async function loadMessages() {
-  const { data, error } = await supabaseClient
-    .from('chat_messages')
-    .select('*')
-    .eq('stream_id', streamId)
-    .order('created_at', { ascending: true });
-
-  if (error) {
-    console.error(error);
-    renderMessages([]);
-    return;
-  }
-
-  const userIds = [...new Set((data || []).map(m => m.user_id).filter(Boolean))];
-
-  if (userIds.length) {
-    const { data: profiles } = await supabaseClient
-      .from('profiles')
-      .select('id, username')
-      .in('id', userIds);
-
-    profileMap = {};
-    (profiles || []).forEach(p => {
-      profileMap[p.id] = p.username;
-    });
-  }
-
-  const enriched = (data || []).map(msg => ({
-    ...msg,
-    username: profileMap[msg.user_id] || msg.user_id
-  }));
-
-  renderMessages(enriched);
-}
-
-async function sendMessage(text) {
-  const clean = text.trim();
-  if (!clean) return;
-
-  const { error } = await supabaseClient
-    .from('chat_messages')
-    .insert([
-      {
-        stream_id: streamId,
-        user_id: TEST_USER_ID,
-        message: clean
+    window.addEventListener('beforeunload', () => {
+      if (chatChannel) {
+        supabaseClient.removeChannel(chatChannel);
       }
-    ]);
-
-  if (error) {
-    console.error(error);
-    alert('Mesaj gönderilemedi.');
-    return;
-  }
-
-  await loadMessages();
-}
-
-function subscribeChat() {
-  chatChannel = supabaseClient
-    .channel(`chat-${streamId}`)
-    .on(
-      'postgres_changes',
-      {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'chat_messages',
-        filter: `stream_id=eq.${streamId}`
-      },
-      async (payload) => {
-        await appendMessage(payload.new);
-      }
-    )
-    .subscribe((status) => {
-      if (status === 'SUBSCRIBED') setStatus('Canlı bağlı');
     });
-}
 
-async function boot() {
-  if (!streamId) {
-    setStatus('Geçersiz yayın');
-    return;
-  }
-
-  setStatus('Yükleniyor...');
-
-  await loadStream();
-  await loadMessages();
-  subscribeChat();
-  setStatus('Canlı bağlı');
-
-  const form = document.getElementById('chat-form');
-  const input = document.getElementById('chat-input');
-
-  if (!form || !input) {
-    console.error('chat-form veya chat-input bulunamadı');
-    return;
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const value = input.value.trim();
-    if (!value) return;
-
-    await sendMessage(value);
-    input.value = '';
-  });
-}
-
-window.addEventListener('beforeunload', () => {
-  if (chatChannel) {
-    supabaseClient.removeChannel(chatChannel);
-  }
-});
-
-if (SUPABASE_PUBLISHABLE_KEY === 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0') {
-  alert('Önce stream.html içine publishable key ekle.');
-} else {
-  supabaseClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-  boot();
-}
-</script>
+    supabaseClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    boot();
+  </script>
+</body>
+</html>
