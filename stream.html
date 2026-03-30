@@ -592,31 +592,36 @@ let profileMap = {};
     }
 
     async function boot() {
-      if (!streamId) {
-        setStatus('Geçersiz yayın');
-        return;
-      }
+  if (!streamId) {
+    setStatus('Geçersiz yayın');
+    return;
+  }
 
-      setStatus('Yükleniyor...');
+  const { data: authData } = await supabaseClient.auth.getUser();
+  currentUser = authData?.user || null;
 
-      await loadStream();
-      await loadMessages();
-      subscribeChat();
-      setStatus('Canlı bağlı');
+  console.log('BOOT currentUser:', currentUser);
 
-      const form = document.getElementById('chat-form');
-      const input = document.getElementById('chat-input');
+  setStatus('Yükleniyor...');
 
-      form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+  await loadStream();
+  await loadMessages();
+  subscribeChat();
+  setStatus('Canlı bağlı');
 
-  const value = input.value.trim();
-  if (!value) return;
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('chat-input');
 
-  await sendMessage(value);
-  input.value = '';
-});
-    }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const value = input.value.trim();
+    if (!value) return;
+
+    await sendMessage(value);
+    input.value = '';
+  });
+}
 
     window.addEventListener('beforeunload', () => {
       if (chatChannel) {
