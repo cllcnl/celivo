@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Celivo - Yayın</title>
+  <style>
+    :root {
+      --bg: #050816;
+      --card: #0d1326;
+      --card-2: #11192d;
+      --text: #f8fafc;
+      --muted: #97a3b6;
+      --line: rgba(255,255,255,.08);
+      --grad-1: #48c6ff;
+      --grad-2: #7c5cff;
+      --grad-3: #c53cff;
+      --danger: #ff2d55;
+      --max: 1380px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(72,198,255,.1), transparent 28%),
+        radial-gradient(circle at 85% 15%, rgba(197,60,255,.12), transparent 24%),
+        linear-gradient(180deg, #040814 0%, #050816 100%);
+      color: var(--text);
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 28px));
+      margin: 0 auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      background: rgba(5,8,22,.74);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .nav-inner {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      font-size: 1.9rem;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      background: linear-gradient(90deg, var(--grad-1), var(--grad-2), var(--grad-3));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .back-link {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #dce4f2;
+      font-weight: 700;
+      font-size: .94rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) 380px;
+      gap: 20px;
+      padding: 22px 0 34px;
+    }
+
+    .player-card, .chat-card, .info-card {
+      background: linear-gradient(180deg, #0c1224, #0a1020);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.28);
+    }
+
+    .player-card {
+      overflow: hidden;
+    }
+
+    .player-box {
+      aspect-ratio: 16 / 9;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.45)),
+        url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1600&q=80') center/cover;
+    }
+
+    .player-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.66) 100%);
+      pointer-events: none;
+    }
+
+    .live-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,45,85,.16);
+      color: #ffd9e2;
+      border: 1px solid rgba(255,45,85,.3);
+      font-size: .84rem;
+      font-weight: 800;
+      backdrop-filter: blur(10px);
+    }
+
+    .live-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--danger);
+      box-shadow: 0 0 12px rgba(255,45,85,.9);
+    }
+
+    .viewer-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 2;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.46);
+      border: 1px solid rgba(255,255,255,.12);
+      color: white;
+      font-weight: 700;
+      font-size: .85rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .play-center {
+      position: relative;
+      z-index: 2;
+      width: 92px;
+      height: 92px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.08);
+      display: grid;
+      place-items: center;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.26);
+    }
+
+    .play-center::before {
+      content: "";
+      border-left: 24px solid white;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      margin-left: 6px;
+    }
+
+    .info-card {
+      margin-top: 16px;
+      padding: 20px;
+    }
+
+    .stream-title {
+      margin: 0;
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      letter-spacing: -.04em;
+    }
+
+    .stream-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.06);
+      color: #dbe4f2;
+      font-size: .9rem;
+      font-weight: 700;
+    }
+
+    .desc {
+      margin: 16px 0 0;
+      color: #c4cdde;
+      line-height: 1.7;
+    }
+
+    .chat-card {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 760px;
+      overflow: hidden;
+    }
+
+    .chat-head {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-head h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      letter-spacing: -.03em;
+    }
+
+    .chat-status {
+      color: #93a0b5;
+      font-size: .9rem;
+      font-weight: 600;
+    }
+
+    .messages {
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 300px;
+      max-height: calc(100vh - 270px);
+    }
+
+    .message {
+      padding: 12px 13px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .message-user {
+      font-size: .86rem;
+      font-weight: 800;
+      color: #7ed8ff;
+      margin-bottom: 6px;
+    }
+
+    .message-text {
+      color: #eef3fb;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .chat-form {
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      background: rgba(255,255,255,.02);
+    }
+
+    .chat-input {
+      width: 100%;
+      height: 52px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color: white;
+      padding: 0 16px;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .chat-input::placeholder {
+      color: #8f9bb0;
+    }
+
+    .send-btn {
+      height: 52px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 16px;
+      cursor: pointer;
+      color: white;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--grad-2), var(--grad-1));
+      box-shadow: 0 12px 30px rgba(98,108,255,.26);
+    }
+
+    .hint {
+      padding: 0 16px 14px;
+      color: #8f9bb0;
+      font-size: .87rem;
+    }
+
+    .empty {
+      color: #9ba7b9;
+      text-align: center;
+      padding: 28px 16px;
+      border: 1px dashed rgba(255,255,255,.1);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+    }
+
+    @media (max-width: 1080px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-card {
+        min-height: 560px;
+      }
+
+      .messages {
+        max-height: 420px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a href="/" class="brand">Celivo</a>
+      <a class="back-link" href="/">← Ana sayfaya dön</a>
+    </div>
+  </nav>
+
+  <main class="wrap layout">
+    <section>
+      <div class="player-card">
+        <div class="player-box">
+          <span class="live-badge">CANLI</span>
+          <span class="viewer-badge" id="viewer-badge">👁 0 kişi izliyor</span>
+          <div class="play-center"></div>
+          <div class="player-overlay"></div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h1 class="stream-title" id="stream-title">Yayın yükleniyor...</h1>
+        <div class="stream-meta">
+          <span class="pill" id="stream-category">Kategori</span>
+          <span class="pill" id="stream-streamer">Yayıncı</span>
+          <span class="pill" id="stream-status">Canlı</span>
+        </div>
+        <p class="desc" id="stream-desc">
+          Yayın bilgileri yükleniyor. Şimdilik video alanı yer tutucu olarak hazır. Bir sonraki adımda gerçek canlı yayın altyapısını bağlayacağız.
+        </p>
+      </div>
+    </section>
+
+    <aside class="chat-card">
+      <div class="chat-head">
+        <h3>Canlı Chat</h3>
+        <span class="chat-status" id="chat-status">Bağlanıyor...</span>
+      </div>
+
+      <div class="messages" id="messages">
+        <div class="empty">Mesajlar yükleniyor...</div>
+      </div>
+
+      <form class="chat-form" id="chat-form">
+        <input
+          id="chat-input"
+          class="chat-input"
+          type="text"
+          placeholder="Mesajını yaz..."
+          maxlength="500"
+        />
+        <button class="send-btn" type="submit">Gönder</button>
+      </form>
+      <div class="hint">Mesaj göndermek için giriş yaptığın kullanıcıyla devam edebilirsin. Şimdilik test kullanıcı kimliği ile çalışıyoruz.</div>
+    </aside>
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://nxxnhqtqvrkbdhltoijz.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0';
+
+    const TEST_USER_ID = 'cbb91492-39c9-48cf-a9e4-abe68b3cf823';
+
+    const params = new URLSearchParams(window.location.search);
+    const streamId = params.get('id');
+
+    let supabaseClient = null;
+    let currentStream = null;
+    let chatChannel = null;
+
+    function safeText(value, fallback = '') {
+      return String(value ?? fallback)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function formatViewers(count) {
+      if (count >= 1000) return `${(count / 1000).toFixed(1)}K kişi izliyor`;
+      return `${count} kişi izliyor`;
+    }
+
+    function setStatus(text) {
+      document.getElementById('chat-status').textContent = text;
+    }
+
+    function renderStream(stream) {
+      currentStream = stream;
+
+      document.getElementById('stream-title').textContent = stream.title || 'Canlı yayın';
+      document.getElementById('stream-category').textContent = stream.category || 'Just Chatting';
+      document.getElementById('stream-streamer').textContent = stream.streamer_name || 'Celivo yayıncısı';
+      document.getElementById('stream-status').textContent = (stream.status || 'live').toUpperCase();
+      document.getElementById('viewer-badge').textContent = `👁 ${formatViewers(Number(stream.viewer_count || 0))}`;
+      document.getElementById('stream-desc').textContent =
+        `${stream.streamer_name || 'Bu yayıncı'} şu anda ${formatViewers(Number(stream.viewer_count || 0)).toLowerCase()} ile yayında. Chat’e katıl ve yayının parçası ol.`;
+    }
+
+    function renderMessages(messages) {
+      const box = document.getElementById('messages');
+
+      if (!messages.length) {
+        box.innerHTML = '<div class="empty">Henüz mesaj yok. İlk mesajı sen gönder.</div>';
+        return;
+      }
+
+      box.innerHTML = messages.map(msg => `
+        <div class="message">
+          <div class="message-user">${safeText(msg.username || msg.user_id || 'Kullanıcı')}</div>
+          <div class="message-text">${safeText(msg.message || '')}</div>
+        </div>
+      `).join('');
+
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function appendMessage(msg) {
+      const box = document.getElementById('messages');
+      const empty = box.querySelector('.empty');
+      if (empty) box.innerHTML = '';
+
+      const item = document.createElement('div');
+      item.className = 'message';
+      item.innerHTML = `
+        <div class="message-user">${safeText(msg.username || msg.user_id || 'Kullanıcı')}</div>
+        <div class="message-text">${safeText(msg.message || '')}</div>
+      `;
+      box.appendChild(item);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function loadStream() {
+      if (!streamId) {
+        document.getElementById('stream-title').textContent = 'Yayın bulunamadı';
+        document.getElementById('stream-desc').textContent = 'Geçerli bir yayın kimliği gelmedi.';
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from('streams')
+        .select('*')
+        .eq('id', streamId)
+        .maybeSingle();
+
+      if (error || !data) {
+        console.error(error);
+        document.getElementById('stream-title').textContent = 'Yayın yüklenemedi';
+        document.getElementById('stream-desc').textContent = 'Bu yayın bulunamadı veya kaldırılmış olabilir.';
+        return;
+      }
+
+      renderStream(data);
+    }
+
+    async function loadMessages() {
+      const { data, error } = await supabaseClient
+        .from('chat_messages')
+        .select('*')
+        .eq('stream_id', streamId)
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error(error);
+        renderMessages([]);
+        return;
+      }
+
+      renderMessages(data || []);
+    }
+
+    async function sendMessage(text) {
+      const clean = text.trim();
+      if (!clean) return;
+
+      const { error } = await supabaseClient
+        .from('chat_messages')
+        .insert([
+          {
+            stream_id: streamId,
+            user_id: TEST_USER_ID,
+            message: clean
+          }
+        ]);
+
+      if (error) {
+        console.error(error);
+        alert('Mesaj gönderilemedi.');
+      }
+    }
+
+    function subscribeChat() {
+      chatChannel = supabaseClient
+        .channel(`chat-${streamId}`)
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'chat_messages',
+            filter: `stream_id=eq.${streamId}`
+          },
+          (payload) => {
+            appendMessage(payload.new);
+          }
+        )
+        .subscribe((status) => {
+          if (status === 'SUBSCRIBED') setStatus('Canlı bağlı');
+        });
+    }
+
+    async function boot() {
+      if (!streamId) {
+        setStatus('Geçersiz yayın');
+        return;
+      }
+
+      setStatus('Yükleniyor...');
+
+      await loadStream();
+      await loadMessages();
+      subscribeChat();
+      setStatus('Canlı bağlı');
+
+      const form = document.getElementById('chat-form');
+      const input = document.getElementById('chat-input');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const value = input.value;
+        input.value = '';
+        await sendMessage(value);
+      });
+    }
+
+    window.addEventListener('beforeunload', () => {
+      if (chatChannel) {
+        supabaseClient.removeChannel(chatChannel);
+      }
+    });
+  </script>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    if (SUPABASE_PUBLISHABLE_KEY === 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0') {
+      alert('Önce stream.html içindeki publishable key alanını doldur.');
+    } else {
+      supabaseClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+      boot();
+    }
+  </script>
+</body>
+</html>
