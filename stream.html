@@ -544,6 +544,11 @@ let profileMap = {};
   const clean = text.trim();
   if (!clean) return;
 
+  console.log('Mesaj gönderme başladı');
+  console.log('currentUser:', currentUser);
+  console.log('streamId:', streamId);
+  console.log('message:', clean);
+
   if (!currentUser) {
     alert('Mesaj göndermek için giriş yapmalısın.');
     return;
@@ -559,12 +564,13 @@ let profileMap = {};
       }
     ]);
 
+  console.log('insert error:', error);
+
   if (error) {
     console.error(error);
     alert('Mesaj gönderilemedi.');
   }
 }
-
     function subscribeChat() {
       chatChannel = supabaseClient
         .channel(`chat-${streamId}`)
