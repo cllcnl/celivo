@@ -397,7 +397,8 @@
     const SUPABASE_URL = 'https://nxxnhqtqvrkbdhltoijz.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0';
 
-    const TEST_USER_ID = 'cbb91492-39c9-48cf-a9e4-abe68b3cf823';
+    let currentUser = null;
+let profileMap = {};
 
     const params = new URLSearchParams(window.location.search);
     const streamId = params.get('id');
