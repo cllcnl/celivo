@@ -546,10 +546,7 @@
       const clean = text.trim();
       if (!clean) return;
 
-      if (!currentUser) {
-        alert('Mesaj göndermek için giriş yapmalısın.');
-        return;
-      }
+     user_id: 'cbb91492-39c9-48cf-a9e4-abe68b3cf823'
 
       const { error } = await supabaseClient
         .from('chat_messages')
