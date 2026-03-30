@@ -1,1 +1,86 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Celivo - Kayıt Ol</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, sans-serif;
+      background: #050816;
+      color: white;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      width: min(420px, calc(100% - 24px));
+      background: #0d1326;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 24px;
+      padding: 28px;
+    }
+    h1 { margin-top: 0; }
+    input, button {
+      width: 100%;
+      height: 52px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      margin-top: 12px;
+      box-sizing: border-box;
+      font: inherit;
+    }
+    input {
+      background: rgba(255,255,255,.04);
+      color: white;
+      padding: 0 14px;
+    }
+    button {
+      border: 0;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(90deg, #7c5cff, #48c6ff);
+    }
+    .msg { margin-top: 14px; color: #9fb0c7; }
+    a { color: #7fd6ff; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Kayıt Ol</h1>
+    <form id="register-form">
+      <input id="username" type="text" placeholder="Kullanıcı adı" required />
+      <input id="email" type="email" placeholder="E-posta" required />
+      <input id="password" type="password" placeholder="Şifre" required />
+      <button type="submit">Kayıt Ol</button>
+    </form>
+    <div class="msg" id="msg"></div>
+    <p class="msg">Zaten hesabın var mı? <a href="/login.html">Giriş yap</a></p>
+  </div>
 
+  <script type="module">
+    import { signUp } from './auth.js';
+
+    const form = document.getElementById('register-form');
+    const msg = document.getElementById('msg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        await signUp(email, password, username);
+        msg.textContent = 'Kayıt başarılı. Şimdi giriş yapabilirsin.';
+        form.reset();
+      } catch (err) {
+        msg.textContent = err.message || 'Kayıt başarısız.';
+      }
+    });
+  </script>
+</body>
+</html>
