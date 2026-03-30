@@ -721,7 +721,11 @@
       document.getElementById('stat-top-category').textContent = topCategory;
     }
 
-    function renderGrid(streams) {
+    function streamUrl(stream) {
+  return `/stream.html?id=${encodeURIComponent(stream.id)}`;
+}
+
+function renderGrid(streams) {
       const grid = document.getElementById('streams-grid');
       const empty = document.getElementById('empty-state');
 
