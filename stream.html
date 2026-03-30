@@ -378,15 +378,15 @@
       </div>
 
       <form class="chat-form" id="chat-form">
-        <input
-          id="chat-input"
-          class="chat-input"
-          type="text"
-          placeholder="Mesajını yaz..."
-          maxlength="500"
-        />
-        <button id="send-btn" class="send-btn" type="submit">Gönder</button>
-      </form>
+  <input
+    id="chat-input"
+    class="chat-input"
+    type="text"
+    placeholder="Mesajını yaz..."
+    maxlength="500"
+  />
+  <button id="send-btn" class="send-btn" type="submit">Gönder</button>
+</form>
       <div class="hint">Mesaj göndermek için giriş yapmış olmalısın.</div>
     </aside>
   </main>
@@ -558,7 +558,7 @@
 
   if (error) {
     console.error(error);
-    alert('Mesaj gönderilemedi');
+    alert('Mesaj gönderilemedi.');
     return;
   }
 
@@ -587,36 +587,36 @@
     }
 
     async function boot() {
-      if (!streamId) {
-        setStatus('Geçersiz yayın');
-        return;
-      }
+  if (!streamId) {
+    setStatus('Geçersiz yayın');
+    return;
+  }
 
-      const { data: { user } } = await supabaseClient.auth.getUser();
-      currentUser = user;
+  setStatus('Yükleniyor...');
 
-      console.log('USER:', currentUser);
+  await loadStream();
+  await loadMessages();
+  subscribeChat();
+  setStatus('Canlı bağlı');
 
-      setStatus('Yükleniyor...');
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('chat-input');
 
-      await loadStream();
-      await loadMessages();
-      subscribeChat();
-      setStatus('Canlı bağlı');
+  if (!form || !input) {
+    console.error('chat-form veya chat-input bulunamadı');
+    return;
+  }
 
-      const form = document.getElementById('chat-form');
-      const input = document.getElementById('chat-input');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    const value = input.value.trim();
+    if (!value) return;
 
-        const value = input.value.trim();
-        if (!value) return;
-
-        await sendMessage(value);
-        input.value = '';
-      });
-    }
+    await sendMessage(value);
+    input.value = '';
+  });
+}
 
     window.addEventListener('beforeunload', () => {
       if (chatChannel) {
@@ -626,14 +626,14 @@
   </script>
 
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    if (SUPABASE_PUBLISHABLE_KEY === 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0') {
-      alert('Önce stream.html içindeki publishable key alanını doldur.');
-    } else {
-      supabaseClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-      boot();
-    }
-  </script>
+  if (SUPABASE_PUBLISHABLE_KEY === 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0') {
+    alert('Önce stream.html içindeki publishable key alanını doldur.');
+  } else {
+    supabaseClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    boot();
+  }
+</script>
 </body>
 </html>
