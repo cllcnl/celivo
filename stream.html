@@ -380,15 +380,15 @@
       </div>
 
       <form class="chat-form" id="chat-form">
-        <input
-          id="chat-input"
-          class="chat-input"
-          type="text"
-          placeholder="Mesajını yaz..."
-          maxlength="500"
-        />
-        <button class="send-btn" type="submit">Gönder</button>
-      </form>
+  <input
+    id="chat-input"
+    class="chat-input"
+    type="text"
+    placeholder="Mesajını yaz..."
+    maxlength="500"
+  />
+  <button id="send-btn" class="send-btn" type="submit">Gönder</button>
+</form>
       <div class="hint">Mesaj göndermek için giriş yaptığın kullanıcıyla devam edebilirsin. Şimdilik test kullanıcı kimliği ile çalışıyoruz.</div>
     </aside>
   </main>
@@ -597,11 +597,14 @@ let profileMap = {};
       const input = document.getElementById('chat-input');
 
       form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const value = input.value;
-        input.value = '';
-        await sendMessage(value);
-      });
+  e.preventDefault();
+
+  const value = input.value.trim();
+  if (!value) return;
+
+  await sendMessage(value);
+  input.value = '';
+});
     }
 
     window.addEventListener('beforeunload', () => {
