@@ -591,16 +591,18 @@ let profileMap = {};
         });
     }
 
-    async function boot() {
+    let currentUser = null;
+
+async function boot() {
   if (!streamId) {
     setStatus('Geçersiz yayın');
     return;
   }
 
-  const { data: authData } = await supabaseClient.auth.getUser();
-  currentUser = authData?.user || null;
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  currentUser = user;
 
-  console.log('BOOT currentUser:', currentUser);
+  console.log('USER:', currentUser);
 
   setStatus('Yükleniyor...');
 
@@ -622,7 +624,6 @@ let profileMap = {};
     input.value = '';
   });
 }
-
     window.addEventListener('beforeunload', () => {
       if (chatChannel) {
         supabaseClient.removeChannel(chatChannel);
