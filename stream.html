@@ -543,25 +543,27 @@
     }
 
     async function sendMessage(text) {
-      const clean = text.trim();
-      if (!clean) return;
+  const clean = text.trim();
+  if (!clean) return;
 
-     user_id: 'cbb91492-39c9-48cf-a9e4-abe68b3cf823'
-
-      const { error } = await supabaseClient
-        .from('chat_messages')
-        .insert([
-          {
-            stream_id: streamId,
-            user_id: currentUser.id,
-            message: clean
-          }
-        ]);
-
-      if (error) {
-        console.error(error);
-        alert('Mesaj gönderilemedi.');
+  const { error } = await supabaseClient
+    .from('chat_messages')
+    .insert([
+      {
+        stream_id: streamId,
+        user_id: 'cbb91492-39c9-48cf-a9e4-abe68b3cf823',
+        message: clean
       }
+    ]);
+
+  if (error) {
+    console.error(error);
+    alert('Mesaj gönderilemedi');
+    return;
+  }
+
+  await loadMessages();
+}
     }
 
     function subscribeChat() {
