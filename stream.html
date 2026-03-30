@@ -541,24 +541,29 @@ let profileMap = {};
     }
 
     async function sendMessage(text) {
-      const clean = text.trim();
-      if (!clean) return;
+  const clean = text.trim();
+  if (!clean) return;
 
-      const { error } = await supabaseClient
-        .from('chat_messages')
-        .insert([
-          {
-            stream_id: streamId,
-            user_id: TEST_USER_ID,
-            message: clean
-          }
-        ]);
+  if (!currentUser) {
+    alert('Mesaj göndermek için giriş yapmalısın.');
+    return;
+  }
 
-      if (error) {
-        console.error(error);
-        alert('Mesaj gönderilemedi.');
+  const { error } = await supabaseClient
+    .from('chat_messages')
+    .insert([
+      {
+        stream_id: streamId,
+        user_id: currentUser.id,
+        message: clean
       }
-    }
+    ]);
+
+  if (error) {
+    console.error(error);
+    alert('Mesaj gönderilemedi.');
+  }
+}
 
     function subscribeChat() {
       chatChannel = supabaseClient
