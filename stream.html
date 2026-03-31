@@ -613,7 +613,7 @@ async function sendMessage(text) {
   if (!clean) return;
 
   const { data } = await supabaseClient.auth.getUser();
-  const user_id: userId,
+  const userId = data?.user?.id;
 
   if (!userId) {
     alert("Giriş yapmalısın");
@@ -638,7 +638,6 @@ async function sendMessage(text) {
 
   await loadMessages();
 }
-
     
 
     function subscribeChat() {
