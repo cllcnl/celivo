@@ -622,13 +622,20 @@ if (role === 'premium') {
     async function sendMessage(text) {
       const clean = text.trim();
       if (!clean) return;
+              const { data } = await supabaseClient.auth.getUser();
+const userId = data?.user?.id;
+
+if (!userId) {
+  alert("Giriş yapmalısın");
+  return;
+}
 
       const { error } = await supabaseClient
         .from('chat_messages')
         .insert([
           {
             stream_id: streamId,
-            user_id: TEST_USER_ID,
+            user_id: userId,
             message: clean
           }
         ]);
