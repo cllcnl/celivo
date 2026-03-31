@@ -579,7 +579,17 @@ if (role === 'premium') {
     async function loadMessages() {
       const { data, error } = await supabaseClient
         .from('chat_messages')
-        .select('*')
+        .select(`
+  id,
+  message,
+  user_id,
+  created_at,
+  profiles (
+    username,
+    avatar_url,
+    role
+  )
+`)
         .eq('stream_id', streamId)
         .order('created_at', { ascending: true });
 
@@ -604,9 +614,11 @@ if (role === 'premium') {
       }
 
       const enriched = (data || []).map(msg => ({
-        ...msg,
-        username: profileMap[msg.user_id] || msg.user_id
-      }));
+  ...msg,
+  username: msg.profiles?.username || msg.user_id,
+  avatar_url: msg.profiles?.avatar_url || '',
+  role: msg.profiles?.role || 'free'
+}));
 
       renderMessages(enriched);
     }
