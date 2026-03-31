@@ -482,6 +482,14 @@ function getDefaultAvatar(userId) {
     if (msg.user_id === 'cbb91492-39c9-48cf-a9e4-abe68b3cf823') {
       role = 'gold'; // sen
     }
+let badge = '';
+
+if (role === 'gold') {
+  badge = '<span style="color:gold; margin-left:6px;">👑</span>';
+}
+if (role === 'premium') {
+  badge = '<span style="color:#8b5cf6; margin-left:6px;">⚡</span>';
+}
 
     const roleClass =
       role === 'gold'
@@ -499,8 +507,9 @@ function getDefaultAvatar(userId) {
             <img src="${avatar}" />
           </div>
 
-          <div class="message-user">${username}</div>
-
+          <div class="message-user">
+  ${username} ${badge}
+</div>
         </div>
 
         <div class="message-text">${message}</div>
