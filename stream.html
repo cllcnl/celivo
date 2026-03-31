@@ -416,7 +416,6 @@
 
     const SUPABASE_URL = 'https://nxxnhqtqvrkbdhltoijz.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0';
-    const TEST_USER_ID = 'cbb91492-39c9-48cf-a9e4-abe68b3cf823';
 
     const params = new URLSearchParams(window.location.search);
     const streamId = params.get('id');
@@ -518,37 +517,74 @@ if (role === 'premium') {
 }
 
     async function appendMessage(msg) {
-      let username = msg.user_id || 'Kullanıcı';
+  let username = msg.user_id || 'Kullanıcı';
+  let avatar = getDefaultAvatar(msg.user_id);
+  let role = 'free';
 
-      if (profileMap[msg.user_id]) {
-        username = profileMap[msg.user_id];
-      } else if (msg.user_id) {
-        const { data: profile } = await supabaseClient
-          .from('profiles')
-          .select('username')
-          .eq('id', msg.user_id)
-          .maybeSingle();
+  if (profileMap[msg.user_id]) {
+    username = profileMap[msg.user_id].username || username;
+    avatar = profileMap[msg.user_id].avatar_url || avatar;
+    role = profileMap[msg.user_id].role || role;
+  } else if (msg.user_id) {
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('username, avatar_url, role')
+      .eq('id', msg.user_id)
+      .maybeSingle();
 
-        if (profile?.username) {
-          profileMap[msg.user_id] = profile.username;
-          username = profile.username;
-        }
-      }
+    if (profile) {
+      profileMap[msg.user_id] = {
+        username: profile.username,
+        avatar_url: profile.avatar_url,
+        role: profile.role || 'free'
+      };
 
-      const box = document.getElementById('messages');
-      const empty = box.querySelector('.empty');
-      if (empty) box.innerHTML = '';
-
-      const item = document.createElement('div');
-      item.className = 'message';
-      item.innerHTML = `
-        <div class="message-user">${safeText(username)}</div>
-        <div class="message-text">${safeText(msg.message || '')}</div>
-      `;
-      box.appendChild(item);
-      box.scrollTop = box.scrollHeight;
+      username = profile.username || username;
+      avatar = profile.avatar_url || avatar;
+      role = profile.role || role;
     }
+  }
 
+  let badge = '';
+
+  if (role === 'gold') {
+    badge = '<span style="color:gold; margin-left:6px;">👑</span>';
+  }
+  if (role === 'premium') {
+    badge = '<span style="color:#8b5cf6; margin-left:6px;">⚡</span>';
+  }
+
+  const roleClass =
+    role === 'gold'
+      ? 'avatar-gold'
+      : role === 'premium'
+      ? 'avatar-premium'
+      : 'avatar-free';
+
+  const box = document.getElementById('messages');
+  const empty = box.querySelector('.empty');
+  if (empty) box.innerHTML = '';
+
+  const item = document.createElement('div');
+  item.className = 'message';
+  item.innerHTML = `
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+      <div class="${roleClass}">
+        <img src="${avatar}" />
+      </div>
+
+      <div class="message-user">
+        ${safeText(username)} ${badge}
+      </div>
+    </div>
+
+    <div class="message-text">
+      ${safeText(msg.message || '')}
+    </div>
+  `;
+  box.appendChild(item);
+  box.scrollTop = box.scrollHeight;
+}
     async function loadStream() {
       if (!streamId) {
         document.getElementById('stream-title').textContent = 'Yayın bulunamadı';
@@ -572,82 +608,38 @@ if (role === 'premium') {
       renderStream(data);
     }
 
-    async function loadMessages() {
-      const { data, error } = await supabaseClient
-        .from('chat_messages')
-        .select(`
-  id,
-  message,
-  user_id,
-  created_at,
-  profiles (
-    username,
-    avatar_url,
-    role
-  )
-`)
-        .eq('stream_id', streamId)
-        .order('created_at', { ascending: true });
+async function sendMessage(text) {
+  const clean = text.trim();
+  if (!clean) return;
 
-      if (error) {
-        console.error(error);
-        renderMessages([]);
-        return;
+  const { data } = await supabaseClient.auth.getUser();
+  const userId = data?.user?.id;
+
+  if (!userId) {
+    alert("Giriş yapmalısın");
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from('chat_messages')
+    .insert([
+      {
+        stream_id: streamId,
+        user_id: userId,
+        message: clean
       }
+    ]);
 
-      const userIds = [...new Set((data || []).map(m => m.user_id).filter(Boolean))];
+  if (error) {
+    console.error(error);
+    alert('Mesaj gönderilemedi.');
+    return;
+  }
 
-      if (userIds.length) {
-        const { data: profiles } = await supabaseClient
-          .from('profiles')
-          .select('id, username')
-          .in('id', userIds);
-
-        profileMap = {};
-        (profiles || []).forEach(p => {
-          profileMap[p.id] = p.username;
-        });
-      }
-
-      const enriched = (data || []).map(msg => ({
-  ...msg,
-  username: msg.profiles?.username || msg.user_id,
-  avatar_url: msg.profiles?.avatar_url || '',
-  role: msg.profiles?.role || 'free'
-}));
-
-      renderMessages(enriched);
-    }
-
-    async function sendMessage(text) {
-      const clean = text.trim();
-      if (!clean) return;
-              const { data } = await supabaseClient.auth.getUser();
-const userId = data?.user?.id;
-
-if (!userId) {
-  alert("Giriş yapmalısın");
-  return;
+  await loadMessages();
 }
 
-      const { error } = await supabaseClient
-        .from('chat_messages')
-        .insert([
-          {
-            stream_id: streamId,
-            user_id: userId,
-            message: clean
-          }
-        ]);
-
-      if (error) {
-        console.error(error);
-        alert('Mesaj gönderilemedi.');
-        return;
-      }
-
-      await loadMessages();
-    }
+    
 
     function subscribeChat() {
       chatChannel = supabaseClient
