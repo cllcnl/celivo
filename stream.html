@@ -444,36 +444,53 @@ function getDefaultAvatar(userId) {
   return avatars[index];
 }
     function renderMessages(messages) {
-      const box = document.getElementById('messages');
+  const box = document.getElementById('messages');
 
-      if (!messages.length) {
-        box.innerHTML = '<div class="empty">Henüz mesaj yok. İlk mesajı sen gönder.</div>';
-        return;
-      }
+  if (!messages.length) {
+    box.innerHTML = '<div class="empty">Henüz mesaj yok. İlk mesajı sen gönder.</div>';
+    return;
+  }
 
-      box.innerHTML = messages.map(msg => `
-        <div class="message">
-  <div style="display:flex; align-items:center; gap:10px;">
-    
-    <img 
-      src="${msg.avatar_url || getDefaultAvatar(msg.user_id)}" 
-      style="width:32px;height:32px;border-radius:50%;object-fit:cover;"
-    />
+  box.innerHTML = messages.map(msg => {
+    const username = safeText(msg.username || msg.user_id || 'Kullanıcı');
+    const message = safeText(msg.message || '');
+    const avatar = msg.avatar_url || getDefaultAvatar(msg.user_id);
 
-    <div class="message-user">
-      ${safeText(msg.username || msg.user_id || 'Kullanıcı')}
-    </div>
+    // 🔥 statü sistemi (şimdilik manuel)
+    let role = 'free';
 
-  </div>
-
-  <div class="message-text">
-    ${safeText(msg.message || '')}
-  </div>
-</div>
-      `).join('');
-
-      box.scrollTop = box.scrollHeight;
+    if (msg.user_id === 'cbb91492-39c9-48cf-a9e4-abe68b3cf823') {
+      role = 'gold'; // sen
     }
+
+    const roleClass =
+      role === 'gold'
+        ? 'avatar-gold'
+        : role === 'premium'
+        ? 'avatar-premium'
+        : 'avatar-free';
+
+    return `
+      <div class="message">
+        
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+          
+          <div class="${roleClass}">
+            <img src="${avatar}" />
+          </div>
+
+          <div class="message-user">${username}</div>
+
+        </div>
+
+        <div class="message-text">${message}</div>
+
+      </div>
+    `;
+  }).join('');
+
+  box.scrollTop = box.scrollHeight;
+}
 
     async function appendMessage(msg) {
       let username = msg.user_id || 'Kullanıcı';
