@@ -613,7 +613,7 @@ async function sendMessage(text) {
   if (!clean) return;
 
   const { data } = await supabaseClient.auth.getUser();
-  const userId = data?.user?.id;
+  const user_id: userId,
 
   if (!userId) {
     alert("Giriş yapmalısın");
