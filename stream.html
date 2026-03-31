@@ -675,24 +675,33 @@ async function sendMessage(text) {
       setStatus('Canlı bağlı');
 
       const form = document.getElementById('chat-form');
-      const input = document.getElementById('chat-input');
+const input = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
 
-      if (!form || !input) {
-        console.error('chat-form veya chat-input bulunamadı');
-        return;
-      }
+if (!form || !input || !sendBtn) {
+  console.error('chat-form, chat-input veya send-btn bulunamadı');
+  return;
+}
 
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+sendBtn.addEventListener('click', async () => {
+  const value = input.value.trim();
+  if (!value) return;
 
-        const value = input.value.trim();
-        if (!value) return;
+  await sendMessage(value);
+  input.value = '';
+});
 
-        await sendMessage(value);
-        input.value = '';
-      });
-    }
+input.addEventListener('keydown', async (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
 
+    const value = input.value.trim();
+    if (!value) return;
+
+    await sendMessage(value);
+    input.value = '';
+  }
+});
     window.addEventListener('beforeunload', () => {
       if (chatChannel) {
         supabaseClient.removeChannel(chatChannel);
