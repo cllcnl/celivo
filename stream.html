@@ -477,11 +477,7 @@ function getDefaultAvatar(userId) {
     const avatar = msg.avatar_url || getDefaultAvatar(msg.user_id);
 
     // 🔥 statü sistemi (şimdilik manuel)
-    let role = 'free';
-
-    if (msg.user_id === 'cbb91492-39c9-48cf-a9e4-abe68b3cf823') {
-      role = 'gold'; // sen
-    }
+    let role = msg.role || 'free';
 let badge = '';
 
 if (role === 'gold') {
