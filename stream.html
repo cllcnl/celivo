@@ -432,7 +432,17 @@
       document.getElementById('stream-desc').textContent =
         `${stream.streamer_name || 'Bu yayıncı'} şu anda ${formatViewers(Number(stream.viewer_count || 0)).toLowerCase()} ile yayında.`;
     }
+function getDefaultAvatar(userId) {
+  const avatars = [
+    "https://api.dicebear.com/7.x/bottts/svg?seed=celivo1",
+    "https://api.dicebear.com/7.x/bottts/svg?seed=celivo2",
+    "https://api.dicebear.com/7.x/bottts/svg?seed=celivo3",
+    "https://api.dicebear.com/7.x/bottts/svg?seed=celivo4"
+  ];
 
+  const index = userId ? userId.charCodeAt(0) % avatars.length : 0;
+  return avatars[index];
+}
     function renderMessages(messages) {
       const box = document.getElementById('messages');
 
@@ -443,9 +453,23 @@
 
       box.innerHTML = messages.map(msg => `
         <div class="message">
-          <div class="message-user">${safeText(msg.username || msg.user_id || 'Kullanıcı')}</div>
-          <div class="message-text">${safeText(msg.message || '')}</div>
-        </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    
+    <img 
+      src="${msg.avatar_url || getDefaultAvatar(msg.user_id)}" 
+      style="width:32px;height:32px;border-radius:50%;object-fit:cover;"
+    />
+
+    <div class="message-user">
+      ${safeText(msg.username || msg.user_id || 'Kullanıcı')}
+    </div>
+
+  </div>
+
+  <div class="message-text">
+    ${safeText(msg.message || '')}
+  </div>
+</div>
       `).join('');
 
       box.scrollTop = box.scrollHeight;
