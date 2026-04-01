@@ -412,37 +412,37 @@
     }
 
     async function saveProfile() {
-      if (!currentUser) return;
+  if (!currentUser) return;
 
-      const username = usernameEl.value.trim();
-      const avatar_url = avatarUrlEl.value.trim();
-      const bio = bioEl.value.trim();
+  const username = usernameEl.value.trim();
+  const avatar_url = avatarUrlEl.value.trim();
+  const bio = bioEl.value.trim();
 
-      if (!username) {
-        setStatus('Kullanıcı adı boş olamaz.', 'error');
-        return;
-      }
+  if (!username) {
+    setStatus('Kullanıcı adı boş olamaz.', 'error');
+    return;
+  }
 
-      setStatus('Kaydediliyor...');
+  setStatus('Kaydediliyor...');
 
-      const { error } = await supabaseClient
-        .from('profiles')
-        .update({
-          username,
-          avatar_url,
-          bio
-        })
-        .eq('id', currentUser.id);
+  const { error } = await supabaseClient
+    .from('profiles')
+    .upsert({
+      id: currentUser.id,
+      username,
+      avatar_url,
+      bio
+    });
 
-      if (error) {
-        console.error(error);
-        setStatus('Profil kaydedilemedi.', 'error');
-        return;
-      }
+  if (error) {
+    console.error(error);
+    setStatus('Profil kaydedilemedi.', 'error');
+    return;
+  }
 
-      updatePreview();
-      setStatus('Profil başarıyla kaydedildi.', 'success');
-    }
+  updatePreview();
+  setStatus('Profil başarıyla kaydedildi.', 'success');
+}
 
     async function logout() {
       await supabaseClient.auth.signOut();
