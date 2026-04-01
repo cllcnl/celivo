@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Celivo - Profil</title>
+  <style>
+    :root {
+      --bg: #050816;
+      --card: #0d1326;
+      --text: #f8fafc;
+      --muted: #97a3b6;
+      --grad-1: #48c6ff;
+      --grad-2: #7c5cff;
+      --grad-3: #c53cff;
+      --max: 980px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(72,198,255,.1), transparent 28%),
+        radial-gradient(circle at 85% 15%, rgba(197,60,255,.12), transparent 24%),
+        linear-gradient(180deg, #040814 0%, #050816 100%);
+      color: var(--text);
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 28px));
+      margin: 0 auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(16px);
+      background: rgba(5,8,22,.74);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .nav-inner {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      font-size: 1.9rem;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      background: linear-gradient(90deg, var(--grad-1), var(--grad-2), var(--grad-3));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .back-link {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #dce4f2;
+      font-weight: 700;
+      font-size: .94rem;
+    }
+
+    .page {
+      padding: 28px 0 36px;
+    }
+
+    .hero {
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: -.05em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #bac6d8;
+      line-height: 1.7;
+      max-width: 700px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, #0c1224, #0a1020);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.28);
+    }
+
+    .profile-preview {
+      padding: 22px;
+      text-align: center;
+    }
+
+    .avatar-ring {
+      width: 126px;
+      height: 126px;
+      margin: 0 auto 16px;
+      border-radius: 999px;
+      padding: 4px;
+      background: linear-gradient(135deg, var(--grad-1), var(--grad-2), var(--grad-3));
+      box-shadow: 0 0 30px rgba(124,92,255,.22);
+    }
+
+    .avatar-ring img {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      object-fit: cover;
+      background: #10172b;
+      display: block;
+    }
+
+    .preview-name {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .preview-role {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.06);
+      color: #dbe4f2;
+      font-size: .9rem;
+      font-weight: 700;
+    }
+
+    .preview-bio {
+      margin-top: 16px;
+      color: #9eadc2;
+      line-height: 1.65;
+      min-height: 48px;
+    }
+
+    .form-card {
+      padding: 22px;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin: 0 0 16px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 8px;
+      color: #d9e3f2;
+      font-size: .95rem;
+      font-weight: 700;
+    }
+
+    .input,
+    .textarea {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color: white;
+      padding: 14px 16px;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .textarea {
+      min-height: 120px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .input::placeholder,
+    .textarea::placeholder {
+      color: #8f9bb0;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .readonly {
+      opacity: .9;
+      cursor: not-allowed;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .btn {
+      height: 50px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 16px;
+      cursor: pointer;
+      color: white;
+      font-weight: 800;
+      font-size: .96rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, var(--grad-2), var(--grad-1));
+      box-shadow: 0 12px 30px rgba(98,108,255,.26);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .status {
+      margin-top: 14px;
+      min-height: 24px;
+      color: #9fb0c8;
+      font-weight: 600;
+    }
+
+    .status.success {
+      color: #7ee787;
+    }
+
+    .status.error {
+      color: #ff8f8f;
+    }
+
+    @media (max-width: 860px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a href="/" class="brand">Celivo</a>
+      <a class="back-link" href="/">← Ana sayfaya dön</a>
+    </div>
+  </nav>
+
+  <main class="wrap page">
+    <section class="hero">
+      <h1>Profilini düzenle</h1>
+      <p>Kullanıcı adını, avatarını ve kısa biyografini güncelle. Kaydettiğin bilgiler chat ve profil görünümünde kullanılacak.</p>
+    </section>
+
+    <section class="grid">
+      <div class="card profile-preview">
+        <div class="avatar-ring">
+          <img id="preview-avatar" src="" alt="Avatar önizleme" />
+        </div>
+        <div class="preview-name" id="preview-name">Kullanıcı</div>
+        <div class="preview-role" id="preview-role">Free</div>
+        <div class="preview-bio" id="preview-bio">Henüz biyografi eklenmedi.</div>
+      </div>
+
+      <div class="card form-card">
+        <h2 class="section-title">Hesap bilgileri</h2>
+
+        <div class="row">
+          <div class="field">
+            <label class="label" for="email">E-posta</label>
+            <input id="email" class="input readonly" type="email" readonly />
+          </div>
+
+          <div class="field">
+            <label class="label" for="role">Rol</label>
+            <input id="role" class="input readonly" type="text" readonly />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="username">Kullanıcı adı</label>
+          <input id="username" class="input" type="text" maxlength="30" placeholder="Örn: canlicelil754" />
+        </div>
+
+        <div class="field">
+          <label class="label" for="avatar_url">Avatar URL</label>
+          <input id="avatar_url" class="input" type="text" placeholder="https://..." />
+        </div>
+
+        <div class="field">
+          <label class="label" for="bio">Bio</label>
+          <textarea id="bio" class="textarea" maxlength="300" placeholder="Kendini kısa tanıt..."></textarea>
+        </div>
+
+        <div class="actions">
+          <button id="save-btn" class="btn btn-primary" type="button">Kaydet</button>
+          <button id="logout-btn" class="btn btn-secondary" type="button">Çıkış yap</button>
+        </div>
+
+        <div id="status" class="status"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const SUPABASE_URL = 'https://nxxnhqtqvrkbdhltoijz.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0';
+
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const emailEl = document.getElementById('email');
+    const roleEl = document.getElementById('role');
+    const usernameEl = document.getElementById('username');
+    const avatarUrlEl = document.getElementById('avatar_url');
+    const bioEl = document.getElementById('bio');
+    const saveBtn = document.getElementById('save-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const statusEl = document.getElementById('status');
+
+    const previewAvatarEl = document.getElementById('preview-avatar');
+    const previewNameEl = document.getElementById('preview-name');
+    const previewRoleEl = document.getElementById('preview-role');
+    const previewBioEl = document.getElementById('preview-bio');
+
+    let currentUser = null;
+
+    function setStatus(text, type = '') {
+      statusEl.textContent = text;
+      statusEl.className = `status ${type}`.trim();
+    }
+
+    function getDefaultAvatar(seed = 'celivo-user') {
+      return `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(seed)}`;
+    }
+
+    function updatePreview() {
+      const username = usernameEl.value.trim() || 'Kullanıcı';
+      const avatarUrl = avatarUrlEl.value.trim() || getDefaultAvatar(username);
+      const bio = bioEl.value.trim() || 'Henüz biyografi eklenmedi.';
+      const role = roleEl.value.trim() || 'free';
+
+      previewAvatarEl.src = avatarUrl;
+      previewNameEl.textContent = username;
+      previewBioEl.textContent = bio;
+
+      if (role === 'gold') {
+        previewRoleEl.textContent = '👑 Gold';
+      } else if (role === 'premium') {
+        previewRoleEl.textContent = '⚡ Premium';
+      } else {
+        previewRoleEl.textContent = 'Free';
+      }
+    }
+
+    async function loadProfile() {
+      const { data: authData } = await supabaseClient.auth.getUser();
+      const user = authData?.user;
+
+      if (!user) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      currentUser = user;
+      emailEl.value = user.email || '';
+
+      const { data: profile, error } = await supabaseClient
+        .from('profiles')
+        .select('username, avatar_url, role, bio')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error(error);
+        setStatus('Profil bilgileri yüklenemedi.', 'error');
+        return;
+      }
+
+      usernameEl.value = profile?.username || '';
+      avatarUrlEl.value = profile?.avatar_url || '';
+      roleEl.value = profile?.role || 'free';
+      bioEl.value = profile?.bio || '';
+
+      updatePreview();
+      setStatus('Profil yüklendi.');
+    }
+
+    async function saveProfile() {
+      if (!currentUser) return;
+
+      const username = usernameEl.value.trim();
+      const avatar_url = avatarUrlEl.value.trim();
+      const bio = bioEl.value.trim();
+
+      if (!username) {
+        setStatus('Kullanıcı adı boş olamaz.', 'error');
+        return;
+      }
+
+      setStatus('Kaydediliyor...');
+
+      const { error } = await supabaseClient
+        .from('profiles')
+        .update({
+          username,
+          avatar_url,
+          bio
+        })
+        .eq('id', currentUser.id);
+
+      if (error) {
+        console.error(error);
+        setStatus('Profil kaydedilemedi.', 'error');
+        return;
+      }
+
+      updatePreview();
+      setStatus('Profil başarıyla kaydedildi.', 'success');
+    }
+
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      window.location.href = '/login.html';
+    }
+
+    saveBtn.addEventListener('click', saveProfile);
+    logoutBtn.addEventListener('click', logout);
+
+    usernameEl.addEventListener('input', updatePreview);
+    avatarUrlEl.addEventListener('input', updatePreview);
+    bioEl.addEventListener('input', updatePreview);
+
+    loadProfile();
+  </script>
+</body>
+</html>
