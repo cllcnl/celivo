@@ -1,17 +1,36 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://nxxnhqtqvrkbdhltoijz.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_YKoXoU5eJNy07bYBKWh73g_0RDK7bF0';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+// Kullanıcıyı getir
 export async function getCurrentUser() {
   const { data, error } = await supabase.auth.getUser();
   if (error) return null;
-  return data.user;
+  return data?.user || null;
 }
 
-export async function signUp(email, password, username) {
+// Kısa alias
+export async function getUser() {
+  return await getCurrentUser();
+}
+
+// Giriş zorunlu sayfalar için
+export async function requireAuth() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    window.location.href = '/login.html';
+    return null;
+  }
+
+  return user;
+}
+
+// Kayıt ol
+export async function signUp(email, password, username = '') {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -24,6 +43,7 @@ export async function signUp(email, password, username) {
   return data;
 }
 
+// Giriş yap
 export async function signIn(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -34,35 +54,26 @@ export async function signIn(email, password) {
   return data;
 }
 
-export async function signOut() {
+// Çıkış yap
+export async function logout() {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
-}
-
-export async function getUser() {
-  const { data } = await supabaseClient.auth.getUser();
-  return data?.user;
-}
-
-export async function requireAuth() {
-  const user = await getUser();
-
-  if (!user) {
-    window.location.href = '/login.html';
-    return null;
-  }
-
-  return user;
-}
-
-export async function logout() {
-  await supabaseClient.auth.signOut();
   window.location.href = '/login.html';
 }
 
-export function listenAuth(callback) {
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-    callback(session?.user || null);
+// Şifre sıfırlama maili
+export async function resetPassword(email) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/profile.html'
   });
+
+  if (error) throw error;
+  return data;
 }
 
+// Auth değişimini dinle
+export function listenAuth(callback) {
+  return supabase.auth.onAuthStateChange((event, session) => {
+    callback(session?.user || null, event);
+  });
+}
