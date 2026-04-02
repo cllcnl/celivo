@@ -115,6 +115,60 @@
 
   alert("Şifre sıfırlama maili gönderildi 📩");
 }
+
+    async function login() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert("Giriş başarısız");
+    return;
+  }
+
+  window.location.href = '/profile.html';
+}
+
+    async function register() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert("Kayıt başarısız");
+    return;
+  }
+
+  alert("Kayıt başarılı 🎉");
+}
+
+    async function resetPassword() {
+  const email = document.getElementById('email').value;
+
+  if (!email) {
+    alert("Email gir");
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/profile.html'
+  });
+
+  if (error) {
+    alert("Hata");
+    return;
+  }
+
+  alert("Mail gönderildi 📩");
+}
     
   </script>
 </body>
