@@ -496,6 +496,12 @@
 
   alert("Yayın başladı 🔥");
 }
+
+    const user = await supabaseClient.auth.getUser();
+
+if (!user.data.user) {
+  window.location.href = '/login.html';
+}
     
   </script>
 </body>
