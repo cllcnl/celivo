@@ -726,34 +726,41 @@
 }
 
 function renderGrid(streams) {
-      const grid = document.getElementById('streams-grid');
-      const empty = document.getElementById('empty-state');
+  const grid = document.getElementById('streams-grid');
+  const empty = document.getElementById('empty-state');
 
-      if (!streams.length) {
-        grid.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
+  if (!grid || !empty) return;
 
-      empty.style.display = 'none';
-      grid.innerHTML = streams.map((stream, index) => `
-        <a class="stream-card" href="${streamUrl(stream)}">
-          <div class="thumb">
-            <img src="${safeText(getThumb(stream, index))}" alt="${safeText(stream.title || 'Canlı yayın')}" />
-            <span class="badge-live">CANLI</span>
-            <span class="viewer-chip">👁 ${safeText(formatViewers(stream.viewer_count || 0))}</span>
-          </div>
-          <div class="stream-body">
-            <h3 class="stream-title">${safeText(stream.title || 'Canlı yayın')}</h3>
-            <div class="streamer">${safeText(stream.streamer_name || 'Celivo yayıncısı')}</div>
-            <div class="meta-row">
-              <span class="tag">${safeText(normalizeCategory(stream.category))}</span>
-              <span>${safeText(formatViewers(stream.viewer_count || 0))}</span>
-            </div>
-          </div>
-        </a>
-      `).join('');
-    }
+  if (!streams.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+
+  grid.innerHTML = streams.map((stream, index) => `
+    <a class="stream-card" href="/stream.html?id=${stream.id}">
+      
+      <div class="thumb">
+        <img src="${stream.thumbnail_url || 'https://images.unsplash.com/photo-1542751371-adc38448a05e'}" />
+        <span class="badge-live">CANLI</span>
+        <span class="viewer-chip">👁 ${stream.viewer_count || 0}</span>
+      </div>
+
+      <div class="card-body">
+        <h3>${stream.title || 'Canlı yayın'}</h3>
+        <p class="streamer-name">${stream.streamer_name || 'Yayıncı'}</p>
+
+        <div class="meta-row">
+          <span>${stream.category || 'Just Chatting'}</span>
+          <span>${stream.viewer_count || 0} izleniyor</span>
+        </div>
+      </div>
+
+    </a>
+  `).join('');
+}
 
     function applyFilter() {
       let list = [...allStreams];
