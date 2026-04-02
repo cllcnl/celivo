@@ -54,6 +54,19 @@
       <input id="email" type="email" placeholder="E-posta" required />
       <input id="password" type="password" placeholder="Şifre" required />
       <button type="submit">Giriş Yap</button>
+
+      <button onclick="resetPassword()" style="
+  margin-top:10px;
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  background:transparent;
+  color:#aaa;
+  border:1px solid #333;
+">
+  Şifremi unuttum
+</button>
+      
     </form>
     <div class="msg" id="msg"></div>
     <p class="msg">Hesabın yok mu? <a href="/register.html">Kayıt ol</a></p>
@@ -81,6 +94,28 @@
         msg.textContent = err.message || 'Giriş başarısız.';
       }
     });
+
+    async function resetPassword() {
+  const email = document.getElementById('email').value;
+
+  if (!email) {
+    alert("Önce email gir");
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/profile.html'
+  });
+
+  if (error) {
+    console.error(error);
+    alert("Hata oluştu");
+    return;
+  }
+
+  alert("Şifre sıfırlama maili gönderildi 📩");
+}
+    
   </script>
 </body>
 </html>
