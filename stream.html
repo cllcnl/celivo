@@ -428,7 +428,7 @@
     const params = new URLSearchParams(window.location.search);
     const streamId = params.get('id');
 
-    let supabaseClient = null;
+    let supabase = null;
     let chatChannel = null;
     let profileMap = {};
 
@@ -529,7 +529,7 @@
         avatar = profileMap[msg.user_id].avatar_url || avatar;
         role = profileMap[msg.user_id].role || role;
       } else if (msg.user_id) {
-        const { data: profile } = await supabaseClient
+        const { data: profile } = await supabase
           .from('profiles')
           .select('username, avatar_url, role')
           .eq('id', msg.user_id)
@@ -591,7 +591,7 @@
         return;
       }
 
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from('streams')
         .select('*')
         .eq('id', streamId)
@@ -608,7 +608,7 @@
     }
 
     async function loadMessages() {
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from('chat_messages')
         .select('*')
         .eq('stream_id', streamId)
@@ -625,7 +625,7 @@
       profileMap = {};
 
       if (userIds.length) {
-        const { data: profiles, error: profilesError } = await supabaseClient
+        const { data: profiles, error: profilesError } = await supabase
           .from('profiles')
           .select('id, username, avatar_url, role')
           .in('id', userIds);
@@ -657,7 +657,7 @@
       const clean = text.trim();
       if (!clean) return;
 
-      const { data } = await supabaseClient.auth.getUser();
+      const { data } = await supabase.auth.getUser();
       const userId = data?.user?.id;
 
       if (!userId) {
@@ -665,7 +665,7 @@
         return;
       }
 
-      const { error } = await supabaseClient
+      const { error } = await supabase
         .from('chat_messages')
         .insert([
           {
@@ -685,7 +685,7 @@
     }
 
     function subscribeChat() {
-      chatChannel = supabaseClient
+      chatChannel = supabase
         .channel(`chat-${streamId}`)
         .on(
           'postgres_changes',
@@ -749,11 +749,11 @@
 
     window.addEventListener('beforeunload', () => {
       if (chatChannel) {
-        supabaseClient.removeChannel(chatChannel);
+        supabase.removeChannel(chatChannel);
       }
     });
 
-    supabaseClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
     boot();
   </script>
 </body>
