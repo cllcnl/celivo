@@ -762,6 +762,23 @@ function renderGrid(streams) {
   `).join('');
 }
 
+    async function loadStreams() {
+  const { data, error } = await supabaseClient
+    .from('streams')
+    .select('*')
+    .eq('is_live', true)
+    .order('viewer_count', { ascending: false });
+
+  if (error) {
+    console.error(error);
+    renderGrid([]);
+    return;
+  }
+
+  allStreams = data || [];
+applyFilter();
+}
+
     function applyFilter() {
       let list = [...allStreams];
 
