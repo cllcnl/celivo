@@ -462,7 +462,7 @@
 
     loadProfile();
 
-    async function goLive() {
+    window.goLive = async function () {
   const { data: authData } = await supabase.auth.getUser();
   const user = authData?.user;
 
