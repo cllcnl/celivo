@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Celivo - Profil</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; }
 
@@ -429,9 +428,7 @@
       z-index: 1000;
     }
 
-    .modal.show {
-      display: flex;
-    }
+    .modal.show { display: flex; }
 
     .modal-card {
       width: 100%;
@@ -482,9 +479,7 @@
       border-bottom: 1px solid rgba(255,255,255,.06);
     }
 
-    .list-item:last-child {
-      border-bottom: none;
-    }
+    .list-item:last-child { border-bottom: none; }
 
     .mini-avatar {
       width: 44px;
@@ -518,9 +513,7 @@
       font-size: 13px;
     }
 
-    .file-input {
-      display: none;
-    }
+    .file-input { display: none; }
 
     @media (max-width: 980px) {
       .layout { grid-template-columns: 1fr; }
@@ -747,8 +740,10 @@
     </div>
   </div>
 
-  <script>
-    const supabase = window.supabase.createClient(
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const supabase = createClient(
       'https://nxxnhqtqvrkbdhltoijz.supabase.co',
       'sb_publishable_YKoXoU5eJNy07bYBKWh73g_0RDK7bF0'
     );
@@ -786,57 +781,59 @@
       }
     };
 
-    const emailEl = document.getElementById('email');
-    const roleEl = document.getElementById('role');
-    const usernameEl = document.getElementById('username');
-    const avatarUrlEl = document.getElementById('avatar_url');
-    const avatarFileEl = document.getElementById('avatar_file');
-    const bioEl = document.getElementById('bio');
+    const $ = (id) => document.getElementById(id);
 
-    const ageEl = document.getElementById('age');
-    const genderEl = document.getElementById('gender');
-    const countryEl = document.getElementById('country');
-    const cityEl = document.getElementById('city');
-    const sharePersonalInfoEl = document.getElementById('share_personal_info');
+    const emailEl = $('email');
+    const roleEl = $('role');
+    const usernameEl = $('username');
+    const avatarUrlEl = $('avatar_url');
+    const avatarFileEl = $('avatar_file');
+    const bioEl = $('bio');
 
-    const instagramUrlEl = document.getElementById('instagram_url');
-    const xUrlEl = document.getElementById('x_url');
-    const youtubeUrlEl = document.getElementById('youtube_url');
-    const tiktokUrlEl = document.getElementById('tiktok_url');
-    const websiteUrlEl = document.getElementById('website_url');
-    const shopUrlEl = document.getElementById('shop_url');
+    const ageEl = $('age');
+    const genderEl = $('gender');
+    const countryEl = $('country');
+    const cityEl = $('city');
+    const sharePersonalInfoEl = $('share_personal_info');
 
-    const streamTitleEl = document.getElementById('stream_title');
-    const streamCategoryEl = document.getElementById('stream_category');
+    const instagramUrlEl = $('instagram_url');
+    const xUrlEl = $('x_url');
+    const youtubeUrlEl = $('youtube_url');
+    const tiktokUrlEl = $('tiktok_url');
+    const websiteUrlEl = $('website_url');
+    const shopUrlEl = $('shop_url');
 
-    const previewNameEl = document.getElementById('preview-name');
-    const previewRoleEl = document.getElementById('preview-role');
-    const previewBioEl = document.getElementById('preview-bio');
-    const avatarPreviewEl = document.getElementById('avatar-preview');
-    const personalPreviewLineEl = document.getElementById('personal-preview-line');
-    const planPerksListEl = document.getElementById('plan-perks-list');
+    const streamTitleEl = $('stream_title');
+    const streamCategoryEl = $('stream_category');
 
-    const followersCountEl = document.getElementById('followers-count');
-    const followingCountEl = document.getElementById('following-count');
-    const followersBoxEl = document.getElementById('followers-box');
-    const followingBoxEl = document.getElementById('following-box');
+    const previewNameEl = $('preview-name');
+    const previewRoleEl = $('preview-role');
+    const previewBioEl = $('preview-bio');
+    const avatarPreviewEl = $('avatar-preview');
+    const personalPreviewLineEl = $('personal-preview-line');
+    const planPerksListEl = $('plan-perks-list');
 
-    const walletBalanceEl = document.getElementById('wallet-balance');
-    const subscriptionTitleEl = document.getElementById('subscription-title');
-    const subscriptionMetaEl = document.getElementById('subscription-meta');
+    const followersCountEl = $('followers-count');
+    const followingCountEl = $('following-count');
+    const followersBoxEl = $('followers-box');
+    const followingBoxEl = $('following-box');
 
-    const saveBtn = document.getElementById('save-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const goLiveBtn = document.getElementById('go-live-btn');
-    const topupBtn = document.getElementById('topup-btn');
-    const walletHistoryBtn = document.getElementById('wallet-history-btn');
-    const upgradeBtn = document.getElementById('upgrade-btn');
+    const walletBalanceEl = $('wallet-balance');
+    const subscriptionTitleEl = $('subscription-title');
+    const subscriptionMetaEl = $('subscription-meta');
 
-    const statusEl = document.getElementById('status');
-    const modalEl = document.getElementById('list-modal');
-    const modalTitleEl = document.getElementById('modal-title');
-    const modalBodyEl = document.getElementById('modal-body');
-    const modalCloseEl = document.getElementById('modal-close');
+    const saveBtn = $('save-btn');
+    const logoutBtn = $('logout-btn');
+    const goLiveBtn = $('go-live-btn');
+    const topupBtn = $('topup-btn');
+    const walletHistoryBtn = $('wallet-history-btn');
+    const upgradeBtn = $('upgrade-btn');
+
+    const statusEl = $('status');
+    const modalEl = $('list-modal');
+    const modalTitleEl = $('modal-title');
+    const modalBodyEl = $('modal-body');
+    const modalCloseEl = $('modal-close');
 
     function setStatus(message = '', type = 'info') {
       statusEl.textContent = message;
@@ -853,24 +850,20 @@
 
     function setAvatarPreview(url) {
       const value = (url || '').trim();
-
       if (!value) {
         avatarPreviewEl.innerHTML = 'Avatar önizleme';
         return;
       }
-
       avatarPreviewEl.innerHTML = `<img src="${value}" alt="Avatar" onerror="this.parentElement.innerHTML='Avatar yüklenemedi';">`;
     }
 
     function renderPlan(roleValue) {
-      const safeRole = (roleValue || 'free').toLowerCase();
+      const safeRole = String(roleValue || 'free').toLowerCase();
       const meta = planMeta[safeRole] || planMeta.free;
-
       previewRoleEl.textContent = meta.label;
       roleEl.value = meta.label;
       subscriptionTitleEl.textContent = `Aktif plan: ${meta.label}`;
       subscriptionMetaEl.textContent = meta.description;
-
       planPerksListEl.innerHTML = meta.perks.map(item => `<li>${item}</li>`).join('');
     }
 
@@ -887,14 +880,16 @@
         cityEl.value || ''
       ].filter(Boolean);
 
-      personalPreviewLineEl.textContent = bits.length ? bits.join(' • ') : 'Paylaşılacak kişisel bilgi girilmedi.';
+      personalPreviewLineEl.textContent = bits.length
+        ? bits.join(' • ')
+        : 'Paylaşılacak kişisel bilgi girilmedi.';
     }
 
     function updatePreview() {
       previewNameEl.textContent = usernameEl.value.trim() || 'Kullanıcı';
       previewBioEl.textContent = bioEl.value.trim() || 'Henüz biyografi eklenmedi.';
       setAvatarPreview(avatarUrlEl.value);
-      renderPlan((currentProfile?.role || roleEl.value || 'free').toLowerCase());
+      renderPlan((currentProfile && currentProfile.role) || roleEl.value || 'free');
       renderPersonalPreview();
     }
 
@@ -909,8 +904,7 @@
 
     async function ensureProfileRow(user) {
       const baseUsername = user.user_metadata?.username || user.email?.split('@')[0] || 'kullanici';
-
-      await supabase
+      const { error } = await supabase
         .from('profiles')
         .upsert({
           id: user.id,
@@ -918,6 +912,8 @@
           role: 'free',
           subscription_status: 'free'
         }, { onConflict: 'id' });
+
+      if (error) console.error('ensureProfileRow', error);
     }
 
     async function fetchProfile(userId) {
@@ -943,7 +939,6 @@
       }
 
       emailEl.value = currentUser.email || '';
-
       await ensureProfileRow(currentUser);
       currentProfile = await fetchProfile(currentUser.id);
 
@@ -974,364 +969,402 @@
     }
 
     async function saveProfile() {
-      if (!currentUser) {
-        setStatus('Önce giriş yapmalısın.', 'error');
-        return;
+      try {
+        if (!currentUser) {
+          setStatus('Önce giriş yapmalısın.', 'error');
+          return;
+        }
+
+        const payload = {
+          id: currentUser.id,
+          username: usernameEl.value.trim() || null,
+          avatar_url: avatarUrlEl.value.trim() || null,
+          bio: bioEl.value.trim() || null,
+          age: ageEl.value ? Number(ageEl.value) : null,
+          gender: genderEl.value.trim() || null,
+          country: countryEl.value.trim() || null,
+          city: cityEl.value.trim() || null,
+          share_personal_info: !!sharePersonalInfoEl.checked,
+          instagram_url: instagramUrlEl.value.trim() || null,
+          x_url: xUrlEl.value.trim() || null,
+          youtube_url: youtubeUrlEl.value.trim() || null,
+          tiktok_url: tiktokUrlEl.value.trim() || null,
+          website_url: websiteUrlEl.value.trim() || null,
+          shop_url: shopUrlEl.value.trim() || null,
+          role: currentProfile?.role || 'free',
+          subscription_status: currentProfile?.subscription_status || 'free'
+        };
+
+        const { error } = await supabase
+          .from('profiles')
+          .upsert(payload, { onConflict: 'id' });
+
+        if (error) {
+          console.error(error);
+          setStatus('Profil kaydedilemedi: ' + error.message, 'error');
+          return;
+        }
+
+        currentProfile = await fetchProfile(currentUser.id);
+        followersCountEl.textContent = currentProfile?.followers_count || 0;
+        followingCountEl.textContent = currentProfile?.following_count || 0;
+        walletBalanceEl.textContent = money(currentProfile?.wallet_balance || 0);
+
+        updatePreview();
+        setStatus('Profil başarıyla kaydedildi.', 'success');
+      } catch (err) {
+        console.error(err);
+        setStatus('Kaydetme sırasında hata oluştu.', 'error');
       }
-
-      const payload = {
-        id: currentUser.id,
-        username: usernameEl.value.trim() || null,
-        avatar_url: avatarUrlEl.value.trim() || null,
-        bio: bioEl.value.trim() || null,
-        age: ageEl.value ? Number(ageEl.value) : null,
-        gender: genderEl.value.trim() || null,
-        country: countryEl.value.trim() || null,
-        city: cityEl.value.trim() || null,
-        share_personal_info: !!sharePersonalInfoEl.checked,
-        instagram_url: instagramUrlEl.value.trim() || null,
-        x_url: xUrlEl.value.trim() || null,
-        youtube_url: youtubeUrlEl.value.trim() || null,
-        tiktok_url: tiktokUrlEl.value.trim() || null,
-        website_url: websiteUrlEl.value.trim() || null,
-        shop_url: shopUrlEl.value.trim() || null,
-        role: currentProfile?.role || 'free',
-        subscription_status: currentProfile?.subscription_status || 'free'
-      };
-
-      const { error } = await supabase
-        .from('profiles')
-        .upsert(payload, { onConflict: 'id' });
-
-      if (error) {
-        console.error(error);
-        setStatus('Profil kaydedilemedi: ' + error.message, 'error');
-        return;
-      }
-
-      currentProfile = await fetchProfile(currentUser.id);
-      followersCountEl.textContent = currentProfile?.followers_count || 0;
-      followingCountEl.textContent = currentProfile?.following_count || 0;
-      walletBalanceEl.textContent = money(currentProfile?.wallet_balance || 0);
-
-      updatePreview();
-      setStatus('Profil başarıyla kaydedildi.', 'success');
     }
 
     async function uploadAvatarFile(file) {
-      if (!file || !currentUser) return;
+      try {
+        if (!file || !currentUser) return;
 
-      const ext = file.name.split('.').pop() || 'jpg';
-      const path = `${currentUser.id}/${Date.now()}.${ext}`;
+        const ext = file.name.split('.').pop() || 'jpg';
+        const path = `${currentUser.id}/${Date.now()}.${ext}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(path, file, { upsert: true });
+        const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(path, file, { upsert: true });
 
-      if (uploadError) {
-        console.error(uploadError);
-        setStatus('Avatar yüklenemedi: ' + uploadError.message, 'error');
-        return;
+        if (uploadError) {
+          console.error(uploadError);
+          setStatus('Avatar yüklenemedi: ' + uploadError.message, 'error');
+          return;
+        }
+
+        const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+        avatarUrlEl.value = data.publicUrl;
+        updatePreview();
+        setStatus('Avatar yüklendi. Kaydet diyerek profiline işle.', 'success');
+      } catch (err) {
+        console.error(err);
+        setStatus('Avatar yükleme sırasında hata oluştu.', 'error');
       }
-
-      const { data } = supabase.storage.from('avatars').getPublicUrl(path);
-      avatarUrlEl.value = data.publicUrl;
-      updatePreview();
-      setStatus('Avatar yüklendi. Kaydet diyerek profiline işle.', 'success');
     }
 
     async function logout() {
-      const { error } = await supabase.auth.signOut();
+      try {
+        const { error } = await supabase.auth.signOut();
 
-      if (error) {
-        console.error(error);
-        setStatus('Çıkış yapılamadı: ' + error.message, 'error');
-        return;
+        if (error) {
+          console.error(error);
+          setStatus('Çıkış yapılamadı: ' + error.message, 'error');
+          return;
+        }
+
+        localStorage.removeItem('loggedIn');
+        window.location.href = '/login.html';
+      } catch (err) {
+        console.error(err);
+        setStatus('Çıkış sırasında hata oluştu.', 'error');
       }
-
-      localStorage.removeItem('loggedIn');
-      window.location.href = '/login.html';
     }
 
     async function goLive() {
-      if (!currentUser) {
-        setStatus('Önce giriş yapmalısın.', 'error');
-        return;
+      try {
+        if (!currentUser) {
+          setStatus('Önce giriş yapmalısın.', 'error');
+          return;
+        }
+
+        const title = streamTitleEl.value.trim();
+        const category = streamCategoryEl.value.trim() || 'Just Chatting';
+
+        if (!title) {
+          setStatus('Yayın başlığı girmen gerekiyor.', 'error');
+          return;
+        }
+
+        const { error } = await supabase
+          .from('streams')
+          .insert({
+            id: crypto.randomUUID(),
+            streamer_id: currentUser.id,
+            streamer_name: usernameEl.value.trim() || currentUser.email || 'Yayıncı',
+            title,
+            category,
+            is_live: true,
+            viewer_count: 0
+          });
+
+        if (error) {
+          console.error(error);
+          setStatus('Yayın başlatılamadı: ' + error.message, 'error');
+          return;
+        }
+
+        setStatus('Yayın başladı, ana sayfaya yönlendiriliyorsun...', 'success');
+        setTimeout(() => {
+          window.location.href = '/index.html';
+        }, 900);
+      } catch (err) {
+        console.error(err);
+        setStatus('Yayın başlatma sırasında hata oluştu.', 'error');
       }
-
-      const title = streamTitleEl.value.trim();
-      const category = streamCategoryEl.value.trim() || 'Just Chatting';
-
-      if (!title) {
-        setStatus('Yayın başlığı girmen gerekiyor.', 'error');
-        return;
-      }
-
-      const { error } = await supabase
-        .from('streams')
-        .insert({
-          id: crypto.randomUUID(),
-          streamer_id: currentUser.id,
-          streamer_name: usernameEl.value.trim() || currentUser.email || 'Yayıncı',
-          title,
-          category,
-          is_live: true,
-          viewer_count: 0
-        });
-
-      if (error) {
-        console.error(error);
-        setStatus('Yayın başlatılamadı: ' + error.message, 'error');
-        return;
-      }
-
-      setStatus('Yayın başladı, ana sayfaya yönlendiriliyorsun...', 'success');
-      setTimeout(() => {
-        window.location.href = '/index.html';
-      }, 900);
     }
 
     async function topUpWallet() {
-      if (!currentUser || !currentProfile) return;
+      try {
+        if (!currentUser || !currentProfile) return;
 
-      const amountText = prompt('Yüklenecek tutarı gir (₺):', '100');
-      if (!amountText) return;
+        const amountText = prompt('Yüklenecek tutarı gir (₺):', '100');
+        if (!amountText) return;
 
-      const amount = Number(String(amountText).replace(',', '.'));
-      if (!amount || amount <= 0) {
-        setStatus('Geçerli bir tutar gir.', 'error');
-        return;
+        const amount = Number(String(amountText).replace(',', '.'));
+        if (!amount || amount <= 0) {
+          setStatus('Geçerli bir tutar gir.', 'error');
+          return;
+        }
+
+        const newBalance = Number(currentProfile.wallet_balance || 0) + amount;
+
+        const { error: txError } = await supabase
+          .from('wallet_transactions')
+          .insert({
+            user_id: currentUser.id,
+            type: 'topup',
+            amount,
+            status: 'completed',
+            note: 'Profil sayfasından demo cüzdan yükleme'
+          });
+
+        if (txError) {
+          console.error(txError);
+          setStatus('Cüzdan hareketi kaydedilemedi: ' + txError.message, 'error');
+          return;
+        }
+
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ wallet_balance: newBalance })
+          .eq('id', currentUser.id);
+
+        if (profileError) {
+          console.error(profileError);
+          setStatus('Cüzdan bakiyesi güncellenemedi: ' + profileError.message, 'error');
+          return;
+        }
+
+        currentProfile.wallet_balance = newBalance;
+        walletBalanceEl.textContent = money(newBalance);
+        setStatus('Cüzdana bakiye yüklendi.', 'success');
+      } catch (err) {
+        console.error(err);
+        setStatus('Cüzdan yükleme sırasında hata oluştu.', 'error');
       }
-
-      const newBalance = Number(currentProfile.wallet_balance || 0) + amount;
-
-      const { error: txError } = await supabase
-        .from('wallet_transactions')
-        .insert({
-          user_id: currentUser.id,
-          type: 'topup',
-          amount,
-          status: 'completed',
-          note: 'Profil sayfasından demo cüzdan yükleme'
-        });
-
-      if (txError) {
-        console.error(txError);
-        setStatus('Cüzdan hareketi kaydedilemedi: ' + txError.message, 'error');
-        return;
-      }
-
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ wallet_balance: newBalance })
-        .eq('id', currentUser.id);
-
-      if (profileError) {
-        console.error(profileError);
-        setStatus('Cüzdan bakiyesi güncellenemedi: ' + profileError.message, 'error');
-        return;
-      }
-
-      currentProfile.wallet_balance = newBalance;
-      walletBalanceEl.textContent = money(newBalance);
-      setStatus('Cüzdana bakiye yüklendi.', 'success');
     }
 
     async function buySubscription() {
-      if (!currentUser || !currentProfile) return;
+      try {
+        if (!currentUser || !currentProfile) return;
 
-      const planInput = prompt('Plan seç: free / premium / vip', 'premium');
-      if (!planInput) return;
+        const planInput = prompt('Plan seç: free / premium / vip', 'premium');
+        if (!planInput) return;
 
-      const plan = planInput.toLowerCase().trim();
+        const plan = planInput.toLowerCase().trim();
 
-      if (!['free', 'premium', 'vip'].includes(plan)) {
-        setStatus('Geçerli plan gir: free / premium / vip', 'error');
-        return;
+        if (!['free', 'premium', 'vip'].includes(plan)) {
+          setStatus('Geçerli plan gir: free / premium / vip', 'error');
+          return;
+        }
+
+        const prices = { free: 0, premium: 199, vip: 499 };
+        const price = prices[plan];
+
+        if (Number(currentProfile.wallet_balance || 0) < price) {
+          setStatus('Yetersiz cüzdan bakiyesi.', 'error');
+          return;
+        }
+
+        const newBalance = Number(currentProfile.wallet_balance || 0) - price;
+
+        const { error: subError } = await supabase
+          .from('subscriptions')
+          .upsert({
+            user_id: currentUser.id,
+            plan,
+            status: 'active',
+            started_at: new Date().toISOString(),
+            expires_at: null
+          }, { onConflict: 'user_id' });
+
+        if (subError) {
+          console.error(subError);
+          setStatus('Abonelik güncellenemedi: ' + subError.message, 'error');
+          return;
+        }
+
+        const { error: txError } = await supabase
+          .from('wallet_transactions')
+          .insert({
+            user_id: currentUser.id,
+            type: 'subscription',
+            amount: price,
+            status: 'completed',
+            note: `${plan.toUpperCase()} plan satın alındı`
+          });
+
+        if (txError) console.error(txError);
+
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            wallet_balance: newBalance,
+            role: plan,
+            subscription_status: plan
+          })
+          .eq('id', currentUser.id);
+
+        if (profileError) {
+          console.error(profileError);
+          setStatus('Profil planı güncellenemedi: ' + profileError.message, 'error');
+          return;
+        }
+
+        currentProfile.wallet_balance = newBalance;
+        currentProfile.role = plan;
+        currentProfile.subscription_status = plan;
+
+        walletBalanceEl.textContent = money(newBalance);
+        renderPlan(plan);
+        updatePreview();
+        setStatus(`Plan güncellendi: ${plan.toUpperCase()}`, 'success');
+      } catch (err) {
+        console.error(err);
+        setStatus('Abonelik satın alma sırasında hata oluştu.', 'error');
       }
-
-      const prices = { free: 0, premium: 199, vip: 499 };
-      const price = prices[plan];
-
-      if (Number(currentProfile.wallet_balance || 0) < price) {
-        setStatus('Yetersiz cüzdan bakiyesi.', 'error');
-        return;
-      }
-
-      const newBalance = Number(currentProfile.wallet_balance || 0) - price;
-
-      const { error: subError } = await supabase
-        .from('subscriptions')
-        .upsert({
-          user_id: currentUser.id,
-          plan,
-          status: 'active',
-          started_at: new Date().toISOString(),
-          expires_at: null
-        }, { onConflict: 'user_id' });
-
-      if (subError) {
-        console.error(subError);
-        setStatus('Abonelik güncellenemedi: ' + subError.message, 'error');
-        return;
-      }
-
-      const { error: txError } = await supabase
-        .from('wallet_transactions')
-        .insert({
-          user_id: currentUser.id,
-          type: 'subscription',
-          amount: price,
-          status: 'completed',
-          note: `${plan.toUpperCase()} plan satın alındı`
-        });
-
-      if (txError) {
-        console.error(txError);
-      }
-
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          wallet_balance: newBalance,
-          role: plan,
-          subscription_status: plan
-        })
-        .eq('id', currentUser.id);
-
-      if (profileError) {
-        console.error(profileError);
-        setStatus('Profil planı güncellenemedi: ' + profileError.message, 'error');
-        return;
-      }
-
-      currentProfile.wallet_balance = newBalance;
-      currentProfile.role = plan;
-      currentProfile.subscription_status = plan;
-
-      walletBalanceEl.textContent = money(newBalance);
-      renderPlan(plan);
-      updatePreview();
-      setStatus(`Plan güncellendi: ${plan.toUpperCase()}`, 'success');
     }
 
     async function showWalletHistory() {
-      if (!currentUser) return;
+      try {
+        if (!currentUser) return;
 
-      const { data, error } = await supabase
-        .from('wallet_transactions')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .order('created_at', { ascending: false })
-        .limit(50);
+        const { data, error } = await supabase
+          .from('wallet_transactions')
+          .select('*')
+          .eq('user_id', currentUser.id)
+          .order('created_at', { ascending: false })
+          .limit(50);
 
-      if (error) {
-        console.error(error);
-        setStatus('Cüzdan hareketleri alınamadı: ' + error.message, 'error');
-        return;
-      }
+        if (error) {
+          console.error(error);
+          setStatus('Cüzdan hareketleri alınamadı: ' + error.message, 'error');
+          return;
+        }
 
-      modalTitleEl.textContent = 'Cüzdan hareketleri';
+        modalTitleEl.textContent = 'Cüzdan hareketleri';
 
-      if (!data || !data.length) {
-        modalBodyEl.innerHTML = '<div class="line">Henüz işlem yok.</div>';
-      } else {
-        modalBodyEl.innerHTML = data.map(item => `
-          <div class="list-item">
-            <div class="mini-avatar">${item.type.slice(0,1).toUpperCase()}</div>
-            <div class="list-meta">
-              <div class="name">${item.type} • ${money(item.amount)}</div>
-              <div class="sub">${item.status} • ${new Date(item.created_at).toLocaleString('tr-TR')} ${item.note ? '• ' + item.note : ''}</div>
+        if (!data || !data.length) {
+          modalBodyEl.innerHTML = '<div>Henüz işlem yok.</div>';
+        } else {
+          modalBodyEl.innerHTML = data.map(item => `
+            <div class="list-item">
+              <div class="mini-avatar">${String(item.type || '?').slice(0,1).toUpperCase()}</div>
+              <div class="list-meta">
+                <div class="name">${item.type} • ${money(item.amount)}</div>
+                <div class="sub">${item.status} • ${new Date(item.created_at).toLocaleString('tr-TR')}${item.note ? ' • ' + item.note : ''}</div>
+              </div>
             </div>
-          </div>
-        `).join('');
-      }
+          `).join('');
+        }
 
-      modalEl.classList.add('show');
+        modalEl.classList.add('show');
+      } catch (err) {
+        console.error(err);
+        setStatus('Hareketler açılırken hata oluştu.', 'error');
+      }
     }
 
     async function showFollowList(kind) {
-      if (!currentUser) return;
+      try {
+        if (!currentUser) return;
 
-      const isFollowers = kind === 'followers';
-      modalTitleEl.textContent = isFollowers ? 'Takipçiler' : 'Takip edilenler';
+        const isFollowers = kind === 'followers';
+        modalTitleEl.textContent = isFollowers ? 'Takipçiler' : 'Takip edilenler';
 
-      const { data: relations, error } = await supabase
-        .from('follows')
-        .select('*')
-        .eq(isFollowers ? 'following_id' : 'follower_id', currentUser.id)
-        .order('created_at', { ascending: false });
+        const { data: relations, error } = await supabase
+          .from('follows')
+          .select('*')
+          .eq(isFollowers ? 'following_id' : 'follower_id', currentUser.id)
+          .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error(error);
-        setStatus('Liste alınamadı: ' + error.message, 'error');
-        return;
-      }
+        if (error) {
+          console.error(error);
+          setStatus('Liste alınamadı: ' + error.message, 'error');
+          return;
+        }
 
-      if (!relations || !relations.length) {
-        modalBodyEl.innerHTML = `<div class="line">${isFollowers ? 'Henüz takipçi yok.' : 'Henüz kimseyi takip etmiyorsun.'}</div>`;
+        if (!relations || !relations.length) {
+          modalBodyEl.innerHTML = `<div>${isFollowers ? 'Henüz takipçi yok.' : 'Henüz kimseyi takip etmiyorsun.'}</div>`;
+          modalEl.classList.add('show');
+          return;
+        }
+
+        const ids = relations.map(r => isFollowers ? r.follower_id : r.following_id);
+
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, username, avatar_url, role')
+          .in('id', ids);
+
+        if (profilesError) {
+          console.error(profilesError);
+          setStatus('Profil listesi alınamadı: ' + profilesError.message, 'error');
+          return;
+        }
+
+        const mapped = ids.map(id => profilesData.find(p => p.id === id)).filter(Boolean);
+
+        modalBodyEl.innerHTML = mapped.map(item => `
+          <div class="list-item">
+            <div class="mini-avatar">
+              ${item.avatar_url ? `<img src="${item.avatar_url}" alt="">` : '👤'}
+            </div>
+            <div class="list-meta">
+              <div class="name">${item.username || 'Kullanıcı'}</div>
+              <div class="sub">${String(item.role || 'free').toUpperCase()}</div>
+            </div>
+          </div>
+        `).join('');
+
         modalEl.classList.add('show');
-        return;
+      } catch (err) {
+        console.error(err);
+        setStatus('Takip listesi açılırken hata oluştu.', 'error');
       }
-
-      const ids = relations.map(r => isFollowers ? r.follower_id : r.following_id);
-
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, username, avatar_url, role')
-        .in('id', ids);
-
-      if (profilesError) {
-        console.error(profilesError);
-        setStatus('Profil listesi alınamadı: ' + profilesError.message, 'error');
-        return;
-      }
-
-      const mapped = ids.map(id => profilesData.find(p => p.id === id)).filter(Boolean);
-
-      modalBodyEl.innerHTML = mapped.map(item => `
-        <div class="list-item">
-          <div class="mini-avatar">
-            ${item.avatar_url ? `<img src="${item.avatar_url}" alt="">` : '👤'}
-          </div>
-          <div class="list-meta">
-            <div class="name">${item.username || 'Kullanıcı'}</div>
-            <div class="sub">${(item.role || 'free').toUpperCase()}</div>
-          </div>
-        </div>
-      `).join('');
-
-      modalEl.classList.add('show');
     }
 
-    saveBtn.addEventListener('click', saveProfile);
-    logoutBtn.addEventListener('click', logout);
-    goLiveBtn.addEventListener('click', goLive);
-    topupBtn.addEventListener('click', topUpWallet);
-    walletHistoryBtn.addEventListener('click', showWalletHistory);
-    upgradeBtn.addEventListener('click', buySubscription);
+    saveBtn.onclick = saveProfile;
+    logoutBtn.onclick = logout;
+    goLiveBtn.onclick = goLive;
+    topupBtn.onclick = topUpWallet;
+    walletHistoryBtn.onclick = showWalletHistory;
+    upgradeBtn.onclick = buySubscription;
 
-    followersBoxEl.addEventListener('click', () => showFollowList('followers'));
-    followingBoxEl.addEventListener('click', () => showFollowList('following'));
+    followersBoxEl.onclick = () => showFollowList('followers');
+    followingBoxEl.onclick = () => showFollowList('following');
 
-    modalCloseEl.addEventListener('click', () => modalEl.classList.remove('show'));
-    modalEl.addEventListener('click', (e) => {
+    modalCloseEl.onclick = () => modalEl.classList.remove('show');
+    modalEl.onclick = (e) => {
       if (e.target === modalEl) modalEl.classList.remove('show');
-    });
+    };
 
-    usernameEl.addEventListener('input', updatePreview);
-    avatarUrlEl.addEventListener('input', updatePreview);
-    bioEl.addEventListener('input', updatePreview);
-    ageEl.addEventListener('input', renderPersonalPreview);
-    genderEl.addEventListener('input', renderPersonalPreview);
-    countryEl.addEventListener('input', renderPersonalPreview);
-    cityEl.addEventListener('input', renderPersonalPreview);
-    sharePersonalInfoEl.addEventListener('change', renderPersonalPreview);
+    usernameEl.oninput = updatePreview;
+    avatarUrlEl.oninput = updatePreview;
+    bioEl.oninput = updatePreview;
+    ageEl.oninput = renderPersonalPreview;
+    genderEl.oninput = renderPersonalPreview;
+    countryEl.oninput = renderPersonalPreview;
+    cityEl.oninput = renderPersonalPreview;
+    sharePersonalInfoEl.onchange = renderPersonalPreview;
 
-    avatarFileEl.addEventListener('change', async (e) => {
+    avatarFileEl.onchange = async (e) => {
       const file = e.target.files?.[0];
       if (file) await uploadAvatarFile(file);
-    });
+    };
 
     loadProfile().catch(err => {
       console.error(err);
