@@ -486,7 +486,7 @@ alert("goLive çalıştı");
     .from('streams')
     .insert({
       id: crypto.randomUUID(),
-      user_id: user.id,
+      streamer_id: user.id,
       title,
       category,
       is_live: true,
