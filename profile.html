@@ -502,49 +502,6 @@ alert("goLive çalıştı");
     
     import { requireAuth, logout, supabase } from './auth.js';
 
-window.goLiveDirect = async function () {
-  alert("goLive başladı");
-
-  const { data: authData } = await supabase.auth.getUser();
-  const user = authData?.user;
-
-  if (!user) {
-    alert("Giriş yapmalısın");
-    return;
-  }
-
-  const title = prompt("Yayın başlığı gir:");
-  if (!title) return;
-
-  const category = prompt("Kategori gir:", "Just Chatting") || "Just Chatting";
-
-  const { error } = await supabase
-    .from('streams')
-    .insert([
-      {
-        id: crypto.randomUUID(),
-        user_id: user.id,
-        title,
-        category,
-        is_live: true,
-        viewer_count: 1,
-        streamer_name: usernameEl?.value?.trim() || 'Yayıncı'
-      }
-    ]);
-
-  if (error) {
-    console.error(error);
-    alert("Yayın başlatılamadı");
-    return;
-  }
-
-  alert("Yayın başladı 🔥");
-  window.location.href = '/';
-};
-
-window.goLiveDirect = function () {
-  alert("GO LIVE ÇALIŞTI 🔥");
-};
 
   </script>
 </body>
