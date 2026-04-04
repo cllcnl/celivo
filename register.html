@@ -5,83 +5,192 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Celivo - Kayıt Ol</title>
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: Inter, sans-serif;
-      background: #050816;
-      color: white;
-      display: grid;
-      place-items: center;
       min-height: 100vh;
+      font-family: Inter, Arial, sans-serif;
+      color: #fff;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(59,130,246,.18), transparent 28%),
+        radial-gradient(circle at 80% 20%, rgba(168,85,247,.16), transparent 26%),
+        radial-gradient(circle at 50% 80%, rgba(37,99,235,.14), transparent 30%),
+        linear-gradient(180deg, #030712 0%, #020617 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
+
     .card {
-      width: min(420px, calc(100% - 24px));
-      background: #0d1326;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 24px;
-      padding: 28px;
-    }
-    h1 { margin-top: 0; }
-    input, button {
       width: 100%;
-      height: 52px;
-      border-radius: 14px;
+      max-width: 440px;
+      background: linear-gradient(180deg, rgba(15,23,42,.88), rgba(6,10,28,.96));
       border: 1px solid rgba(255,255,255,.08);
-      margin-top: 12px;
-      box-sizing: border-box;
-      font: inherit;
+      border-radius: 28px;
+      padding: 28px 22px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.35);
     }
-    input {
+
+    h1 {
+      margin: 0 0 22px;
+      font-size: 38px;
+      letter-spacing: -.04em;
+    }
+
+    .field { margin-bottom: 14px; }
+
+    .input {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.08);
       background: rgba(255,255,255,.04);
-      color: white;
-      padding: 0 14px;
+      color: #fff;
+      padding: 15px 16px;
+      border-radius: 16px;
+      outline: none;
+      font-size: 15px;
     }
-    button {
-      border: 0;
-      color: white;
-      font-weight: 700;
+
+    .input::placeholder { color: #94a3b8; }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 800;
       cursor: pointer;
-      background: linear-gradient(90deg, #7c5cff, #48c6ff);
+      margin-top: 8px;
+      color: #fff;
+      background: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%);
     }
-    .msg { margin-top: 14px; color: #9fb0c7; }
-    a { color: #7fd6ff; }
+
+    .footer {
+      margin-top: 14px;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .footer a {
+      color: #7dd3fc;
+    }
+
+    .status {
+      min-height: 22px;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #f87171;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Kayıt Ol</h1>
-    <form id="register-form">
-      <input id="username" type="text" placeholder="Kullanıcı adı" required />
-      <input id="email" type="email" placeholder="E-posta" required />
-      <input id="password" type="password" placeholder="Şifre" required />
-      <button type="submit">Kayıt Ol</button>
-    </form>
-    <div class="msg" id="msg"></div>
-    <p class="msg">Zaten hesabın var mı? <a href="/login.html">Giriş yap</a></p>
+
+    <div class="field">
+      <input id="username" class="input" type="text" placeholder="Kullanıcı adı" />
+    </div>
+
+    <div class="field">
+      <input id="email" class="input" type="email" placeholder="E-posta" />
+    </div>
+
+    <div class="field">
+      <input id="password" class="input" type="password" placeholder="Şifre" />
+    </div>
+
+    <button id="register-btn" class="btn" type="button">Kayıt Ol</button>
+
+    <div class="footer">
+      Zaten hesabın var mı? <a href="/login.html">Giriş yap</a>
+    </div>
+
+    <div id="status" class="status"></div>
   </div>
 
   <script type="module">
-    import { signUp } from './auth.js';
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const form = document.getElementById('register-form');
-    const msg = document.getElementById('msg');
+    const SUPABASE_URL = 'https://nxxnhqtqvrkbdhltoijz.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0';
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-      const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
+    const usernameEl = document.getElementById('username');
+    const emailEl = document.getElementById('email');
+    const passwordEl = document.getElementById('password');
+    const registerBtn = document.getElementById('register-btn');
+    const statusEl = document.getElementById('status');
 
-      try {
-        await signUp(email, password, username);
-        msg.textContent = 'Kayıt başarılı. Şimdi giriş yapabilirsin.';
-        form.reset();
-      } catch (err) {
-        msg.textContent = err.message || 'Kayıt başarısız.';
+    function setStatus(message = '', isError = true) {
+      statusEl.textContent = message;
+      statusEl.style.color = isError ? '#f87171' : '#4ade80';
+    }
+
+    async function register() {
+      const username = usernameEl.value.trim();
+      const email = emailEl.value.trim();
+      const password = passwordEl.value;
+
+      if (!username || !email || !password) {
+        setStatus('Kullanıcı adı, e-posta ve şifre gir.');
+        return;
       }
+
+      if (password.length < 6) {
+        setStatus('Şifre en az 6 karakter olmalı.');
+        return;
+      }
+
+      setStatus('');
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { username }
+        }
+      });
+
+      if (error) {
+        setStatus('Kayıt başarısız: ' + error.message);
+        return;
+      }
+
+      if (!data?.user) {
+        setStatus('Kayıt oluşturulamadı.');
+        return;
+      }
+
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: data.user.id,
+          username,
+          role: 'free',
+          avatar_url: null,
+          bio: null
+        }, { onConflict: 'id' });
+
+      if (profileError) {
+        setStatus('Kullanıcı oluştu ama profil kaydedilemedi: ' + profileError.message);
+        return;
+      }
+
+      setStatus('Kayıt başarılı. Şimdi giriş yapabilirsin.', false);
+
+      setTimeout(() => {
+        window.location.href = '/login.html';
+      }, 1200);
+    }
+
+    registerBtn.addEventListener('click', register);
+
+    passwordEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') register();
     });
-    import { signUp } from './auth.js';
   </script>
 </body>
 </html>
