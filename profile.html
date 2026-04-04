@@ -332,6 +332,10 @@
   </main>
 
   <script type="module">
+
+import { requireAuth, logout, supabase } from './auth.js';
+
+
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
     const SUPABASE_URL = 'https://nxxnhqtqvrkbdhltoijz.supabase.co';
@@ -501,8 +505,6 @@ alert("goLive çalıştı");
   alert("Yayın başladı 🔥");
 }
 
-    
-    import { requireAuth, logout, supabase } from './auth.js';
 
 const goLiveBtn = document.getElementById('go-live-btn');
 
