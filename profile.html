@@ -6,34 +6,46 @@
   <title>Celivo - Profil</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * {
-      box-sizing: border-box;
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #050816;
+      --card: rgba(10, 17, 36, 0.92);
+      --card-soft: rgba(255,255,255,.04);
+      --border: rgba(255,255,255,.08);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --muted-2: #94a3b8;
+      --primary: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%);
+      --danger: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --radius: 28px;
     }
 
     body {
       margin: 0;
       font-family: Inter, Arial, sans-serif;
-      color: white;
+      color: var(--text);
       min-height: 100vh;
       background:
-        radial-gradient(circle at 20% 20%, rgba(59,130,246,.16), transparent 30%),
-        radial-gradient(circle at 80% 20%, rgba(168,85,247,.16), transparent 28%),
-        radial-gradient(circle at 50% 80%, rgba(56,189,248,.12), transparent 35%),
-        linear-gradient(180deg, #040816 0%, #030712 100%);
+        radial-gradient(circle at 20% 20%, rgba(59,130,246,.18), transparent 28%),
+        radial-gradient(circle at 80% 20%, rgba(168,85,247,.16), transparent 26%),
+        radial-gradient(circle at 50% 80%, rgba(56,189,248,.12), transparent 34%),
+        linear-gradient(180deg, #040816 0%, #020617 100%);
     }
 
     .topbar {
       width: 100%;
       padding: 18px 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
     }
 
     .brand {
-      font-weight: 800;
       font-size: 30px;
-      letter-spacing: -0.04em;
+      font-weight: 800;
+      letter-spacing: -.04em;
       background: linear-gradient(90deg, #60a5fa, #8b5cf6, #ec4899);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -43,16 +55,16 @@
       text-decoration: none;
       color: #fff;
       background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.08);
+      border: 1px solid var(--border);
       padding: 10px 16px;
       border-radius: 999px;
       font-size: 14px;
     }
 
     .page {
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 10px 16px 40px;
+      padding: 8px 16px 40px;
     }
 
     .hero {
@@ -61,15 +73,15 @@
 
     .hero h1 {
       margin: 0 0 10px;
-      font-size: 52px;
-      letter-spacing: -0.05em;
+      font-size: 54px;
+      letter-spacing: -.05em;
       line-height: 1;
     }
 
     .hero p {
       margin: 0;
-      color: #cbd5e1;
-      max-width: 720px;
+      color: var(--muted);
+      max-width: 780px;
       line-height: 1.6;
       font-size: 16px;
     }
@@ -81,15 +93,15 @@
     }
 
     .card {
-      background: linear-gradient(180deg, rgba(14,23,42,.88), rgba(8,15,30,.96));
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 28px;
-      box-shadow: 0 20px 50px rgba(0,0,0,.35);
+      background: linear-gradient(180deg, rgba(12, 20, 40, 0.9), rgba(6, 11, 25, 0.96));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
     }
 
     .preview-card {
       padding: 26px 22px;
-      min-height: 520px;
+      min-height: 700px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -97,8 +109,8 @@
     }
 
     .avatar-ring {
-      width: 140px;
-      height: 140px;
+      width: 148px;
+      height: 148px;
       border-radius: 50%;
       background: linear-gradient(135deg, #60a5fa, #8b5cf6, #ec4899);
       padding: 4px;
@@ -109,16 +121,16 @@
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: #0f172a;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #94a3b8;
-      font-size: 14px;
-      line-height: 1.4;
-      padding: 10px;
+      background: #0f172a;
       border: 2px solid rgba(255,255,255,.08);
+      color: var(--muted-2);
+      font-size: 14px;
+      line-height: 1.35;
+      padding: 12px;
     }
 
     .avatar-inner img {
@@ -131,29 +143,107 @@
     .preview-name {
       font-size: 22px;
       font-weight: 800;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .role-pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      min-width: 90px;
       padding: 10px 16px;
       border-radius: 999px;
       background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.08);
-      font-size: 14px;
+      border: 1px solid var(--border);
       font-weight: 700;
-      color: #e2e8f0;
+      font-size: 14px;
       text-transform: capitalize;
       margin-bottom: 18px;
     }
 
+    .plan-perks {
+      width: 100%;
+      margin: 8px 0 18px;
+      text-align: left;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .plan-perks h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+    }
+
+    .plan-perks ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
     .preview-bio {
-      color: #cbd5e1;
-      line-height: 1.65;
+      color: var(--muted);
+      line-height: 1.6;
       font-size: 15px;
       width: 100%;
+      margin-bottom: 18px;
+    }
+
+    .stats-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat-box {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px 10px;
+      cursor: pointer;
+      transition: .15s ease;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.06);
+    }
+
+    .stat-box .num {
+      font-weight: 800;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .stat-box .label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .personal-preview {
+      width: 100%;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      text-align: left;
+      margin-top: auto;
+    }
+
+    .personal-preview h4 {
+      margin: 0 0 10px;
+      font-size: 15px;
+    }
+
+    .personal-preview .line {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
     }
 
     .form-card {
@@ -164,14 +254,35 @@
       margin: 0 0 18px;
       font-size: 34px;
       font-weight: 800;
-      letter-spacing: -0.04em;
+      letter-spacing: -.04em;
     }
 
-    .row-2 {
+    .subsection {
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .subsection:last-child {
+      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .subsection h3 {
+      margin: 0 0 14px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+
+    .row-2, .row-3 {
       display: grid;
-      grid-template-columns: 1fr 180px;
       gap: 14px;
     }
+
+    .row-2 { grid-template-columns: 1fr 180px; }
+    .row-3 { grid-template-columns: 1fr 1fr 1fr; }
 
     .field {
       margin-bottom: 14px;
@@ -182,40 +293,45 @@
       margin-bottom: 8px;
       font-size: 14px;
       font-weight: 700;
-      color: #f8fafc;
+      color: var(--text);
     }
 
-    .input, .textarea {
+    .input, .textarea, .select {
       width: 100%;
       background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      color: white;
+      border: 1px solid var(--border);
       border-radius: 18px;
+      color: white;
       padding: 15px 16px;
       outline: none;
       font-size: 15px;
-      transition: .2s ease;
     }
 
-    .input[readonly] {
-      opacity: .9;
-      cursor: default;
+    .input::placeholder, .textarea::placeholder {
+      color: var(--muted-2);
     }
 
-    .input::placeholder,
-    .textarea::placeholder {
-      color: #94a3b8;
-    }
-
-    .input:focus,
-    .textarea:focus {
+    .input:focus, .textarea:focus, .select:focus {
       border-color: rgba(96,165,250,.75);
       box-shadow: 0 0 0 4px rgba(59,130,246,.12);
     }
 
+    .input[readonly] {
+      opacity: .92;
+      cursor: default;
+    }
+
     .textarea {
-      min-height: 150px;
+      min-height: 130px;
       resize: vertical;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     .actions {
@@ -233,26 +349,67 @@
       font-weight: 800;
       cursor: pointer;
       color: white;
+      transition: .15s ease;
     }
 
+    .btn:hover { transform: translateY(-1px); }
+
     .btn-primary {
-      background: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%);
+      background: var(--primary);
       box-shadow: 0 12px 30px rgba(56,189,248,.16);
     }
 
     .btn-secondary {
       background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.08);
+      border: 1px solid var(--border);
     }
 
     .btn-danger {
-      background: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
+      background: var(--danger);
       box-shadow: 0 12px 30px rgba(239,68,68,.16);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,.04);
+      border: 1px dashed rgba(255,255,255,.12);
+    }
+
+    .wallet-box {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .wallet-amount {
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .wallet-meta {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .plan-box {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
     }
 
     .status {
       margin-top: 16px;
-      min-height: 24px;
+      min-height: 22px;
       font-weight: 700;
       font-size: 14px;
     }
@@ -261,22 +418,116 @@
     .status.error { color: #f87171; }
     .status.info { color: #93c5fd; }
 
-    @media (max-width: 900px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
 
-      .hero h1 {
-        font-size: 40px;
-      }
+    .modal.show {
+      display: flex;
+    }
 
-      .row-2 {
-        grid-template-columns: 1fr;
-      }
+    .modal-card {
+      width: 100%;
+      max-width: 520px;
+      max-height: 78vh;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(12, 20, 40, 0.96), rgba(6, 11, 25, 0.98));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
 
-      .preview-card {
-        min-height: auto;
-      }
+    .modal-header {
+      padding: 18px 18px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .modal-close {
+      border: none;
+      background: rgba(255,255,255,.06);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 14px 18px 18px;
+      overflow-y: auto;
+    }
+
+    .list-item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .mini-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,.08);
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted-2);
+      font-size: 12px;
+    }
+
+    .mini-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .list-meta .name {
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .list-meta .sub {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 42px; }
+      .row-2, .row-3 { grid-template-columns: 1fr; }
+      .wallet-box, .plan-box { grid-template-columns: 1fr; }
+      .preview-card { min-height: auto; }
     }
   </style>
 </head>
@@ -300,43 +551,185 @@
 
         <div class="preview-name" id="preview-name">Kullanıcı</div>
         <div class="role-pill" id="preview-role">free</div>
+
+        <div class="plan-perks">
+          <h3>Plan ayrıcalıkları</h3>
+          <ul id="plan-perks-list"></ul>
+        </div>
+
         <div class="preview-bio" id="preview-bio">Henüz biyografi eklenmedi.</div>
+
+        <div class="stats-grid">
+          <div class="stat-box" id="followers-box">
+            <div class="num" id="followers-count">0</div>
+            <div class="label">Takipçi</div>
+          </div>
+
+          <div class="stat-box" id="following-box">
+            <div class="num" id="following-count">0</div>
+            <div class="label">Takip edilen</div>
+          </div>
+        </div>
+
+        <div class="personal-preview">
+          <h4>Kişisel bilgiler</h4>
+          <div class="line" id="personal-preview-line">Paylaşım kapalı.</div>
+        </div>
       </aside>
 
       <section class="card form-card">
         <h2 class="section-title">Hesap bilgileri</h2>
 
-        <div class="row-2">
-          <div class="field">
-            <label for="email">E-posta</label>
-            <input id="email" class="input" type="email" readonly />
+        <div class="subsection">
+          <h3>Temel bilgiler</h3>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="email">E-posta</label>
+              <input id="email" class="input" type="email" readonly />
+            </div>
+
+            <div class="field">
+              <label for="role">Rol</label>
+              <input id="role" class="input" type="text" readonly />
+            </div>
           </div>
 
           <div class="field">
-            <label for="role">Rol</label>
-            <input id="role" class="input" type="text" readonly />
+            <label for="username">Kullanıcı adı</label>
+            <input id="username" class="input" type="text" maxlength="30" placeholder="Örn: canlicelil754" />
+          </div>
+
+          <div class="field">
+            <label for="avatar_url">Avatar URL</label>
+            <input id="avatar_url" class="input" type="url" placeholder="https://..." />
+          </div>
+
+          <div class="actions">
+            <label class="btn btn-ghost" for="avatar_file">Profil fotoğrafı yükle</label>
+            <input id="avatar_file" class="file-input" type="file" accept="image/*" />
+          </div>
+
+          <div class="field">
+            <label for="bio">Bio</label>
+            <textarea id="bio" class="textarea" maxlength="300" placeholder="Kendini kısa tanıt..."></textarea>
           </div>
         </div>
 
-        <div class="field">
-          <label for="username">Kullanıcı adı</label>
-          <input id="username" class="input" type="text" maxlength="30" placeholder="Örn: canlicelil754" />
+        <div class="subsection">
+          <h3>Kişisel bilgiler</h3>
+
+          <div class="row-3">
+            <div class="field">
+              <label for="age">Yaş</label>
+              <input id="age" class="input" type="number" min="0" max="120" placeholder="Örn: 25" />
+            </div>
+
+            <div class="field">
+              <label for="gender">Cinsiyet</label>
+              <input id="gender" class="input" type="text" placeholder="Örn: Erkek / Kadın" />
+            </div>
+
+            <div class="field">
+              <label for="country">Ülke</label>
+              <input id="country" class="input" type="text" placeholder="Örn: Türkiye" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="city">Şehir</label>
+            <input id="city" class="input" type="text" placeholder="Örn: Samsun" />
+          </div>
+
+          <div class="toggle-row">
+            <input id="share_personal_info" type="checkbox" />
+            <label for="share_personal_info">Kişisel bilgilerimi diğer kullanıcılarla paylaş</label>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="avatar_url">Avatar URL</label>
-          <input id="avatar_url" class="input" type="url" placeholder="https://..." />
+        <div class="subsection">
+          <h3>Sosyal medya ve mağaza</h3>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="instagram_url">Instagram</label>
+              <input id="instagram_url" class="input" type="url" placeholder="https://instagram.com/..." />
+            </div>
+
+            <div class="field">
+              <label for="x_url">X / Twitter</label>
+              <input id="x_url" class="input" type="url" placeholder="https://x.com/..." />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="youtube_url">YouTube</label>
+              <input id="youtube_url" class="input" type="url" placeholder="https://youtube.com/..." />
+            </div>
+
+            <div class="field">
+              <label for="tiktok_url">TikTok</label>
+              <input id="tiktok_url" class="input" type="url" placeholder="https://tiktok.com/@..." />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="website_url">Website</label>
+              <input id="website_url" class="input" type="url" placeholder="https://..." />
+            </div>
+
+            <div class="field">
+              <label for="shop_url">E-ticaret / Mağaza</label>
+              <input id="shop_url" class="input" type="url" placeholder="https://shop.example.com" />
+            </div>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="bio">Bio</label>
-          <textarea id="bio" class="textarea" maxlength="300" placeholder="Kendini kısa tanıt..."></textarea>
+        <div class="subsection">
+          <h3>Abonelik ve cüzdan</h3>
+
+          <div class="wallet-box">
+            <div>
+              <div class="wallet-amount" id="wallet-balance">₺0.00</div>
+              <div class="wallet-meta">Cüzdan bakiyesi</div>
+            </div>
+            <button id="topup-btn" class="btn btn-primary" type="button">Cüzdana yükle</button>
+            <button id="wallet-history-btn" class="btn btn-secondary" type="button">Hareketler</button>
+          </div>
+
+          <div style="height:12px;"></div>
+
+          <div class="plan-box">
+            <div>
+              <div style="font-weight:800; font-size:18px;" id="subscription-title">Aktif plan: Free</div>
+              <div class="wallet-meta" id="subscription-meta">Temel ayrıcalıklar aktif.</div>
+            </div>
+            <button id="upgrade-btn" class="btn btn-primary" type="button">Abonelik satın al</button>
+          </div>
         </div>
 
-        <div class="actions">
-          <button id="save-btn" class="btn btn-primary" type="button">Kaydet</button>
-          <button id="logout-btn" class="btn btn-secondary" type="button">Çıkış yap</button>
-          <button id="go-live-btn" class="btn btn-danger" type="button">🔴 Yayına Başla</button>
+        <div class="subsection">
+          <h3>Yayın işlemleri</h3>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="stream_title">Yayın başlığı</label>
+              <input id="stream_title" class="input" type="text" placeholder="Örn: Celivo test yayını" />
+            </div>
+
+            <div class="field">
+              <label for="stream_category">Kategori</label>
+              <input id="stream_category" class="input" type="text" placeholder="Just Chatting" value="Just Chatting" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="save-btn" class="btn btn-primary" type="button">Kaydet</button>
+            <button id="logout-btn" class="btn btn-secondary" type="button">Çıkış yap</button>
+            <button id="go-live-btn" class="btn btn-danger" type="button">🔴 Yayına Başla</button>
+          </div>
         </div>
 
         <div id="status" class="status"></div>
@@ -344,31 +737,118 @@
     </section>
   </main>
 
+  <div class="modal" id="list-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title">Liste</div>
+        <button class="modal-close" id="modal-close" type="button">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
   <script>
     const supabase = window.supabase.createClient(
       'https://nxxnhqtqvrkbdhltoijz.supabase.co',
-      'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0'
+      'sb_publishable_YKoXoU5eJNy07bYBKWh73g_0RDK7bF0'
     );
+
+    let currentUser = null;
+    let currentProfile = null;
+
+    const planMeta = {
+      free: {
+        label: 'Free',
+        perks: [
+          'Temel profil düzenleme',
+          'Yayın başlatma',
+          'Standart görünürlük'
+        ],
+        description: 'Temel ayrıcalıklar aktif.'
+      },
+      premium: {
+        label: 'Premium',
+        perks: [
+          'Gelişmiş profil görünümü',
+          'Öne çıkan rozet',
+          'Daha güçlü profil özelleştirme'
+        ],
+        description: 'Premium ayrıcalıklar aktif.'
+      },
+      vip: {
+        label: 'VIP',
+        perks: [
+          'Tüm premium ayrıcalıklar',
+          'VIP rozet görünümü',
+          'Daha yüksek görünürlük'
+        ],
+        description: 'VIP ayrıcalıklar aktif.'
+      }
+    };
 
     const emailEl = document.getElementById('email');
     const roleEl = document.getElementById('role');
     const usernameEl = document.getElementById('username');
     const avatarUrlEl = document.getElementById('avatar_url');
+    const avatarFileEl = document.getElementById('avatar_file');
     const bioEl = document.getElementById('bio');
+
+    const ageEl = document.getElementById('age');
+    const genderEl = document.getElementById('gender');
+    const countryEl = document.getElementById('country');
+    const cityEl = document.getElementById('city');
+    const sharePersonalInfoEl = document.getElementById('share_personal_info');
+
+    const instagramUrlEl = document.getElementById('instagram_url');
+    const xUrlEl = document.getElementById('x_url');
+    const youtubeUrlEl = document.getElementById('youtube_url');
+    const tiktokUrlEl = document.getElementById('tiktok_url');
+    const websiteUrlEl = document.getElementById('website_url');
+    const shopUrlEl = document.getElementById('shop_url');
+
+    const streamTitleEl = document.getElementById('stream_title');
+    const streamCategoryEl = document.getElementById('stream_category');
 
     const previewNameEl = document.getElementById('preview-name');
     const previewRoleEl = document.getElementById('preview-role');
     const previewBioEl = document.getElementById('preview-bio');
     const avatarPreviewEl = document.getElementById('avatar-preview');
+    const personalPreviewLineEl = document.getElementById('personal-preview-line');
+    const planPerksListEl = document.getElementById('plan-perks-list');
+
+    const followersCountEl = document.getElementById('followers-count');
+    const followingCountEl = document.getElementById('following-count');
+    const followersBoxEl = document.getElementById('followers-box');
+    const followingBoxEl = document.getElementById('following-box');
+
+    const walletBalanceEl = document.getElementById('wallet-balance');
+    const subscriptionTitleEl = document.getElementById('subscription-title');
+    const subscriptionMetaEl = document.getElementById('subscription-meta');
 
     const saveBtn = document.getElementById('save-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const goLiveBtn = document.getElementById('go-live-btn');
+    const topupBtn = document.getElementById('topup-btn');
+    const walletHistoryBtn = document.getElementById('wallet-history-btn');
+    const upgradeBtn = document.getElementById('upgrade-btn');
+
     const statusEl = document.getElementById('status');
+    const modalEl = document.getElementById('list-modal');
+    const modalTitleEl = document.getElementById('modal-title');
+    const modalBodyEl = document.getElementById('modal-body');
+    const modalCloseEl = document.getElementById('modal-close');
 
     function setStatus(message = '', type = 'info') {
       statusEl.textContent = message;
       statusEl.className = `status ${type}`;
+    }
+
+    function money(value) {
+      const num = Number(value || 0);
+      return new Intl.NumberFormat('tr-TR', {
+        style: 'currency',
+        currency: 'TRY'
+      }).format(num);
     }
 
     function setAvatarPreview(url) {
@@ -382,28 +862,79 @@
       avatarPreviewEl.innerHTML = `<img src="${value}" alt="Avatar" onerror="this.parentElement.innerHTML='Avatar yüklenemedi';">`;
     }
 
+    function renderPlan(roleValue) {
+      const safeRole = (roleValue || 'free').toLowerCase();
+      const meta = planMeta[safeRole] || planMeta.free;
+
+      previewRoleEl.textContent = meta.label;
+      roleEl.value = meta.label;
+      subscriptionTitleEl.textContent = `Aktif plan: ${meta.label}`;
+      subscriptionMetaEl.textContent = meta.description;
+
+      planPerksListEl.innerHTML = meta.perks.map(item => `<li>${item}</li>`).join('');
+    }
+
+    function renderPersonalPreview() {
+      if (!sharePersonalInfoEl.checked) {
+        personalPreviewLineEl.textContent = 'Paylaşım kapalı.';
+        return;
+      }
+
+      const bits = [
+        ageEl.value ? `${ageEl.value} yaş` : '',
+        genderEl.value || '',
+        countryEl.value || '',
+        cityEl.value || ''
+      ].filter(Boolean);
+
+      personalPreviewLineEl.textContent = bits.length ? bits.join(' • ') : 'Paylaşılacak kişisel bilgi girilmedi.';
+    }
+
     function updatePreview() {
       previewNameEl.textContent = usernameEl.value.trim() || 'Kullanıcı';
-      previewRoleEl.textContent = roleEl.value.trim() || 'free';
       previewBioEl.textContent = bioEl.value.trim() || 'Henüz biyografi eklenmedi.';
       setAvatarPreview(avatarUrlEl.value);
+      renderPlan((currentProfile?.role || roleEl.value || 'free').toLowerCase());
+      renderPersonalPreview();
     }
 
     async function getUser() {
       const { data, error } = await supabase.auth.getSession();
-
       if (error) {
         console.error(error);
         return null;
       }
-
       return data?.session?.user || null;
     }
 
-    async function loadProfile() {
-      const user = await getUser();
+    async function ensureProfileRow(user) {
+      const baseUsername = user.user_metadata?.username || user.email?.split('@')[0] || 'kullanici';
 
-      if (!user) {
+      await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          username: baseUsername,
+          role: 'free',
+          subscription_status: 'free'
+        }, { onConflict: 'id' });
+    }
+
+    async function fetchProfile(userId) {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data;
+    }
+
+    async function loadProfile() {
+      currentUser = await getUser();
+
+      if (!currentUser) {
         setStatus('Oturum bulunamadı. Giriş sayfasına yönlendiriliyorsun...', 'error');
         setTimeout(() => {
           window.location.href = '/login.html';
@@ -411,44 +942,61 @@
         return;
       }
 
-      emailEl.value = user.email || '';
-      roleEl.value = user.user_metadata?.role || 'free';
+      emailEl.value = currentUser.email || '';
 
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('username, avatar_url, bio, role')
-        .eq('id', user.id)
-        .maybeSingle();
+      await ensureProfileRow(currentUser);
+      currentProfile = await fetchProfile(currentUser.id);
 
-      if (error) {
-        console.error(error);
-        setStatus('Profil yüklenirken hata oluştu: ' + error.message, 'error');
-        updatePreview();
-        return;
-      }
+      usernameEl.value = currentProfile?.username || currentUser.user_metadata?.username || '';
+      avatarUrlEl.value = currentProfile?.avatar_url || '';
+      bioEl.value = currentProfile?.bio || '';
 
-      usernameEl.value = profile?.username || user.user_metadata?.username || '';
-      avatarUrlEl.value = profile?.avatar_url || '';
-      bioEl.value = profile?.bio || '';
-      roleEl.value = profile?.role || roleEl.value || 'free';
+      ageEl.value = currentProfile?.age ?? '';
+      genderEl.value = currentProfile?.gender || '';
+      countryEl.value = currentProfile?.country || '';
+      cityEl.value = currentProfile?.city || '';
+      sharePersonalInfoEl.checked = !!currentProfile?.share_personal_info;
 
+      instagramUrlEl.value = currentProfile?.instagram_url || '';
+      xUrlEl.value = currentProfile?.x_url || '';
+      youtubeUrlEl.value = currentProfile?.youtube_url || '';
+      tiktokUrlEl.value = currentProfile?.tiktok_url || '';
+      websiteUrlEl.value = currentProfile?.website_url || '';
+      shopUrlEl.value = currentProfile?.shop_url || '';
+
+      followersCountEl.textContent = currentProfile?.followers_count || 0;
+      followingCountEl.textContent = currentProfile?.following_count || 0;
+      walletBalanceEl.textContent = money(currentProfile?.wallet_balance || 0);
+
+      renderPlan(currentProfile?.role || currentProfile?.subscription_status || 'free');
       updatePreview();
       setStatus('', 'info');
     }
 
     async function saveProfile() {
-      const user = await getUser();
-      if (!user) {
-        setStatus('Oturum bulunamadı.', 'error');
+      if (!currentUser) {
+        setStatus('Önce giriş yapmalısın.', 'error');
         return;
       }
 
       const payload = {
-        id: user.id,
+        id: currentUser.id,
         username: usernameEl.value.trim() || null,
         avatar_url: avatarUrlEl.value.trim() || null,
         bio: bioEl.value.trim() || null,
-        role: roleEl.value.trim() || 'free'
+        age: ageEl.value ? Number(ageEl.value) : null,
+        gender: genderEl.value.trim() || null,
+        country: countryEl.value.trim() || null,
+        city: cityEl.value.trim() || null,
+        share_personal_info: !!sharePersonalInfoEl.checked,
+        instagram_url: instagramUrlEl.value.trim() || null,
+        x_url: xUrlEl.value.trim() || null,
+        youtube_url: youtubeUrlEl.value.trim() || null,
+        tiktok_url: tiktokUrlEl.value.trim() || null,
+        website_url: websiteUrlEl.value.trim() || null,
+        shop_url: shopUrlEl.value.trim() || null,
+        role: currentProfile?.role || 'free',
+        subscription_status: currentProfile?.subscription_status || 'free'
       };
 
       const { error } = await supabase
@@ -461,8 +1009,35 @@
         return;
       }
 
+      currentProfile = await fetchProfile(currentUser.id);
+      followersCountEl.textContent = currentProfile?.followers_count || 0;
+      followingCountEl.textContent = currentProfile?.following_count || 0;
+      walletBalanceEl.textContent = money(currentProfile?.wallet_balance || 0);
+
       updatePreview();
       setStatus('Profil başarıyla kaydedildi.', 'success');
+    }
+
+    async function uploadAvatarFile(file) {
+      if (!file || !currentUser) return;
+
+      const ext = file.name.split('.').pop() || 'jpg';
+      const path = `${currentUser.id}/${Date.now()}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(path, file, { upsert: true });
+
+      if (uploadError) {
+        console.error(uploadError);
+        setStatus('Avatar yüklenemedi: ' + uploadError.message, 'error');
+        return;
+      }
+
+      const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+      avatarUrlEl.value = data.publicUrl;
+      updatePreview();
+      setStatus('Avatar yüklendi. Kaydet diyerek profiline işle.', 'success');
     }
 
     async function logout() {
@@ -479,49 +1054,289 @@
     }
 
     async function goLive() {
-      const user = await getUser();
-
-      if (!user) {
+      if (!currentUser) {
         setStatus('Önce giriş yapmalısın.', 'error');
         return;
       }
 
-      const title = prompt('Yayın başlığı gir:');
-      if (!title) return;
+      const title = streamTitleEl.value.trim();
+      const category = streamCategoryEl.value.trim() || 'Just Chatting';
 
-      const category = prompt('Kategori gir:', 'Just Chatting') || 'Just Chatting';
+      if (!title) {
+        setStatus('Yayın başlığı girmen gerekiyor.', 'error');
+        return;
+      }
 
       const { error } = await supabase
         .from('streams')
         .insert({
           id: crypto.randomUUID(),
-          streamer_id: user.id,
+          streamer_id: currentUser.id,
+          streamer_name: usernameEl.value.trim() || currentUser.email || 'Yayıncı',
           title,
           category,
           is_live: true,
-          viewer_count: 99,
-          streamer_name: usernameEl.value.trim() || user.email || 'Yayıncı'
+          viewer_count: 0
         });
 
       if (error) {
         console.error(error);
-        alert('Yayın başlatılamadı: ' + error.message);
+        setStatus('Yayın başlatılamadı: ' + error.message, 'error');
         return;
       }
 
-      alert('Yayın başladı 🔥');
-      window.location.href = '/index.html';
+      setStatus('Yayın başladı, ana sayfaya yönlendiriliyorsun...', 'success');
+      setTimeout(() => {
+        window.location.href = '/index.html';
+      }, 900);
+    }
+
+    async function topUpWallet() {
+      if (!currentUser || !currentProfile) return;
+
+      const amountText = prompt('Yüklenecek tutarı gir (₺):', '100');
+      if (!amountText) return;
+
+      const amount = Number(String(amountText).replace(',', '.'));
+      if (!amount || amount <= 0) {
+        setStatus('Geçerli bir tutar gir.', 'error');
+        return;
+      }
+
+      const newBalance = Number(currentProfile.wallet_balance || 0) + amount;
+
+      const { error: txError } = await supabase
+        .from('wallet_transactions')
+        .insert({
+          user_id: currentUser.id,
+          type: 'topup',
+          amount,
+          status: 'completed',
+          note: 'Profil sayfasından demo cüzdan yükleme'
+        });
+
+      if (txError) {
+        console.error(txError);
+        setStatus('Cüzdan hareketi kaydedilemedi: ' + txError.message, 'error');
+        return;
+      }
+
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ wallet_balance: newBalance })
+        .eq('id', currentUser.id);
+
+      if (profileError) {
+        console.error(profileError);
+        setStatus('Cüzdan bakiyesi güncellenemedi: ' + profileError.message, 'error');
+        return;
+      }
+
+      currentProfile.wallet_balance = newBalance;
+      walletBalanceEl.textContent = money(newBalance);
+      setStatus('Cüzdana bakiye yüklendi.', 'success');
+    }
+
+    async function buySubscription() {
+      if (!currentUser || !currentProfile) return;
+
+      const planInput = prompt('Plan seç: free / premium / vip', 'premium');
+      if (!planInput) return;
+
+      const plan = planInput.toLowerCase().trim();
+
+      if (!['free', 'premium', 'vip'].includes(plan)) {
+        setStatus('Geçerli plan gir: free / premium / vip', 'error');
+        return;
+      }
+
+      const prices = { free: 0, premium: 199, vip: 499 };
+      const price = prices[plan];
+
+      if (Number(currentProfile.wallet_balance || 0) < price) {
+        setStatus('Yetersiz cüzdan bakiyesi.', 'error');
+        return;
+      }
+
+      const newBalance = Number(currentProfile.wallet_balance || 0) - price;
+
+      const { error: subError } = await supabase
+        .from('subscriptions')
+        .upsert({
+          user_id: currentUser.id,
+          plan,
+          status: 'active',
+          started_at: new Date().toISOString(),
+          expires_at: null
+        }, { onConflict: 'user_id' });
+
+      if (subError) {
+        console.error(subError);
+        setStatus('Abonelik güncellenemedi: ' + subError.message, 'error');
+        return;
+      }
+
+      const { error: txError } = await supabase
+        .from('wallet_transactions')
+        .insert({
+          user_id: currentUser.id,
+          type: 'subscription',
+          amount: price,
+          status: 'completed',
+          note: `${plan.toUpperCase()} plan satın alındı`
+        });
+
+      if (txError) {
+        console.error(txError);
+      }
+
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          wallet_balance: newBalance,
+          role: plan,
+          subscription_status: plan
+        })
+        .eq('id', currentUser.id);
+
+      if (profileError) {
+        console.error(profileError);
+        setStatus('Profil planı güncellenemedi: ' + profileError.message, 'error');
+        return;
+      }
+
+      currentProfile.wallet_balance = newBalance;
+      currentProfile.role = plan;
+      currentProfile.subscription_status = plan;
+
+      walletBalanceEl.textContent = money(newBalance);
+      renderPlan(plan);
+      updatePreview();
+      setStatus(`Plan güncellendi: ${plan.toUpperCase()}`, 'success');
+    }
+
+    async function showWalletHistory() {
+      if (!currentUser) return;
+
+      const { data, error } = await supabase
+        .from('wallet_transactions')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) {
+        console.error(error);
+        setStatus('Cüzdan hareketleri alınamadı: ' + error.message, 'error');
+        return;
+      }
+
+      modalTitleEl.textContent = 'Cüzdan hareketleri';
+
+      if (!data || !data.length) {
+        modalBodyEl.innerHTML = '<div class="line">Henüz işlem yok.</div>';
+      } else {
+        modalBodyEl.innerHTML = data.map(item => `
+          <div class="list-item">
+            <div class="mini-avatar">${item.type.slice(0,1).toUpperCase()}</div>
+            <div class="list-meta">
+              <div class="name">${item.type} • ${money(item.amount)}</div>
+              <div class="sub">${item.status} • ${new Date(item.created_at).toLocaleString('tr-TR')} ${item.note ? '• ' + item.note : ''}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      modalEl.classList.add('show');
+    }
+
+    async function showFollowList(kind) {
+      if (!currentUser) return;
+
+      const isFollowers = kind === 'followers';
+      modalTitleEl.textContent = isFollowers ? 'Takipçiler' : 'Takip edilenler';
+
+      const { data: relations, error } = await supabase
+        .from('follows')
+        .select('*')
+        .eq(isFollowers ? 'following_id' : 'follower_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error(error);
+        setStatus('Liste alınamadı: ' + error.message, 'error');
+        return;
+      }
+
+      if (!relations || !relations.length) {
+        modalBodyEl.innerHTML = `<div class="line">${isFollowers ? 'Henüz takipçi yok.' : 'Henüz kimseyi takip etmiyorsun.'}</div>`;
+        modalEl.classList.add('show');
+        return;
+      }
+
+      const ids = relations.map(r => isFollowers ? r.follower_id : r.following_id);
+
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, username, avatar_url, role')
+        .in('id', ids);
+
+      if (profilesError) {
+        console.error(profilesError);
+        setStatus('Profil listesi alınamadı: ' + profilesError.message, 'error');
+        return;
+      }
+
+      const mapped = ids.map(id => profilesData.find(p => p.id === id)).filter(Boolean);
+
+      modalBodyEl.innerHTML = mapped.map(item => `
+        <div class="list-item">
+          <div class="mini-avatar">
+            ${item.avatar_url ? `<img src="${item.avatar_url}" alt="">` : '👤'}
+          </div>
+          <div class="list-meta">
+            <div class="name">${item.username || 'Kullanıcı'}</div>
+            <div class="sub">${(item.role || 'free').toUpperCase()}</div>
+          </div>
+        </div>
+      `).join('');
+
+      modalEl.classList.add('show');
     }
 
     saveBtn.addEventListener('click', saveProfile);
     logoutBtn.addEventListener('click', logout);
     goLiveBtn.addEventListener('click', goLive);
+    topupBtn.addEventListener('click', topUpWallet);
+    walletHistoryBtn.addEventListener('click', showWalletHistory);
+    upgradeBtn.addEventListener('click', buySubscription);
+
+    followersBoxEl.addEventListener('click', () => showFollowList('followers'));
+    followingBoxEl.addEventListener('click', () => showFollowList('following'));
+
+    modalCloseEl.addEventListener('click', () => modalEl.classList.remove('show'));
+    modalEl.addEventListener('click', (e) => {
+      if (e.target === modalEl) modalEl.classList.remove('show');
+    });
 
     usernameEl.addEventListener('input', updatePreview);
     avatarUrlEl.addEventListener('input', updatePreview);
     bioEl.addEventListener('input', updatePreview);
+    ageEl.addEventListener('input', renderPersonalPreview);
+    genderEl.addEventListener('input', renderPersonalPreview);
+    countryEl.addEventListener('input', renderPersonalPreview);
+    cityEl.addEventListener('input', renderPersonalPreview);
+    sharePersonalInfoEl.addEventListener('change', renderPersonalPreview);
 
-    loadProfile();
+    avatarFileEl.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if (file) await uploadAvatarFile(file);
+    });
+
+    loadProfile().catch(err => {
+      console.error(err);
+      setStatus('Profil yüklenirken beklenmeyen hata oluştu.', 'error');
+    });
   </script>
 </body>
 </html>
