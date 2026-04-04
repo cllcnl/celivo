@@ -495,10 +495,10 @@ alert("goLive çalıştı");
     });
 
   if (error) {
-    console.error(error);
-    alert("Yayın başlatılamadı");
-    return;
-  }
+  console.error(error);
+  alert("Yayın başlatılamadı: " + error.message);
+  return;
+}
 
   alert("Yayın başladı 🔥");
 }
