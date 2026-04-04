@@ -321,7 +321,7 @@
   <button id="logout-btn" class="btn btn-secondary" type="button">Çıkış yap</button>
 </div>
 
-        <button class="btn btn-primary" type="button" onclick="alert('buton tıklandı')">🔴 Yayına Başla</button>
+        <button class="btn btn-primary" type="button" onclick="goLiveDirect()">🔴 Yayına Başla</button>
   
         
         <div id="status" class="status"></div>
@@ -541,6 +541,9 @@ window.goLiveDirect = async function () {
   window.location.href = '/';
 };
 
+window.goLiveDirect = function () {
+  alert("GO LIVE ÇALIŞTI 🔥");
+};
 
   </script>
 </body>
