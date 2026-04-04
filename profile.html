@@ -321,7 +321,7 @@
   <button id="logout-btn" class="btn btn-secondary" type="button">Çıkış yap</button>
 </div>
 
-        <button id="go-live-btn" class="btn btn-primary" type="button" onclick="goLive()">🔴 Yayına Başla</button>
+        <button class="btn btn-primary" type="button" onclick="testClick()">🔴 Yayına Başla</button>
   
         
         <div id="status" class="status"></div>
@@ -504,6 +504,10 @@ if (!user.data.user) {
   window.location.href = '/login.html';
 }
     import { requireAuth, logout, supabase } from './auth.js';
+
+window.testClick = function () {
+  alert("BUTON ÇALIŞIYOR 🔥");
+};
   </script>
 </body>
 </html>
