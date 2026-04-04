@@ -321,9 +321,7 @@
   <button id="logout-btn" class="btn btn-secondary" type="button">Çıkış yap</button>
 </div>
 
-        <a href="/?test=golive" class="btn btn-primary" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">
-  🔴 Yayına Başla
-</a>
+        <button class="btn btn-primary" type="button" onclick="goLiveDirect()">🔴 Yayına Başla</button>
   
         
         <div id="status" class="status"></div>
@@ -500,16 +498,50 @@ alert("goLive çalıştı");
   alert("Yayın başladı 🔥");
 }
 
-    const user = await supabase.auth.getUser();
-
-if (!user.data.user) {
-  window.location.href = '/login.html';
-}
+    
     import { requireAuth, logout, supabase } from './auth.js';
 
-window.testClick = function () {
-  alert("BUTON ÇALIŞIYOR 🔥");
+window.goLiveDirect = async function () {
+  alert("goLive başladı");
+
+  const { data: authData } = await supabase.auth.getUser();
+  const user = authData?.user;
+
+  if (!user) {
+    alert("Giriş yapmalısın");
+    return;
+  }
+
+  const title = prompt("Yayın başlığı gir:");
+  if (!title) return;
+
+  const category = prompt("Kategori gir:", "Just Chatting") || "Just Chatting";
+
+  const { error } = await supabase
+    .from('streams')
+    .insert([
+      {
+        id: crypto.randomUUID(),
+        user_id: user.id,
+        title,
+        category,
+        is_live: true,
+        viewer_count: 1,
+        streamer_name: usernameEl?.value?.trim() || 'Yayıncı'
+      }
+    ]);
+
+  if (error) {
+    console.error(error);
+    alert("Yayın başlatılamadı");
+    return;
+  }
+
+  alert("Yayın başladı 🔥");
+  window.location.href = '/';
 };
+
+
   </script>
 </body>
 </html>
