@@ -321,8 +321,8 @@
   <button id="logout-btn" class="btn btn-secondary" type="button">Çıkış yap</button>
 </div>
 
-        <button id="go-live-btn" class="btn btn-primary" type="button">
-  🔴 Yayına Başla
+        <button onclick="goLive()" class="btn btn-primary" type="button">
+🔴 Yayına Başla
 </button>
   
         
@@ -503,14 +503,6 @@ alert("goLive çalıştı");
   alert("Yayın başladı 🔥");
 }
 
-
-const goLiveBtn = document.getElementById('go-live-btn');
-
-if (goLiveBtn) {
-  goLiveBtn.addEventListener('click', () => {
-    alert('BUTON BAĞLANDI 🔥');
-  });
-}
 
   </script>
 </body>
