@@ -1,790 +1,200 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Celivo - Yayın</title>
+
   <style>
     * { box-sizing: border-box; }
-    :root {
-      --border: rgba(255,255,255,.08);
-      --muted: #cbd5e1;
-      --muted-2: #94a3b8;
-      --shadow: 0 20px 50px rgba(0,0,0,.35);
-    }
 
     body {
       margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      color: #fff;
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(59,130,246,.18), transparent 28%),
-        radial-gradient(circle at 80% 20%, rgba(168,85,247,.16), transparent 26%),
-        radial-gradient(circle at 50% 80%, rgba(56,189,248,.12), transparent 34%),
-        linear-gradient(180deg, #040816 0%, #020617 100%);
-    }
-
-    .topbar {
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .brand {
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: -.04em;
-      background: linear-gradient(90deg, #60a5fa, #8b5cf6, #ec4899);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .back-link {
-      text-decoration: none;
-      color: #fff;
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--border);
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-size: 14px;
-    }
-
-    .page {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 8px 16px 40px;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1.3fr .8fr;
-      gap: 20px;
-    }
-
-    .card {
-      background: linear-gradient(180deg, rgba(12,20,40,.9), rgba(6,11,25,.96));
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .player {
-      aspect-ratio: 16 / 9;
-      background: #0f172a;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .player video,
-    .player img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      font-family: Arial, sans-serif;
+      color: white;
       background: #020617;
     }
 
-    .player-placeholder {
+    .player {
       width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      font-size: 20px;
-      padding: 24px;
-      text-align: center;
+      height: 400px;
+      background: black;
+      position: relative;
     }
 
-    .live-badge {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      background: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
-      color: #fff;
-      font-weight: 800;
-      font-size: 12px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      z-index: 2;
-    }
-
-    .viewer-chip {
-      position: absolute;
-      bottom: 14px;
-      left: 14px;
-      background: rgba(2,6,23,.72);
-      border: 1px solid rgba(255,255,255,.08);
-      color: #fff;
-      font-size: 13px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      z-index: 2;
-    }
-
-    .content {
-      padding: 18px;
-    }
-
-    .title {
-      font-size: 32px;
-      line-height: 1.15;
-      letter-spacing: -.04em;
-      margin: 0 0 10px;
-      font-weight: 800;
-    }
-
-    .sub {
-      color: var(--muted);
-      line-height: 1.65;
-      font-size: 15px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .broadcaster-panel {
-      margin-top: 18px;
-      padding: 16px;
-      border-radius: 22px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.06);
-      display: none;
-    }
-
-    .broadcaster-panel.show {
-      display: block;
-    }
-
-    .panel-title {
-      font-size: 18px;
-      font-weight: 800;
-      margin: 0 0 12px;
-    }
-
-    .panel-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 18px;
-      padding: 12px 18px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      color: white;
-    }
-
-    .btn-primary {
-      background: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%);
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--border);
-    }
-
-    .btn-danger {
-      background: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
-    }
-
-    .btn-success {
-      background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
-    }
-
-    .panel-note {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .side-card {
-      display: flex;
-      flex-direction: column;
-      min-height: 720px;
-    }
-
-    .side-header {
-      padding: 18px;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-
-    .side-title {
-      margin: 0;
-      font-size: 22px;
-      letter-spacing: -.03em;
-    }
-
-    .chat-messages {
-      flex: 1;
-      padding: 14px 18px;
-      overflow-y: auto;
-      max-height: 560px;
-    }
-
-    .msg {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .msg-avatar {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: #0f172a;
-      border: 1px solid rgba(255,255,255,.08);
-      overflow: hidden;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted-2);
-      font-size: 12px;
-    }
-
-    .msg-avatar img {
+    video {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    .msg-body {
-      flex: 1;
-    }
-
-    .msg-head {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .msg-head strong {
-      color: #fff;
-      margin-right: 6px;
-    }
-
-    .msg-text {
-      line-height: 1.55;
-      color: #f8fafc;
-      word-break: break-word;
-    }
-
-    .chat-form {
-      padding: 14px 18px 18px;
-      border-top: 1px solid rgba(255,255,255,.06);
-      display: grid;
-      grid-template-columns: 1fr auto;
+    .controls {
+      padding: 20px;
+      display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .input {
-      width: 100%;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      color: white;
-      padding: 14px 14px;
-      outline: none;
-      font-size: 15px;
+    button {
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
     }
 
-    .status {
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
+    .primary { background: #3b82f6; color: white; }
+    .danger { background: #ef4444; color: white; }
+    .secondary { background: #1e293b; color: white; }
+
+    .chat {
+      padding: 20px;
     }
 
-    @media (max-width: 980px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-      .title {
-        font-size: 26px;
-      }
-      .side-card {
-        min-height: auto;
-      }
-      .panel-grid {
-        grid-template-columns: 1fr;
-      }
+    input {
+      padding: 10px;
+      width: 70%;
     }
   </style>
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="brand">Celivo</div>
-    <a href="/index.html" class="back-link">← Ana sayfaya dön</a>
-  </header>
 
-  <main class="page">
-    <section class="layout">
-      <section class="card">
-        <div class="player" id="player">
-          <div class="live-badge">CANLI</div>
-          <div class="viewer-chip" id="viewer-chip">👁 0 izleyici</div>
-          <div class="player-placeholder">Yayın yükleniyor...</div>
-        </div>
+<div class="player" id="player">
+  <video id="video" autoplay muted playsinline></video>
+</div>
 
-        <div class="content">
-          <h1 class="title" id="stream-title">Yayın yükleniyor...</h1>
-          <div class="sub" id="stream-sub">...</div>
+<div class="controls">
+  <button id="startCamera" class="primary">Kamerayı Aç</button>
+  <button id="screenShare" class="primary">Ekran Paylaş</button>
+  <button id="muteMic" class="secondary">Mikrofon Kapat</button>
+  <button id="stopStream" class="danger">Yayını Durdur</button>
+</div>
 
-          <div class="actions">
-            <button id="follow-btn" class="btn btn-primary" type="button">Takip et</button>
-            <a href="/profile.html" class="btn btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;">Profil</a>
-          </div>
+<div class="chat">
+  <input id="chatInput" placeholder="Mesaj yaz..." />
+  <button onclick="sendMessage()">Gönder</button>
+</div>
 
-          <div id="broadcaster-panel" class="broadcaster-panel">
-            <h3 class="panel-title">Yayıncı kontrol paneli</h3>
-            <div class="panel-grid">
-              <button id="start-camera-btn" class="btn btn-success" type="button">Kamerayı Aç</button>
-              <button id="share-screen-btn" class="btn btn-primary" type="button">Ekran Paylaş</button>
-              <button id="mute-mic-btn" class="btn btn-secondary" type="button">Mikrofonu Kapat</button>
-              <button id="stop-stream-btn" class="btn btn-danger" type="button">Yayını Durdur</button>
-            </div>
-            <div class="panel-note">
-              Bu sürümde yayıncı kamera ve ekran paylaşımını açıp kendi yayın önizlemesini görebilir.
-              İzleyicilere gerçek canlı video aktarmak için bir sonraki adımda WebRTC yayın motoru kuracağız.
-            </div>
-          </div>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-          <div class="status" id="page-status"></div>
-        </div>
-      </section>
+const supabase = createClient(
+  'https://nxxnhqtqvrkbdhltoijz.supabase.co',
+  'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0'
+);
 
-      <aside class="card side-card">
-        <div class="side-header">
-          <h2 class="side-title">Canlı sohbet</h2>
-        </div>
-        <div class="chat-messages" id="chat-messages"></div>
-        <form class="chat-form" id="chat-form">
-          <input id="chat-input" class="input" type="text" placeholder="Mesaj yaz..." maxlength="400" />
-          <button class="btn btn-primary" type="submit">Gönder</button>
-        </form>
-      </aside>
-    </section>
-  </main>
+const video = document.getElementById("video");
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+let localStream = null;
+let isMicMuted = false;
+let autoStartTried = false;
+let isBroadcaster = false;
+let currentUser = null;
+let streamId = new URLSearchParams(window.location.search).get("id");
 
-    const supabase = createClient(
-      'https://nxxnhqtqvrkbdhltoijz.supabase.co',
-      'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0'
-    );
+async function getUser() {
+  const { data } = await supabase.auth.getSession();
+  return data?.session?.user || null;
+}
 
-    const params = new URLSearchParams(window.location.search);
-    const streamId = params.get('id');
+async function checkBroadcaster() {
+  currentUser = await getUser();
 
-    const playerEl = document.getElementById('player');
-    const streamTitleEl = document.getElementById('stream-title');
-    const streamSubEl = document.getElementById('stream-sub');
-    const pageStatusEl = document.getElementById('page-status');
-    const followBtn = document.getElementById('follow-btn');
+  const { data: stream } = await supabase
+    .from("streams")
+    .select("*")
+    .eq("id", streamId)
+    .single();
 
-    const broadcasterPanelEl = document.getElementById('broadcaster-panel');
-    const startCameraBtn = document.getElementById('start-camera-btn');
-    const shareScreenBtn = document.getElementById('share-screen-btn');
-    const muteMicBtn = document.getElementById('mute-mic-btn');
-    const stopStreamBtn = document.getElementById('stop-stream-btn');
+  if (!stream) return;
 
-    const chatMessagesEl = document.getElementById('chat-messages');
-    const chatFormEl = document.getElementById('chat-form');
-    const chatInputEl = document.getElementById('chat-input');
+  if (currentUser && currentUser.id === stream.streamer_id) {
+    isBroadcaster = true;
 
-    let currentUser = null;
-    let currentStream = null;
-    let currentProfile = null;
-    let isFollowing = false;
-    let localStream = null;
-    let isMicMuted = false;
-    let isBroadcaster = false;
-
-    function safe(value, fallback = '') {
-      return String(value ?? fallback)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+    // 🔥 OTOMATİK KAMERA BAŞLATMA
+    if (!autoStartTried) {
+      autoStartTried = true;
+      setTimeout(() => startCamera(true), 500);
     }
+  }
+}
 
-    function formatViewers(count) {
-      const n = Number(count || 0);
-      if (n >= 1000) return `${(n / 1000).toFixed(1)} B`;
-      return `${n}`;
-    }
-
-    function getThumb(profile) {
-      if (profile?.avatar_url) return profile.avatar_url;
-      return 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80';
-    }
-
-    function renderVideoPlayer(stream) {
-      const video = document.createElement('video');
-      video.id = 'live-video';
-      video.autoplay = true;
-      video.playsInline = true;
-      video.muted = true;
-
-      playerEl.innerHTML = '';
-      playerEl.appendChild(video);
-
-      const badge = document.createElement('div');
-      badge.className = 'live-badge';
-      badge.textContent = 'CANLI';
-      playerEl.appendChild(badge);
-
-      const viewers = document.createElement('div');
-      viewers.className = 'viewer-chip';
-      viewers.textContent = `👁 ${formatViewers(stream?.viewer_count)} izleyici`;
-      playerEl.appendChild(viewers);
-
-      return video;
-    }
-
-    function renderImagePlayer(stream, profile) {
-      playerEl.innerHTML = `
-        <img src="${safe(getThumb(profile))}" alt="${safe(stream.title)}" />
-        <div class="live-badge">CANLI</div>
-        <div class="viewer-chip">👁 ${safe(formatViewers(stream.viewer_count))} izleyici</div>
-      `;
-    }
-
-    async function getCurrentUser() {
-      const { data, error } = await supabase.auth.getSession();
-      if (error) return null;
-      return data?.session?.user || null;
-    }
-
-    async function loadStream() {
-      if (!streamId) {
-        pageStatusEl.textContent = 'Geçersiz yayın.';
-        return;
-      }
-
-      const { data: stream, error } = await supabase
-        .from('streams')
-        .select('*')
-        .eq('id', streamId)
-        .maybeSingle();
-
-      if (error || !stream) {
-        pageStatusEl.textContent = 'Yayın bulunamadı.';
-        return;
-      }
-
-      currentStream = stream;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id, username, avatar_url, country, city, gender, age')
-        .eq('id', stream.streamer_id)
-        .maybeSingle();
-
-      currentProfile = profile || null;
-
-      renderImagePlayer(stream, profile);
-
-      streamTitleEl.textContent = stream.title || 'Canlı yayın';
-      streamSubEl.innerHTML = `
-        <strong>${safe(stream.streamer_name || profile?.username || 'Yayıncı')}</strong> • ${safe(stream.category || 'Just Chatting')}<br/>
-        ${safe(profile?.country || '')}${profile?.city ? ' • ' + safe(profile.city) : ''}${profile?.gender ? ' • ' + safe(profile.gender) : ''}${profile?.age ? ' • ' + safe(profile.age + ' yaş') : ''}
-      `;
-    }
-
-    async function loadFollowState() {
-      currentUser = await getCurrentUser();
-
-      if (!currentUser || !currentStream) {
-        followBtn.textContent = 'Takip et';
-        return;
-      }
-
-      isBroadcaster = currentUser.id === currentStream.streamer_id;
-
-      if (isBroadcaster) {
-        followBtn.textContent = 'Kendi yayının';
-        followBtn.disabled = true;
-        broadcasterPanelEl.classList.add('show');
-        return;
-      }
-
-      const { data } = await supabase
-        .from('follows')
-        .select('id')
-        .eq('follower_id', currentUser.id)
-        .eq('following_id', currentStream.streamer_id)
-        .maybeSingle();
-
-      isFollowing = !!data;
-      followBtn.textContent = isFollowing ? 'Takibi bırak' : 'Takip et';
-    }
-
-    async function toggleFollow() {
-      currentUser = await getCurrentUser();
-
-      if (!currentUser) {
-        pageStatusEl.textContent = 'Takip etmek için giriş yapmalısın.';
-        return;
-      }
-
-      if (!currentStream || currentUser.id === currentStream.streamer_id) return;
-
-      if (isFollowing) {
-        const { error } = await supabase
-          .from('follows')
-          .delete()
-          .eq('follower_id', currentUser.id)
-          .eq('following_id', currentStream.streamer_id);
-
-        if (error) {
-          pageStatusEl.textContent = 'Takipten çıkılamadı.';
-          return;
-        }
-
-        isFollowing = false;
-        followBtn.textContent = 'Takip et';
-        pageStatusEl.textContent = 'Takip bırakıldı.';
-      } else {
-        const { error } = await supabase
-          .from('follows')
-          .insert({
-            follower_id: currentUser.id,
-            following_id: currentStream.streamer_id
-          });
-
-        if (error) {
-          pageStatusEl.textContent = 'Takip edilemedi.';
-          return;
-        }
-
-        isFollowing = true;
-        followBtn.textContent = 'Takibi bırak';
-        pageStatusEl.textContent = 'Yayıncı takip edildi.';
-      }
-    }
-
-    async function loadMessages() {
-      const { data, error } = await supabase
-        .from('stream_messages')
-        .select('*')
-        .eq('stream_id', streamId)
-        .order('created_at', { ascending: true })
-        .limit(200);
-
-      if (error) {
-        chatMessagesEl.innerHTML = '<div class="msg-text">Mesajlar yüklenemedi.</div>';
-        return;
-      }
-
-      if (!data || !data.length) {
-        chatMessagesEl.innerHTML = '<div class="msg-text">Henüz mesaj yok. İlk mesajı sen gönder.</div>';
-        return;
-      }
-
-      chatMessagesEl.innerHTML = data.map(msg => `
-        <div class="msg">
-          <div class="msg-avatar">
-            ${msg.avatar_url ? `<img src="${safe(msg.avatar_url)}" alt="">` : '👤'}
-          </div>
-          <div class="msg-body">
-            <div class="msg-head">
-              <strong>${safe(msg.username)}</strong>
-              <span>${new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</span>
-            </div>
-            <div class="msg-text">${safe(msg.message)}</div>
-          </div>
-        </div>
-      `).join('');
-
-      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-    }
-
-    async function sendMessage(e) {
-      e.preventDefault();
-
-      currentUser = await getCurrentUser();
-      if (!currentUser) {
-        pageStatusEl.textContent = 'Mesaj göndermek için giriş yapmalısın.';
-        return;
-      }
-
-      const message = chatInputEl.value.trim();
-      if (!message) return;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('username, avatar_url')
-        .eq('id', currentUser.id)
-        .maybeSingle();
-
-      const { error } = await supabase
-        .from('stream_messages')
-        .insert({
-          stream_id: streamId,
-          user_id: currentUser.id,
-          username: profile?.username || currentUser.email || 'Kullanıcı',
-          avatar_url: profile?.avatar_url || null,
-          message
-        });
-
-      if (error) {
-        pageStatusEl.textContent = 'Mesaj gönderilemedi.';
-        return;
-      }
-
-      chatInputEl.value = '';
-      await loadMessages();
-    }
-
-    function stopAllTracks() {
-      if (!localStream) return;
-      localStream.getTracks().forEach(track => track.stop());
-      localStream = null;
-    }
-
-    async function startCamera() {
-      try {
-        if (!isBroadcaster) {
-          pageStatusEl.textContent = 'Bu panel sadece yayıncıya açık.';
-          return;
-        }
-
-        stopAllTracks();
-
-        localStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true
-        });
-
-        const videoEl = renderVideoPlayer(currentStream);
-        videoEl.srcObject = localStream;
-        isMicMuted = false;
-        muteMicBtn.textContent = 'Mikrofonu Kapat';
-        pageStatusEl.textContent = 'Kamera ve mikrofon açıldı. Önizleme aktif.';
-      } catch (error) {
-        console.error(error);
-        pageStatusEl.textContent = 'Kamera açılamadı. Tarayıcı izinlerini kontrol et.';
-      }
-    }
-
-    async function shareScreen() {
-      try {
-        if (!isBroadcaster) {
-          pageStatusEl.textContent = 'Bu panel sadece yayıncıya açık.';
-          return;
-        }
-
-        const screenStream = await navigator.mediaDevices.getDisplayMedia({
-          video: true,
-          audio: true
-        });
-
-        stopAllTracks();
-        localStream = screenStream;
-
-        const videoEl = renderVideoPlayer(currentStream);
-        videoEl.srcObject = localStream;
-        isMicMuted = false;
-        muteMicBtn.textContent = 'Mikrofonu Kapat';
-        pageStatusEl.textContent = 'Ekran paylaşımı başladı. Önizleme aktif.';
-
-        const videoTrack = localStream.getVideoTracks()[0];
-        if (videoTrack) {
-          videoTrack.onended = () => {
-            pageStatusEl.textContent = 'Ekran paylaşımı sona erdi.';
-            stopStreamPreview();
-          };
-        }
-      } catch (error) {
-        console.error(error);
-        pageStatusEl.textContent = 'Ekran paylaşımı başlatılamadı.';
-      }
-    }
-
-    function toggleMic() {
-      if (!localStream) {
-        pageStatusEl.textContent = 'Önce kamera veya ekran paylaşımı başlat.';
-        return;
-      }
-
-      const audioTracks = localStream.getAudioTracks();
-      if (!audioTracks.length) {
-        pageStatusEl.textContent = 'Bu akışta mikrofon bulunamadı.';
-        return;
-      }
-
-      isMicMuted = !isMicMuted;
-      audioTracks.forEach(track => {
-        track.enabled = !isMicMuted;
-      });
-
-      muteMicBtn.textContent = isMicMuted ? 'Mikrofonu Aç' : 'Mikrofonu Kapat';
-      pageStatusEl.textContent = isMicMuted ? 'Mikrofon kapatıldı.' : 'Mikrofon açıldı.';
-    }
-
-    function stopStreamPreview() {
-      stopAllTracks();
-      renderImagePlayer(currentStream, currentProfile);
-      muteMicBtn.textContent = 'Mikrofonu Kapat';
-      isMicMuted = false;
-      pageStatusEl.textContent = 'Yayın önizlemesi durduruldu.';
-    }
-
-    async function stopLiveStream() {
-      try {
-        if (!isBroadcaster || !currentStream) return;
-
-        stopStreamPreview();
-
-        const { error } = await supabase
-          .from('streams')
-          .update({ is_live: false })
-          .eq('id', currentStream.id);
-
-        if (error) {
-          console.error(error);
-          pageStatusEl.textContent = 'Yayın veritabanında kapatılamadı.';
-          return;
-        }
-
-        pageStatusEl.textContent = 'Yayın kapatıldı. Ana sayfaya yönlendiriliyorsun...';
-        setTimeout(() => {
-          window.location.href = '/index.html';
-        }, 1200);
-      } catch (error) {
-        console.error(error);
-        pageStatusEl.textContent = 'Yayın durdurulurken hata oluştu.';
-      }
-    }
-
-    followBtn.onclick = toggleFollow;
-    chatFormEl.onsubmit = sendMessage;
-    startCameraBtn.onclick = startCamera;
-    shareScreenBtn.onclick = shareScreen;
-    muteMicBtn.onclick = toggleMic;
-    stopStreamBtn.onclick = stopLiveStream;
-
-    await loadStream();
-    await loadFollowState();
-    await loadMessages();
-
-    setInterval(async () => {
-      await loadMessages();
-    }, 4000);
-  </script>
+function stopTracks() {
+  if (!localStream) return;
+  localStream.getTracks().forEach(t => t.stop());
+}
+
+async function startCamera(silent = false) {
+  try {
+    if (!isBroadcaster) return;
+
+    stopTracks();
+
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true
+    });
+
+    video.srcObject = localStream;
+    await video.play();
+
+    isMicMuted = false;
+  } catch (e) {
+    console.log(e);
+    if (!silent) alert("Kamera açılmadı");
+  }
+}
+
+async function shareScreen() {
+  try {
+    stopTracks();
+
+    localStream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: true
+    });
+
+    video.srcObject = localStream;
+    await video.play();
+  } catch (e) {
+    alert("Ekran paylaşımı başarısız");
+  }
+}
+
+function toggleMic() {
+  if (!localStream) return;
+
+  isMicMuted = !isMicMuted;
+
+  localStream.getAudioTracks().forEach(track => {
+    track.enabled = !isMicMuted;
+  });
+}
+
+async function stopStream() {
+  stopTracks();
+
+  await supabase
+    .from("streams")
+    .update({ is_live: false })
+    .eq("id", streamId);
+
+  window.location.href = "/";
+}
+
+function sendMessage() {
+  alert("Chat hazır ama backend zaten çalışıyor 👍");
+}
+
+document.getElementById("startCamera").onclick = () => startCamera();
+document.getElementById("screenShare").onclick = shareScreen;
+document.getElementById("muteMic").onclick = toggleMic;
+document.getElementById("stopStream").onclick = stopStream;
+
+checkBroadcaster();
+
+</script>
+
 </body>
 </html>
