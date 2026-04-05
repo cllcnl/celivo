@@ -74,18 +74,29 @@
     .player {
       aspect-ratio: 16 / 9;
       background: #0f172a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .player video,
+    .player img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #020617;
+    }
+
+    .player-placeholder {
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--muted);
       font-size: 20px;
-      position: relative;
-    }
-
-    .player img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      padding: 24px;
+      text-align: center;
     }
 
     .live-badge {
@@ -98,6 +109,7 @@
       font-size: 12px;
       padding: 8px 12px;
       border-radius: 999px;
+      z-index: 2;
     }
 
     .viewer-chip {
@@ -110,6 +122,7 @@
       font-size: 13px;
       padding: 8px 12px;
       border-radius: 999px;
+      z-index: 2;
     }
 
     .content {
@@ -137,6 +150,31 @@
       margin-top: 16px;
     }
 
+    .broadcaster-panel {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      display: none;
+    }
+
+    .broadcaster-panel.show {
+      display: block;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0 0 12px;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
     .btn {
       border: none;
       border-radius: 18px;
@@ -154,6 +192,21 @@
     .btn-secondary {
       background: rgba(255,255,255,.06);
       border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
+    }
+
+    .btn-success {
+      background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
+    }
+
+    .panel-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
     }
 
     .side-card {
@@ -251,6 +304,7 @@
       margin-top: 14px;
       color: var(--muted);
       font-size: 14px;
+      line-height: 1.6;
     }
 
     @media (max-width: 980px) {
@@ -262,6 +316,9 @@
       }
       .side-card {
         min-height: auto;
+      }
+      .panel-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -278,14 +335,32 @@
         <div class="player" id="player">
           <div class="live-badge">CANLI</div>
           <div class="viewer-chip" id="viewer-chip">👁 0 izleyici</div>
+          <div class="player-placeholder">Yayın yükleniyor...</div>
         </div>
+
         <div class="content">
           <h1 class="title" id="stream-title">Yayın yükleniyor...</h1>
           <div class="sub" id="stream-sub">...</div>
+
           <div class="actions">
             <button id="follow-btn" class="btn btn-primary" type="button">Takip et</button>
             <a href="/profile.html" class="btn btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;">Profil</a>
           </div>
+
+          <div id="broadcaster-panel" class="broadcaster-panel">
+            <h3 class="panel-title">Yayıncı kontrol paneli</h3>
+            <div class="panel-grid">
+              <button id="start-camera-btn" class="btn btn-success" type="button">Kamerayı Aç</button>
+              <button id="share-screen-btn" class="btn btn-primary" type="button">Ekran Paylaş</button>
+              <button id="mute-mic-btn" class="btn btn-secondary" type="button">Mikrofonu Kapat</button>
+              <button id="stop-stream-btn" class="btn btn-danger" type="button">Yayını Durdur</button>
+            </div>
+            <div class="panel-note">
+              Bu sürümde yayıncı kamera ve ekran paylaşımını açıp kendi yayın önizlemesini görebilir.
+              İzleyicilere gerçek canlı video aktarmak için bir sonraki adımda WebRTC yayın motoru kuracağız.
+            </div>
+          </div>
+
           <div class="status" id="page-status"></div>
         </div>
       </section>
@@ -317,9 +392,14 @@
     const playerEl = document.getElementById('player');
     const streamTitleEl = document.getElementById('stream-title');
     const streamSubEl = document.getElementById('stream-sub');
-    const viewerChipEl = document.getElementById('viewer-chip');
     const pageStatusEl = document.getElementById('page-status');
     const followBtn = document.getElementById('follow-btn');
+
+    const broadcasterPanelEl = document.getElementById('broadcaster-panel');
+    const startCameraBtn = document.getElementById('start-camera-btn');
+    const shareScreenBtn = document.getElementById('share-screen-btn');
+    const muteMicBtn = document.getElementById('mute-mic-btn');
+    const stopStreamBtn = document.getElementById('stop-stream-btn');
 
     const chatMessagesEl = document.getElementById('chat-messages');
     const chatFormEl = document.getElementById('chat-form');
@@ -329,6 +409,9 @@
     let currentStream = null;
     let currentProfile = null;
     let isFollowing = false;
+    let localStream = null;
+    let isMicMuted = false;
+    let isBroadcaster = false;
 
     function safe(value, fallback = '') {
       return String(value ?? fallback)
@@ -347,6 +430,37 @@
     function getThumb(profile) {
       if (profile?.avatar_url) return profile.avatar_url;
       return 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80';
+    }
+
+    function renderVideoPlayer(stream) {
+      const video = document.createElement('video');
+      video.id = 'live-video';
+      video.autoplay = true;
+      video.playsInline = true;
+      video.muted = true;
+
+      playerEl.innerHTML = '';
+      playerEl.appendChild(video);
+
+      const badge = document.createElement('div');
+      badge.className = 'live-badge';
+      badge.textContent = 'CANLI';
+      playerEl.appendChild(badge);
+
+      const viewers = document.createElement('div');
+      viewers.className = 'viewer-chip';
+      viewers.textContent = `👁 ${formatViewers(stream?.viewer_count)} izleyici`;
+      playerEl.appendChild(viewers);
+
+      return video;
+    }
+
+    function renderImagePlayer(stream, profile) {
+      playerEl.innerHTML = `
+        <img src="${safe(getThumb(profile))}" alt="${safe(stream.title)}" />
+        <div class="live-badge">CANLI</div>
+        <div class="viewer-chip">👁 ${safe(formatViewers(stream.viewer_count))} izleyici</div>
+      `;
     }
 
     async function getCurrentUser() {
@@ -382,11 +496,7 @@
 
       currentProfile = profile || null;
 
-      playerEl.innerHTML = `
-        <img src="${safe(getThumb(profile))}" alt="${safe(stream.title)}" />
-        <div class="live-badge">CANLI</div>
-        <div class="viewer-chip" id="viewer-chip">👁 ${safe(formatViewers(stream.viewer_count))} izleyici</div>
-      `;
+      renderImagePlayer(stream, profile);
 
       streamTitleEl.textContent = stream.title || 'Canlı yayın';
       streamSubEl.innerHTML = `
@@ -403,9 +513,12 @@
         return;
       }
 
-      if (currentUser.id === currentStream.streamer_id) {
+      isBroadcaster = currentUser.id === currentStream.streamer_id;
+
+      if (isBroadcaster) {
         followBtn.textContent = 'Kendi yayının';
         followBtn.disabled = true;
+        broadcasterPanelEl.classList.add('show');
         return;
       }
 
@@ -537,8 +650,133 @@
       await loadMessages();
     }
 
+    function stopAllTracks() {
+      if (!localStream) return;
+      localStream.getTracks().forEach(track => track.stop());
+      localStream = null;
+    }
+
+    async function startCamera() {
+      try {
+        if (!isBroadcaster) {
+          pageStatusEl.textContent = 'Bu panel sadece yayıncıya açık.';
+          return;
+        }
+
+        stopAllTracks();
+
+        localStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true
+        });
+
+        const videoEl = renderVideoPlayer(currentStream);
+        videoEl.srcObject = localStream;
+        isMicMuted = false;
+        muteMicBtn.textContent = 'Mikrofonu Kapat';
+        pageStatusEl.textContent = 'Kamera ve mikrofon açıldı. Önizleme aktif.';
+      } catch (error) {
+        console.error(error);
+        pageStatusEl.textContent = 'Kamera açılamadı. Tarayıcı izinlerini kontrol et.';
+      }
+    }
+
+    async function shareScreen() {
+      try {
+        if (!isBroadcaster) {
+          pageStatusEl.textContent = 'Bu panel sadece yayıncıya açık.';
+          return;
+        }
+
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: true
+        });
+
+        stopAllTracks();
+        localStream = screenStream;
+
+        const videoEl = renderVideoPlayer(currentStream);
+        videoEl.srcObject = localStream;
+        isMicMuted = false;
+        muteMicBtn.textContent = 'Mikrofonu Kapat';
+        pageStatusEl.textContent = 'Ekran paylaşımı başladı. Önizleme aktif.';
+
+        const videoTrack = localStream.getVideoTracks()[0];
+        if (videoTrack) {
+          videoTrack.onended = () => {
+            pageStatusEl.textContent = 'Ekran paylaşımı sona erdi.';
+            stopStreamPreview();
+          };
+        }
+      } catch (error) {
+        console.error(error);
+        pageStatusEl.textContent = 'Ekran paylaşımı başlatılamadı.';
+      }
+    }
+
+    function toggleMic() {
+      if (!localStream) {
+        pageStatusEl.textContent = 'Önce kamera veya ekran paylaşımı başlat.';
+        return;
+      }
+
+      const audioTracks = localStream.getAudioTracks();
+      if (!audioTracks.length) {
+        pageStatusEl.textContent = 'Bu akışta mikrofon bulunamadı.';
+        return;
+      }
+
+      isMicMuted = !isMicMuted;
+      audioTracks.forEach(track => {
+        track.enabled = !isMicMuted;
+      });
+
+      muteMicBtn.textContent = isMicMuted ? 'Mikrofonu Aç' : 'Mikrofonu Kapat';
+      pageStatusEl.textContent = isMicMuted ? 'Mikrofon kapatıldı.' : 'Mikrofon açıldı.';
+    }
+
+    function stopStreamPreview() {
+      stopAllTracks();
+      renderImagePlayer(currentStream, currentProfile);
+      muteMicBtn.textContent = 'Mikrofonu Kapat';
+      isMicMuted = false;
+      pageStatusEl.textContent = 'Yayın önizlemesi durduruldu.';
+    }
+
+    async function stopLiveStream() {
+      try {
+        if (!isBroadcaster || !currentStream) return;
+
+        stopStreamPreview();
+
+        const { error } = await supabase
+          .from('streams')
+          .update({ is_live: false })
+          .eq('id', currentStream.id);
+
+        if (error) {
+          console.error(error);
+          pageStatusEl.textContent = 'Yayın veritabanında kapatılamadı.';
+          return;
+        }
+
+        pageStatusEl.textContent = 'Yayın kapatıldı. Ana sayfaya yönlendiriliyorsun...';
+        setTimeout(() => {
+          window.location.href = '/index.html';
+        }, 1200);
+      } catch (error) {
+        console.error(error);
+        pageStatusEl.textContent = 'Yayın durdurulurken hata oluştu.';
+      }
+    }
+
     followBtn.onclick = toggleFollow;
     chatFormEl.onsubmit = sendMessage;
+    startCameraBtn.onclick = startCamera;
+    shareScreenBtn.onclick = shareScreen;
+    muteMicBtn.onclick = toggleMic;
+    stopStreamBtn.onclick = stopLiveStream;
 
     await loadStream();
     await loadFollowState();
