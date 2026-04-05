@@ -1,0 +1,281 @@
+{
+  "Türkiye": [
+    "Adana","Adıyaman","Afyonkarahisar","Ağrı","Aksaray","Amasya","Ankara","Antalya","Ardahan","Artvin","Aydın","Balıkesir","Bartın","Batman","Bayburt","Bilecik","Bingöl","Bitlis","Bolu","Burdur","Bursa","Çanakkale","Çankırı","Çorum","Denizli","Diyarbakır","Düzce","Edirne","Elazığ","Erzincan","Erzurum","Eskişehir","Gaziantep","Giresun","Gümüşhane","Hakkari","Hatay","Iğdır","Isparta","İstanbul","İzmir","Kahramanmaraş","Karabük","Karaman","Kars","Kastamonu","Kayseri","Kırıkkale","Kırklareli","Kırşehir","Kilis","Kocaeli","Konya","Kütahya","Malatya","Manisa","Mardin","Mersin","Muğla","Muş","Nevşehir","Niğde","Ordu","Osmaniye","Rize","Sakarya","Samsun","Siirt","Sinop","Sivas","Şanlıurfa","Şırnak","Tekirdağ","Tokat","Trabzon","Tunceli","Uşak","Van","Yalova","Yozgat","Zonguldak"
+  ],
+  "Almanya": [
+    "Berlin","Hamburg","Münih","Köln","Frankfurt","Stuttgart","Düsseldorf","Dortmund","Essen","Leipzig","Bremen","Dresden","Hannover","Nürnberg","Bonn"
+  ],
+  "Amerika Birleşik Devletleri": [
+    "New York","Los Angeles","Chicago","Houston","Phoenix","Philadelphia","San Antonio","San Diego","Dallas","San Jose","Austin","Jacksonville","San Francisco","Seattle","Boston"
+  ],
+  "İngiltere": [
+    "Londra","Manchester","Birmingham","Liverpool","Leeds","Bristol","Sheffield","Leicester","Nottingham","Newcastle"
+  ],
+  "Fransa": [
+    "Paris","Marsilya","Lyon","Toulouse","Nice","Nantes","Montpellier","Strazburg","Bordeaux","Lille"
+  ],
+  "İtalya": [
+    "Roma","Milano","Napoli","Torino","Palermo","Cenova","Bologna","Floransa","Bari","Venedik"
+  ],
+  "İspanya": [
+    "Madrid","Barselona","Valensiya","Sevilla","Zaragoza","Malaga","Murcia","Palma","Bilbao","Alicante"
+  ],
+  "Hollanda": [
+    "Amsterdam","Rotterdam","Lahey","Utrecht","Eindhoven","Groningen","Tilburg","Almere"
+  ],
+  "Belçika": [
+    "Brüksel","Anvers","Gent","Brugge","Leuven","Liege","Namur","Charleroi"
+  ],
+  "İsviçre": [
+    "Zürih","Cenevre","Basel","Bern","Lozan","Luzern","Lugano"
+  ],
+  "Avusturya": [
+    "Viyana","Graz","Linz","Salzburg","Innsbruck","Klagenfurt"
+  ],
+  "Danimarka": [
+    "Kopenhag","Aarhus","Odense","Aalborg","Esbjerg"
+  ],
+  "İsveç": [
+    "Stockholm","Göteborg","Malmö","Uppsala","Västerås","Örebro"
+  ],
+  "Norveç": [
+    "Oslo","Bergen","Trondheim","Stavanger","Drammen"
+  ],
+  "Finlandiya": [
+    "Helsinki","Espoo","Tampere","Vantaa","Turku","Oulu"
+  ],
+  "Polonya": [
+    "Varşova","Krakow","Lodz","Wroclaw","Poznan","Gdansk"
+  ],
+  "Romanya": [
+    "Bükreş","Cluj-Napoca","Timișoara","Iași","Constanța","Brașov"
+  ],
+  "Bulgaristan": [
+    "Sofya","Plovdiv","Varna","Burgaz","Ruse","Stara Zagora"
+  ],
+  "Yunanistan": [
+    "Atina","Selanik","Patra","Kandiye","Larisa"
+  ],
+  "Rusya": [
+    "Moskova","St. Petersburg","Kazan","Soçi","Novosibirsk","Yekaterinburg"
+  ],
+  "Ukrayna": [
+    "Kiev","Harkiv","Odessa","Dnipro","Lviv","Zaporijya"
+  ],
+  "Azerbaycan": [
+    "Bakü","Gence","Sumgayıt","Lenkeran","Nahçıvan"
+  ],
+  "Gürcistan": [
+    "Tiflis","Batum","Kutaisi","Rustavi","Zugdidi"
+  ],
+  "Ermenistan": [
+    "Erivan","Gümrü","Vanadzor","Abovyan"
+  ],
+  "Kazakistan": [
+    "Astana","Almatı","Şımkent","Karaganda","Aktau"
+  ],
+  "Özbekistan": [
+    "Taşkent","Semerkant","Buhara","Hive","Andican"
+  ],
+  "Kırgızistan": [
+    "Bişkek","Oş","Celalabad","Karakol"
+  ],
+  "Türkmenistan": [
+    "Aşkabat","Türkmenabat","Daşoğuz","Mary"
+  ],
+  "Tacikistan": [
+    "Duşanbe","Hucend","Kulob","Bokhtar"
+  ],
+  "Çin": [
+    "Pekin","Şanghay","Guangzhou","Shenzhen","Chengdu","Wuhan","Xi'an","Nanjing"
+  ],
+  "Japonya": [
+    "Tokyo","Osaka","Kyoto","Yokohama","Nagoya","Sapporo","Fukuoka","Kobe"
+  ],
+  "Güney Kore": [
+    "Seul","Busan","Incheon","Daegu","Daejeon","Gwangju"
+  ],
+  "Hindistan": [
+    "Delhi","Mumbai","Bangalore","Haydarabad","Ahmedabad","Chennai","Kalküta","Pune"
+  ],
+  "Pakistan": [
+    "İslamabad","Karaçi","Lahor","Rawalpindi","Peşaver","Faysalabad"
+  ],
+  "Bangladeş": [
+    "Dakha","Chittagong","Khulna","Rajshahi","Sylhet"
+  ],
+  "Endonezya": [
+    "Cakarta","Bandung","Surabaya","Medan","Yogyakarta","Denpasar"
+  ],
+  "Malezya": [
+    "Kuala Lumpur","George Town","Johor Bahru","Ipoh","Kota Kinabalu"
+  ],
+  "Singapur": [
+    "Singapore"
+  ],
+  "Tayland": [
+    "Bangkok","Chiang Mai","Phuket","Pattaya","Khon Kaen"
+  ],
+  "Vietnam": [
+    "Hanoi","Ho Chi Minh City","Da Nang","Hue","Can Tho"
+  ],
+  "Filipinler": [
+    "Manila","Quezon City","Davao","Cebu","Makati"
+  ],
+  "Avustralya": [
+    "Sydney","Melbourne","Brisbane","Perth","Adelaide","Canberra"
+  ],
+  "Yeni Zelanda": [
+    "Auckland","Wellington","Christchurch","Hamilton","Dunedin"
+  ],
+  "Kanada": [
+    "Toronto","Montreal","Vancouver","Calgary","Ottawa","Edmonton","Quebec City"
+  ],
+  "Meksika": [
+    "Mexico City","Guadalajara","Monterrey","Puebla","Tijuana","Cancun"
+  ],
+  "Brezilya": [
+    "Sao Paulo","Rio de Janeiro","Brasilia","Salvador","Fortaleza","Belo Horizonte"
+  ],
+  "Arjantin": [
+    "Buenos Aires","Cordoba","Rosario","Mendoza","La Plata"
+  ],
+  "Kolombiya": [
+    "Bogota","Medellin","Cali","Barranquilla","Cartagena"
+  ],
+  "Şili": [
+    "Santiago","Valparaiso","Concepcion","Antofagasta"
+  ],
+  "Venezuela": [
+    "Caracas","Maracaibo","Valencia","Barquisimeto"
+  ],
+  "Bolivya": [
+    "La Paz","Santa Cruz","Cochabamba","Sucre"
+  ],
+  "Güney Afrika": [
+    "Cape Town","Johannesburg","Pretoria","Durban","Port Elizabeth"
+  ],
+  "Fas": [
+    "Rabat","Kazablanka","Marakeş","Fes","Tangier","Agadir"
+  ],
+  "Cezayir": [
+    "Cezayir","Oran","Konstantin","Annaba","Blida"
+  ],
+  "Tunus": [
+    "Tunus","Sfax","Sousse","Kairouan","Bizerte"
+  ],
+  "Mısır": [
+    "Kahire","İskenderiye","Gize","Şarm El-Şeyh","Luksor"
+  ],
+  "Suudi Arabistan": [
+    "Riyad","Cidde","Mekke","Medine","Dammam"
+  ],
+  "Birleşik Arap Emirlikleri": [
+    "Dubai","Abu Dabi","Sharjah","Ajman","Al Ain"
+  ],
+  "Katar": [
+    "Doha","Al Rayyan","Al Wakrah"
+  ],
+  "Kuveyt": [
+    "Kuveyt City","Hawalli","Salmiya"
+  ],
+  "Bahreyn": [
+    "Manama","Riffa","Muharraq"
+  ],
+  "Umman": [
+    "Maskat","Salalah","Sohar"
+  ],
+  "Ürdün": [
+    "Amman","Irbid","Aqaba","Zarqa"
+  ],
+  "Lübnan": [
+    "Beyrut","Trablusşam","Sidon","Tyre"
+  ],
+  "İsrail": [
+    "Tel Aviv","Kudüs","Hayfa","Beer Sheva"
+  ],
+  "Filistin": [
+    "Ramallah","Gazze","Nablus","Hebron","Bethlehem"
+  ],
+  "Irak": [
+    "Bağdat","Erbil","Basra","Musul","Necef"
+  ],
+  "İran": [
+    "Tahran","Meşhed","İsfahan","Şiraz","Tebriz"
+  ],
+  "Suriye": [
+    "Şam","Halep","Humus","Lazkiye","Hama"
+  ],
+  "Yemen": [
+    "Sana","Aden","Taiz","Mukalla"
+  ],
+  "Afganistan": [
+    "Kabil","Herat","Kandahar","Mezar-ı Şerif"
+  ],
+  "İrlanda": [
+    "Dublin","Cork","Galway","Limerick"
+  ],
+  "Portekiz": [
+    "Lizbon","Porto","Braga","Coimbra","Faro"
+  ],
+  "Çekya": [
+    "Prag","Brno","Ostrava","Plzen"
+  ],
+  "Macaristan": [
+    "Budapeşte","Debrecen","Szeged","Pecs"
+  ],
+  "Slovakya": [
+    "Bratislava","Košice","Prešov","Žilina"
+  ],
+  "Slovenya": [
+    "Ljubljana","Maribor","Koper","Celje"
+  ],
+  "Hırvatistan": [
+    "Zagreb","Split","Rijeka","Osijek","Zadar"
+  ],
+  "Bosna Hersek": [
+    "Saraybosna","Banja Luka","Mostar","Tuzla"
+  ],
+  "Sırbistan": [
+    "Belgrad","Novi Sad","Niş","Kragujevac"
+  ],
+  "Kuzey Makedonya": [
+    "Üsküp","Manastır","Kalkandelen","Ohri"
+  ],
+  "Arnavutluk": [
+    "Tiran","Dıraç","İşkodra","Elbasan"
+  ],
+  "Moldova": [
+    "Kişinev","Tiraspol","Bălți"
+  ],
+  "Belarus": [
+    "Minsk","Gomel","Brest","Grodno"
+  ],
+  "Estonya": [
+    "Tallinn","Tartu","Narva"
+  ],
+  "Letonya": [
+    "Riga","Daugavpils","Liepaja"
+  ],
+  "Litvanya": [
+    "Vilnius","Kaunas","Klaipeda"
+  ],
+  "İzlanda": [
+    "Reykjavik","Akureyri","Kopavogur"
+  ],
+  "Andorra": [
+    "Andorra la Vella","Escaldes-Engordany"
+  ],
+  "Angola": [
+    "Luanda","Huambo","Lobito"
+  ],
+  "Etiyopya": [
+    "Addis Ababa","Dire Dawa","Mekelle"
+  ],
+  "Gana": [
+    "Accra","Kumasi","Tamale"
+  ],
+  "Dominik Cumhuriyeti": [
+    "Santo Domingo","Santiago","Punta Cana"
+  ]
+}
