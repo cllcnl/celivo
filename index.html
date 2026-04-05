@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
@@ -31,6 +31,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
     }
 
     .brand {
@@ -83,11 +84,15 @@
       font-size: 16px;
     }
 
-    .toolbar {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr;
-      gap: 12px;
+    .toolbar-wrap {
       margin: 24px 0;
+    }
+
+    .toolbar-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
     }
 
     .input, .select {
@@ -99,6 +104,74 @@
       padding: 14px 16px;
       outline: none;
       font-size: 15px;
+    }
+
+    .input::placeholder {
+      color: var(--muted-2);
+    }
+
+    .btn-filter {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: white;
+      border-radius: 18px;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filters-panel {
+      display: none;
+      margin-top: 12px;
+      background: linear-gradient(180deg, rgba(12,20,40,.9), rgba(6,11,25,.96));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .filters-panel.show {
+      display: block;
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .filters-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .btn-small {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      color: white;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+    }
+
+    .section-title {
+      margin: 28px 0 16px;
+      font-size: 28px;
+      letter-spacing: -.03em;
     }
 
     .featured {
@@ -224,19 +297,15 @@
       line-height: 1.5;
     }
 
-    .grid-title {
-      margin: 0 0 16px;
-      font-size: 28px;
-      letter-spacing: -.03em;
-    }
-
-    .stream-grid {
+    .stream-grid,
+    .profile-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 18px;
     }
 
-    .stream-card {
+    .stream-card,
+    .profile-card {
       text-decoration: none;
       color: inherit;
       background: linear-gradient(180deg, rgba(12,20,40,.9), rgba(6,11,25,.96));
@@ -247,7 +316,8 @@
       transition: .15s ease;
     }
 
-    .stream-card:hover {
+    .stream-card:hover,
+    .profile-card:hover {
       transform: translateY(-2px);
     }
 
@@ -268,6 +338,62 @@
       line-height: 1.55;
     }
 
+    .profile-cover {
+      padding: 18px 18px 0;
+    }
+
+    .profile-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,.08);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted-2);
+      font-size: 12px;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .role-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+
+    .profile-live {
+      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
     .empty {
       padding: 24px;
       color: var(--muted);
@@ -277,21 +403,30 @@
     }
 
     @media (max-width: 1100px) {
-      .toolbar {
+      .filters-grid {
         grid-template-columns: 1fr 1fr;
       }
       .featured {
         grid-template-columns: 1fr;
       }
-      .stream-grid {
+      .stream-grid,
+      .profile-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
     @media (max-width: 760px) {
       .hero h1 { font-size: 42px; }
-      .toolbar { grid-template-columns: 1fr; }
-      .stream-grid { grid-template-columns: 1fr; }
+      .toolbar-top {
+        grid-template-columns: 1fr;
+      }
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+      .stream-grid,
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -310,37 +445,63 @@
       <p>Celivo’da yayın sadece izlenmez. Sohbete katıl, yayıncıyı takip et, ilgine göre yayınları filtrele ve canlı akışın içinde ol.</p>
     </section>
 
-    <section class="toolbar">
-      <input id="search-input" class="input" type="text" placeholder="Yayıncı, başlık veya kategori ara..." />
-      <select id="country-filter" class="select">
-        <option value="">Ülke</option>
-      </select>
-      <select id="city-filter" class="select">
-        <option value="">Şehir</option>
-      </select>
-      <select id="gender-filter" class="select">
-        <option value="">Cinsiyet</option>
-        <option value="Erkek">Erkek</option>
-        <option value="Kadın">Kadın</option>
-        <option value="Belirtmek istemiyorum">Belirtmek istemiyorum</option>
-        <option value="Diğer">Diğer</option>
-      </select>
-      <select id="age-filter" class="select">
-        <option value="">Yaş aralığı</option>
-        <option value="18-24">18-24</option>
-        <option value="25-34">25-34</option>
-        <option value="35-44">35-44</option>
-        <option value="45-54">45-54</option>
-        <option value="55+">55+</option>
-      </select>
+    <section class="toolbar-wrap">
+      <div class="toolbar-top">
+        <input id="search-input" class="input" type="text" placeholder="Yayıncı, kullanıcı adı, başlık veya kategori ara..." />
+        <button id="toggle-filters-btn" class="btn-filter" type="button">Yayını Filtrele</button>
+      </div>
+
+      <div id="filters-panel" class="filters-panel">
+        <div class="filters-grid">
+          <select id="country-filter" class="select">
+            <option value="">Ülke</option>
+          </select>
+
+          <select id="city-filter" class="select">
+            <option value="">Şehir</option>
+          </select>
+
+          <select id="gender-filter" class="select">
+            <option value="">Cinsiyet</option>
+            <option value="Erkek">Erkek</option>
+            <option value="Kadın">Kadın</option>
+            <option value="Belirtmek istemiyorum">Belirtmek istemiyorum</option>
+            <option value="Diğer">Diğer</option>
+          </select>
+
+          <select id="age-filter" class="select">
+            <option value="">Yaş aralığı</option>
+            <option value="13-17">13-17</option>
+            <option value="18-24">18-24</option>
+            <option value="25-34">25-34</option>
+            <option value="35-44">35-44</option>
+            <option value="45-54">45-54</option>
+            <option value="55+">55+</option>
+          </select>
+        </div>
+
+        <div class="filters-actions">
+          <button id="apply-filters-btn" class="btn-small btn-primary" type="button">Filtreyi uygula</button>
+          <button id="clear-filters-btn" class="btn-small btn-secondary" type="button">Filtreleri temizle</button>
+        </div>
+      </div>
     </section>
 
-    <section class="featured" id="featured-wrap"></section>
+    <section>
+      <h2 class="section-title">Öne çıkan canlı yayın</h2>
+      <div class="featured" id="featured-wrap"></div>
+    </section>
 
     <section>
-      <h2 class="grid-title">Şu an canlı</h2>
+      <h2 class="section-title">Şu an canlı</h2>
       <div id="streams-grid" class="stream-grid"></div>
-      <div id="empty-state" class="empty" style="display:none;">Filtreye uygun canlı yayın bulunamadı.</div>
+      <div id="empty-streams" class="empty" style="display:none;">Filtreye uygun canlı yayın bulunamadı.</div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Kullanıcılar</h2>
+      <div id="profiles-grid" class="profile-grid"></div>
+      <div id="empty-profiles" class="empty" style="display:none;">Aramana uygun kullanıcı bulunamadı.</div>
     </section>
   </main>
 
@@ -358,14 +519,21 @@
     let citiesByCountry = {};
 
     const searchInput = document.getElementById('search-input');
+    const toggleFiltersBtn = document.getElementById('toggle-filters-btn');
+    const filtersPanel = document.getElementById('filters-panel');
+    const applyFiltersBtn = document.getElementById('apply-filters-btn');
+    const clearFiltersBtn = document.getElementById('clear-filters-btn');
+
     const countryFilter = document.getElementById('country-filter');
     const cityFilter = document.getElementById('city-filter');
     const genderFilter = document.getElementById('gender-filter');
     const ageFilter = document.getElementById('age-filter');
 
     const featuredWrap = document.getElementById('featured-wrap');
-    const grid = document.getElementById('streams-grid');
-    const empty = document.getElementById('empty-state');
+    const streamsGrid = document.getElementById('streams-grid');
+    const profilesGrid = document.getElementById('profiles-grid');
+    const emptyStreams = document.getElementById('empty-streams');
+    const emptyProfiles = document.getElementById('empty-profiles');
 
     function safe(value, fallback = '') {
       return String(value ?? fallback)
@@ -392,6 +560,18 @@
       return fallbacks[index % fallbacks.length];
     }
 
+    async function loadLocationData() {
+      const [countriesRes, citiesRes] = await Promise.all([
+        fetch('/countries.json'),
+        fetch('/cities.json')
+      ]);
+
+      countries = await countriesRes.json();
+      citiesByCountry = await citiesRes.json();
+
+      fillCountryFilter();
+    }
+
     function fillCountryFilter() {
       countryFilter.innerHTML = '<option value="">Ülke</option>';
       countries.forEach(country => {
@@ -416,6 +596,7 @@
     function inAgeRange(age, range) {
       const a = Number(age || 0);
       if (!range) return true;
+      if (range === '13-17') return a >= 13 && a <= 17;
       if (range === '18-24') return a >= 18 && a <= 24;
       if (range === '25-34') return a >= 25 && a <= 34;
       if (range === '35-44') return a >= 35 && a <= 44;
@@ -424,38 +605,50 @@
       return true;
     }
 
-    function filterStreams() {
-      const q = searchInput.value.trim().toLowerCase();
+    function liveMatchesFilters(stream) {
       const country = countryFilter.value;
       const city = cityFilter.value;
       const gender = genderFilter.value;
       const ageRange = ageFilter.value;
 
-      const filtered = allStreams.filter(stream => {
-        const searchable = [
-          stream.title,
-          stream.category,
-          stream.streamer_name,
-          stream.country,
-          stream.city
-        ].join(' ').toLowerCase();
+      if (country && stream.country !== country) return false;
+      if (city && stream.city !== city) return false;
+      if (gender && stream.gender !== gender) return false;
+      if (!inAgeRange(stream.age, ageRange)) return false;
 
-        if (q && !searchable.includes(q)) return false;
-        if (country && stream.country !== country) return false;
-        if (city && stream.city !== city) return false;
-        if (gender && stream.gender !== gender) return false;
-        if (!inAgeRange(stream.age, ageRange)) return false;
+      return true;
+    }
 
-        return true;
-      });
+    function streamMatchesSearch(stream, q) {
+      if (!q) return true;
+      const searchable = [
+        stream.title,
+        stream.category,
+        stream.streamer_name,
+        stream.username,
+        stream.country,
+        stream.city
+      ].join(' ').toLowerCase();
 
-      renderFeatured(filtered);
-      renderGrid(filtered);
+      return searchable.includes(q);
+    }
+
+    function profileMatchesSearch(profile, q) {
+      if (!q) return true;
+      const searchable = [
+        profile.username,
+        profile.country,
+        profile.city,
+        profile.gender,
+        profile.bio
+      ].join(' ').toLowerCase();
+
+      return searchable.includes(q);
     }
 
     function renderFeatured(streams) {
       if (!streams.length) {
-        featuredWrap.innerHTML = '';
+        featuredWrap.innerHTML = '<div class="empty">Öne çıkan canlı yayın yok.</div>';
         return;
       }
 
@@ -472,7 +665,7 @@
           <div class="featured-content">
             <h2>${safe(main.title)}</h2>
             <div class="meta">
-              ${safe(main.streamer_name || 'Yayıncı')} • ${safe(main.category || 'Just Chatting')}<br/>
+              ${safe(main.streamer_name || main.username || 'Yayıncı')} • ${safe(main.category || 'Just Chatting')}<br/>
               ${safe(main.country || '')}${main.city ? ' • ' + safe(main.city) : ''}${main.gender ? ' • ' + safe(main.gender) : ''}${main.age ? ' • ' + safe(main.age + ' yaş') : ''}
             </div>
           </div>
@@ -489,7 +682,7 @@
                   </div>
                   <div class="mini-meta">
                     <div class="title">${safe(stream.title)}</div>
-                    <div class="sub">${safe(stream.streamer_name || 'Yayıncı')} • ${safe(stream.category || '')}<br/>👁 ${safe(formatViewers(stream.viewer_count))}</div>
+                    <div class="sub">${safe(stream.streamer_name || stream.username || 'Yayıncı')} • ${safe(stream.category || '')}<br/>👁 ${safe(formatViewers(stream.viewer_count))}</div>
                   </div>
                 </a>
               `).join('') : '<div class="card-sub">Başka canlı yayın yok.</div>'}
@@ -499,16 +692,16 @@
       `;
     }
 
-    function renderGrid(streams) {
+    function renderStreams(streams) {
       if (!streams.length) {
-        grid.innerHTML = '';
-        empty.style.display = 'block';
+        streamsGrid.innerHTML = '';
+        emptyStreams.style.display = 'block';
         return;
       }
 
-      empty.style.display = 'none';
+      emptyStreams.style.display = 'none';
 
-      grid.innerHTML = streams.map((stream, index) => `
+      streamsGrid.innerHTML = streams.map((stream, index) => `
         <a class="stream-card" href="/stream.html?id=${stream.id}">
           <div class="cover">
             <img src="${safe(getThumb(stream, index))}" alt="${safe(stream.title)}" />
@@ -518,7 +711,7 @@
           <div class="card-body">
             <div class="card-title">${safe(stream.title)}</div>
             <div class="card-sub">
-              ${safe(stream.streamer_name || 'Yayıncı')} • ${safe(stream.category || '')}<br/>
+              ${safe(stream.streamer_name || stream.username || 'Yayıncı')} • ${safe(stream.category || '')}<br/>
               ${safe(stream.country || '')}${stream.city ? ' • ' + safe(stream.city) : ''}${stream.gender ? ' • ' + safe(stream.gender) : ''}${stream.age ? ' • ' + safe(stream.age + ' yaş') : ''}
             </div>
           </div>
@@ -526,15 +719,41 @@
       `).join('');
     }
 
-    async function loadData() {
-      const [countriesRes, citiesRes] = await Promise.all([
-        fetch('/countries.json'),
-        fetch('/cities.json')
-      ]);
+    function renderProfiles(profiles, liveStreams) {
+      const liveStreamerIds = new Set(liveStreams.map(x => x.streamer_id));
 
-      countries = await countriesRes.json();
-      citiesByCountry = await citiesRes.json();
-      fillCountryFilter();
+      if (!profiles.length) {
+        profilesGrid.innerHTML = '';
+        emptyProfiles.style.display = 'block';
+        return;
+      }
+
+      emptyProfiles.style.display = 'none';
+
+      profilesGrid.innerHTML = profiles.map(profile => `
+        <a class="profile-card" href="${liveStreamerIds.has(profile.id) ? '/stream.html?id=' + encodeURIComponent(liveStreams.find(x => x.streamer_id === profile.id).id) : '/profile.html'}">
+          <div class="profile-cover">
+            <div class="profile-head">
+              <div class="avatar">
+                ${profile.avatar_url ? `<img src="${safe(profile.avatar_url)}" alt="${safe(profile.username)}">` : '👤'}
+              </div>
+              <div>
+                <div class="card-title" style="margin-bottom:4px;">${safe(profile.username || 'Kullanıcı')}</div>
+                <div class="card-sub">${safe(profile.country || '')}${profile.city ? ' • ' + safe(profile.city) : ''}${profile.gender ? ' • ' + safe(profile.gender) : ''}${profile.age ? ' • ' + safe(profile.age + ' yaş') : ''}</div>
+                <div class="role-pill">${safe((profile.role || 'free').toUpperCase())}</div>
+              </div>
+            </div>
+            ${liveStreamerIds.has(profile.id) ? '<div class="profile-live">● Şu an canlı</div>' : ''}
+          </div>
+          <div class="card-body">
+            <div class="card-sub">${safe(profile.bio || 'Henüz biyografi eklenmedi.')}</div>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    async function loadData() {
+      await loadLocationData();
 
       const { data: streamsData, error: streamError } = await supabase
         .from('streams')
@@ -545,28 +764,27 @@
       if (streamError) {
         console.error(streamError);
         renderFeatured([]);
-        renderGrid([]);
+        renderStreams([]);
+        renderProfiles([], []);
         return;
       }
 
-      const streamerIds = [...new Set((streamsData || []).map(x => x.streamer_id).filter(Boolean))];
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('updated_at', { ascending: false });
 
-      let profilesData = [];
-      if (streamerIds.length) {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('id, avatar_url, country, city, gender, age')
-          .in('id', streamerIds);
-
-        if (!error && data) profilesData = data;
+      if (profilesError) {
+        console.error(profilesError);
       }
 
-      allProfiles = profilesData;
+      allProfiles = profilesData || [];
 
       allStreams = (streamsData || []).map(stream => {
         const profile = allProfiles.find(p => p.id === stream.streamer_id);
         return {
           ...stream,
+          username: profile?.username || '',
           avatar_url: profile?.avatar_url || '',
           country: profile?.country || '',
           city: profile?.city || '',
@@ -575,17 +793,48 @@
         };
       });
 
-      filterStreams();
+      applyAll();
     }
 
-    searchInput.oninput = filterStreams;
+    function applyAll() {
+      const q = searchInput.value.trim().toLowerCase();
+
+      const filteredStreams = allStreams
+        .filter(stream => liveMatchesFilters(stream))
+        .filter(stream => streamMatchesSearch(stream, q));
+
+      const searchedProfiles = allProfiles
+        .filter(profile => profileMatchesSearch(profile, q));
+
+      renderFeatured(filteredStreams);
+      renderStreams(filteredStreams);
+      renderProfiles(searchedProfiles, allStreams);
+    }
+
+    toggleFiltersBtn.onclick = () => {
+      filtersPanel.classList.toggle('show');
+    };
+
+    applyFiltersBtn.onclick = applyAll;
+
+    clearFiltersBtn.onclick = () => {
+      countryFilter.value = '';
+      fillCityFilter('');
+      cityFilter.value = '';
+      genderFilter.value = '';
+      ageFilter.value = '';
+      applyAll();
+    };
+
+    searchInput.oninput = applyAll;
+
     countryFilter.onchange = () => {
       fillCityFilter(countryFilter.value);
-      filterStreams();
     };
-    cityFilter.onchange = filterStreams;
-    genderFilter.onchange = filterStreams;
-    ageFilter.onchange = filterStreams;
+
+    cityFilter.onchange = applyAll;
+    genderFilter.onchange = applyAll;
+    ageFilter.onchange = applyAll;
 
     loadData();
     setInterval(loadData, 10000);
