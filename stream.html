@@ -199,8 +199,7 @@
     }
 
     .select,
-    .range,
-    .text-input {
+    .range {
       width: 100%;
       background: rgba(255,255,255,.04);
       border: 1px solid var(--border);
@@ -598,7 +597,6 @@
     let processedSignalIds = new Set();
     let signalPollTimer = null;
     let drawLoopHandle = null;
-
     let customBackgroundUrl = '';
 
     const presetBackgrounds = {
@@ -606,6 +604,8 @@
       preset_2: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=1600&q=80',
       preset_3: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1600&q=80'
     };
+
+    const backgroundImageCache = new Map();
 
     const sceneState = {
       mode: 'screen_camera',
@@ -616,8 +616,6 @@
       screenAudioEnabled: false,
       backgroundMode: 'normal'
     };
-
-    const backgroundImageCache = new Map();
 
     function safe(value, fallback = '') {
       return String(value ?? fallback)
@@ -989,7 +987,7 @@
       } else if (sceneState.cameraShape === 'rounded') {
         drawRoundedRectPath(sceneCtx, x, y, w, h, 26);
         sceneCtx.clip();
-      } else if (sceneState.cameraShape === 'square') {
+      } else {
         sceneCtx.beginPath();
         sceneCtx.rect(x, y, w, h);
         sceneCtx.clip();
@@ -1064,20 +1062,16 @@
           let y = H - pipH - margin;
 
           if (sceneState.pipPosition === 'top-left') {
-            x = margin;
-            y = margin;
+            x = margin; y = margin;
           }
           if (sceneState.pipPosition === 'top-right') {
-            x = W - pipW - margin;
-            y = margin;
+            x = W - pipW - margin; y = margin;
           }
           if (sceneState.pipPosition === 'bottom-left') {
-            x = margin;
-            y = H - pipH - margin;
+            x = margin; y = H - pipH - margin;
           }
           if (sceneState.pipPosition === 'bottom-right') {
-            x = W - pipW - margin;
-            y = H - pipH - margin;
+            x = W - pipW - margin; y = H - pipH - margin;
           }
 
           await drawCameraLayer(x, y, pipW, pipH, true);
@@ -1158,22 +1152,24 @@
       await replacePeerTracks();
     }
 
-    async function cleanupMySignals() {
-      if (!currentUser) return;
-      await supabase
+    async function clearAllSignalsForThisStream() {
+      const { error } = await supabase
         .from('stream_signals')
         .delete()
-        .eq('stream_id', streamId)
-        .eq('sender_id', currentUser.id);
+        .eq('stream_id', streamId);
+
+      if (error) {
+        console.error('Signal temizleme hatası:', error);
+      }
+
+      processedSignalIds.clear();
     }
 
     function createPeerConnection() {
       if (pc) return pc;
 
       pc = new RTCPeerConnection({
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' }
-        ]
+        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
       });
 
       pc.ontrack = (event) => {
@@ -1187,13 +1183,17 @@
       pc.onicecandidate = async (event) => {
         if (!event.candidate || !currentUser) return;
 
-        await supabase.from('stream_signals').insert({
+        const { error } = await supabase.from('stream_signals').insert({
           stream_id: streamId,
           sender_id: currentUser.id,
           target_id: isBroadcaster ? null : currentStream.streamer_id,
           type: 'candidate',
           payload: event.candidate.toJSON()
         });
+
+        if (error) {
+          console.error('Candidate yazılamadı:', error);
+        }
       };
 
       return pc;
@@ -1280,13 +1280,19 @@
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
 
-          await supabase.from('stream_signals').insert({
+          const { error: answerError } = await supabase.from('stream_signals').insert({
             stream_id: streamId,
             sender_id: currentUser.id,
             target_id: signal.sender_id,
             type: 'answer',
             payload: answer
           });
+
+          if (answerError) {
+            console.error('Answer yazılamadı:', answerError);
+            pageStatusEl.textContent = 'Yanıt gönderilemedi. İzleyici cihazda giriş yapıldığından emin ol.';
+            return;
+          }
 
           pageStatusEl.textContent = 'Yayın sinyali alındı, bağlantı kuruluyor...';
           return;
@@ -1374,9 +1380,12 @@
         await rebuildOutboundStream();
 
         if (!pc) {
-          await cleanupMySignals();
+          await clearAllSignalsForThisStream();
           await publishOffer();
           startSignalPolling();
+        } else {
+          await clearAllSignalsForThisStream();
+          await publishOffer();
         }
 
         pageStatusEl.textContent = 'Kamera açıldı. Sahne güncellendi.';
@@ -1419,10 +1428,11 @@
         await rebuildOutboundStream();
 
         if (!pc) {
-          await cleanupMySignals();
+          await clearAllSignalsForThisStream();
           await publishOffer();
           startSignalPolling();
         } else {
+          await clearAllSignalsForThisStream();
           await publishOffer();
         }
 
@@ -1438,6 +1448,7 @@
             }
             await rebuildOutboundStream();
             if (pc) {
+              await clearAllSignalsForThisStream();
               await publishOffer();
             }
             pageStatusEl.textContent = 'Ekran paylaşımı sona erdi.';
@@ -1463,6 +1474,7 @@
       await rebuildOutboundStream();
 
       if (pc) {
+        await clearAllSignalsForThisStream();
         await publishOffer();
       }
 
@@ -1474,7 +1486,10 @@
       syncControlsFromState();
 
       await rebuildOutboundStream();
-      if (pc) await publishOffer();
+      if (pc) {
+        await clearAllSignalsForThisStream();
+        await publishOffer();
+      }
 
       pageStatusEl.textContent = sceneState.micEnabled ? 'Mikrofon açıldı.' : 'Mikrofon kapatıldı.';
     }
@@ -1484,7 +1499,10 @@
       syncControlsFromState();
 
       await rebuildOutboundStream();
-      if (pc) await publishOffer();
+      if (pc) {
+        await clearAllSignalsForThisStream();
+        await publishOffer();
+      }
 
       pageStatusEl.textContent = sceneState.screenAudioEnabled ? 'Ekran sesi açıldı.' : 'Ekran sesi kapatıldı.';
     }
@@ -1496,13 +1514,8 @@
       }
 
       stopDrawLoop();
-
       await stopRawStreams();
       await resetPeer();
-
-      if (isBroadcaster) {
-        await cleanupMySignals();
-      }
 
       if (canvasCaptureStream) {
         canvasCaptureStream.getTracks().forEach(track => track.stop());
@@ -1510,6 +1523,10 @@
       }
 
       outboundStream = null;
+
+      if (isBroadcaster) {
+        await clearAllSignalsForThisStream();
+      }
 
       if (currentStream) {
         renderImagePlayer(currentStream, currentProfile);
