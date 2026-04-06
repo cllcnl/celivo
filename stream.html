@@ -80,7 +80,8 @@
     }
 
     .player video,
-    .player img {
+    .player img,
+    .player canvas {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -176,6 +177,44 @@
       gap: 10px;
     }
 
+    .panel-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .panel-block {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+
+    .mini-label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .select,
+    .range,
+    .text-input {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: white;
+      padding: 12px 14px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .range {
+      padding: 10px 12px;
+    }
+
     .btn {
       border: none;
       border-radius: 18px;
@@ -209,6 +248,10 @@
       filter: grayscale(.15);
     }
 
+    .btn-active {
+      box-shadow: 0 0 0 2px rgba(56,189,248,.35) inset;
+    }
+
     .panel-note {
       margin-top: 12px;
       color: var(--muted);
@@ -225,6 +268,10 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.6;
+    }
+
+    .hidden-file {
+      display: none;
     }
 
     .side-card {
@@ -326,6 +373,16 @@
       min-height: 22px;
     }
 
+    .hidden-media {
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+      left: -9999px;
+      top: -9999px;
+    }
+
     @media (max-width: 980px) {
       .layout {
         grid-template-columns: 1fr;
@@ -336,7 +393,8 @@
       .side-card {
         min-height: auto;
       }
-      .panel-grid {
+      .panel-grid,
+      .panel-grid-3 {
         grid-template-columns: 1fr;
       }
     }
@@ -368,15 +426,84 @@
 
           <div id="broadcaster-panel" class="broadcaster-panel">
             <h3 class="panel-title">Yayıncı kontrol paneli</h3>
+
             <div class="panel-grid">
               <button id="start-camera-btn" class="btn btn-success" type="button">Kamerayı Aç</button>
               <button id="share-screen-btn" class="btn btn-primary" type="button">Ekran Paylaş</button>
-              <button id="mute-mic-btn" class="btn btn-secondary" type="button">Mikrofonu Kapat</button>
+              <button id="toggle-mic-btn" class="btn btn-secondary" type="button">Mikrofon: Açık</button>
+              <button id="toggle-screen-audio-btn" class="btn btn-secondary" type="button">Ekran Sesi: Kapalı</button>
+            </div>
+
+            <div class="panel-block">
+              <div class="panel-grid">
+                <div>
+                  <label class="mini-label" for="scene-mode">Sahne modu</label>
+                  <select id="scene-mode" class="select">
+                    <option value="camera_only">Sadece Kamera</option>
+                    <option value="screen_only">Sadece Ekran</option>
+                    <option value="screen_camera" selected>Ekran + Kamera</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="mini-label" for="pip-position">Kamera konumu</label>
+                  <select id="pip-position" class="select">
+                    <option value="top-left">Sol Üst</option>
+                    <option value="top-right">Sağ Üst</option>
+                    <option value="bottom-left">Sol Alt</option>
+                    <option value="bottom-right" selected>Sağ Alt</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="panel-grid">
+                <div>
+                  <label class="mini-label" for="pip-size">Kamera kutusu boyutu</label>
+                  <input id="pip-size" class="range" type="range" min="18" max="40" value="24" />
+                </div>
+
+                <div>
+                  <label class="mini-label" for="camera-shape">Kamera şekli</label>
+                  <select id="camera-shape" class="select">
+                    <option value="rounded" selected>Yuvarlatılmış</option>
+                    <option value="circle">Daire</option>
+                    <option value="square">Kare</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-block">
+              <div class="panel-grid">
+                <div>
+                  <label class="mini-label" for="background-mode">Kamera arkası görünüm</label>
+                  <select id="background-mode" class="select">
+                    <option value="normal" selected>Normal</option>
+                    <option value="solid_dark">Koyu Arka Plan</option>
+                    <option value="solid_blue">Mavi Arka Plan</option>
+                    <option value="preset_1">Hazır Görsel 1</option>
+                    <option value="preset_2">Hazır Görsel 2</option>
+                    <option value="preset_3">Hazır Görsel 3</option>
+                    <option value="custom_image">Özel Görsel</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="mini-label" for="upload-background-btn">Özel görsel</label>
+                  <button id="upload-background-btn" class="btn btn-secondary" type="button">Görsel Yükle</button>
+                  <input id="background-file-input" class="hidden-file" type="file" accept="image/*" />
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-grid-3">
+              <button id="apply-scene-btn" class="btn btn-primary" type="button">Sahneyi Uygula</button>
+              <button id="stop-preview-btn" class="btn btn-secondary" type="button">Önizlemeyi Durdur</button>
               <button id="stop-stream-btn" class="btn btn-danger" type="button">Yayını Durdur</button>
             </div>
 
             <div class="panel-note">
-              Kamera bu cihazda destekleniyorsa burada açılır. Mobil tarayıcı bazen otomatik başlatmayı engelleyebilir; o durumda butona basınca açılır.
+              Bu sürümde ekran paylaşımı ana sahne, kamera ise köşede yüz kamerası olarak birleşir. Mikrofon ve ekran sesi ayrı ayrı kontrol edilir.
             </div>
 
             <div id="screen-support-note" class="support-note" style="display:none;"></div>
@@ -399,6 +526,10 @@
     </section>
   </main>
 
+  <video id="camera-source-video" class="hidden-media" autoplay muted playsinline></video>
+  <video id="screen-source-video" class="hidden-media" autoplay muted playsinline></video>
+  <canvas id="scene-canvas" class="hidden-media" width="1280" height="720"></canvas>
+
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
@@ -419,13 +550,29 @@
     const broadcasterPanelEl = document.getElementById('broadcaster-panel');
     const startCameraBtn = document.getElementById('start-camera-btn');
     const shareScreenBtn = document.getElementById('share-screen-btn');
-    const muteMicBtn = document.getElementById('mute-mic-btn');
+    const toggleMicBtn = document.getElementById('toggle-mic-btn');
+    const toggleScreenAudioBtn = document.getElementById('toggle-screen-audio-btn');
     const stopStreamBtn = document.getElementById('stop-stream-btn');
+    const stopPreviewBtn = document.getElementById('stop-preview-btn');
+    const applySceneBtn = document.getElementById('apply-scene-btn');
     const screenSupportNoteEl = document.getElementById('screen-support-note');
+
+    const sceneModeEl = document.getElementById('scene-mode');
+    const pipPositionEl = document.getElementById('pip-position');
+    const pipSizeEl = document.getElementById('pip-size');
+    const cameraShapeEl = document.getElementById('camera-shape');
+    const backgroundModeEl = document.getElementById('background-mode');
+    const uploadBackgroundBtn = document.getElementById('upload-background-btn');
+    const backgroundFileInput = document.getElementById('background-file-input');
 
     const chatMessagesEl = document.getElementById('chat-messages');
     const chatFormEl = document.getElementById('chat-form');
     const chatInputEl = document.getElementById('chat-input');
+
+    const cameraSourceVideo = document.getElementById('camera-source-video');
+    const screenSourceVideo = document.getElementById('screen-source-video');
+    const sceneCanvas = document.getElementById('scene-canvas');
+    const sceneCtx = sceneCanvas.getContext('2d');
 
     let currentUser = null;
     let currentStream = null;
@@ -434,12 +581,43 @@
     let isBroadcaster = false;
     let autoStartTried = false;
 
-    let localStream = null;
-    let remoteStream = null;
-    let pc = null;
+    let rawCameraStream = null;
+    let rawScreenStream = null;
+    let outboundStream = null;
+    let canvasCaptureStream = null;
 
+    let audioContext = null;
+    let audioDestination = null;
+    let micSourceNode = null;
+    let screenSourceNode = null;
+    let micGainNode = null;
+    let screenGainNode = null;
+
+    let pc = null;
+    let remoteStream = null;
     let processedSignalIds = new Set();
     let signalPollTimer = null;
+    let drawLoopHandle = null;
+
+    let customBackgroundUrl = '';
+
+    const presetBackgrounds = {
+      preset_1: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1600&q=80',
+      preset_2: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=1600&q=80',
+      preset_3: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1600&q=80'
+    };
+
+    const sceneState = {
+      mode: 'screen_camera',
+      pipPosition: 'bottom-right',
+      pipSizePercent: 24,
+      cameraShape: 'rounded',
+      micEnabled: true,
+      screenAudioEnabled: false,
+      backgroundMode: 'normal'
+    };
+
+    const backgroundImageCache = new Map();
 
     function safe(value, fallback = '') {
       return String(value ?? fallback)
@@ -507,13 +685,15 @@
       return document.getElementById('live-video');
     }
 
-    function showLocalPreview() {
+    function showOutboundPreview() {
+      if (!outboundStream) return;
       const videoEl = renderVideoPlayer(currentStream, true);
-      videoEl.srcObject = localStream;
+      videoEl.srcObject = outboundStream;
       videoEl.play().catch(() => {});
     }
 
     function showRemotePreview() {
+      if (!remoteStream) return;
       const videoEl = renderVideoPlayer(currentStream, false);
       videoEl.srcObject = remoteStream;
       videoEl.muted = false;
@@ -578,6 +758,7 @@
         followBtn.disabled = true;
         broadcasterPanelEl.classList.add('show');
         configureScreenShareUI();
+        syncControlsFromState();
 
         if (!autoStartTried) {
           autoStartTried = true;
@@ -714,6 +895,269 @@
       await loadMessages();
     }
 
+    function syncControlsFromState() {
+      sceneModeEl.value = sceneState.mode;
+      pipPositionEl.value = sceneState.pipPosition;
+      pipSizeEl.value = String(sceneState.pipSizePercent);
+      cameraShapeEl.value = sceneState.cameraShape;
+      backgroundModeEl.value = sceneState.backgroundMode;
+      toggleMicBtn.textContent = `Mikrofon: ${sceneState.micEnabled ? 'Açık' : 'Kapalı'}`;
+      toggleScreenAudioBtn.textContent = `Ekran Sesi: ${sceneState.screenAudioEnabled ? 'Açık' : 'Kapalı'}`;
+      toggleMicBtn.classList.toggle('btn-active', sceneState.micEnabled);
+      toggleScreenAudioBtn.classList.toggle('btn-active', sceneState.screenAudioEnabled);
+    }
+
+    function updateStateFromControls() {
+      sceneState.mode = sceneModeEl.value;
+      sceneState.pipPosition = pipPositionEl.value;
+      sceneState.pipSizePercent = Number(pipSizeEl.value || 24);
+      sceneState.cameraShape = cameraShapeEl.value;
+      sceneState.backgroundMode = backgroundModeEl.value;
+    }
+
+    async function loadBackgroundImage(src) {
+      if (!src) return null;
+      if (backgroundImageCache.has(src)) return backgroundImageCache.get(src);
+
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+
+      const promise = new Promise((resolve) => {
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+      });
+
+      img.src = src;
+      const loaded = await promise;
+      backgroundImageCache.set(src, loaded);
+      return loaded;
+    }
+
+    function getSelectedBackgroundSource() {
+      if (sceneState.backgroundMode === 'custom_image') return customBackgroundUrl || '';
+      if (sceneState.backgroundMode in presetBackgrounds) return presetBackgrounds[sceneState.backgroundMode];
+      return '';
+    }
+
+    function drawRoundedRectPath(ctx, x, y, w, h, r) {
+      const radius = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+
+    async function drawCameraLayer(x, y, w, h, asPip = false) {
+      if (!rawCameraStream || !cameraSourceVideo.srcObject) return;
+
+      const bgMode = sceneState.backgroundMode;
+
+      if (!asPip) {
+        if (bgMode === 'solid_dark') {
+          sceneCtx.fillStyle = '#0b1120';
+          sceneCtx.fillRect(0, 0, sceneCanvas.width, sceneCanvas.height);
+        } else if (bgMode === 'solid_blue') {
+          sceneCtx.fillStyle = '#0f2747';
+          sceneCtx.fillRect(0, 0, sceneCanvas.width, sceneCanvas.height);
+        } else {
+          const bgSrc = getSelectedBackgroundSource();
+          if (bgSrc) {
+            const bgImg = await loadBackgroundImage(bgSrc);
+            if (bgImg) {
+              sceneCtx.drawImage(bgImg, 0, 0, sceneCanvas.width, sceneCanvas.height);
+            } else {
+              sceneCtx.fillStyle = '#111827';
+              sceneCtx.fillRect(0, 0, sceneCanvas.width, sceneCanvas.height);
+            }
+          } else {
+            sceneCtx.fillStyle = '#0f172a';
+            sceneCtx.fillRect(0, 0, sceneCanvas.width, sceneCanvas.height);
+          }
+        }
+      }
+
+      sceneCtx.save();
+
+      if (sceneState.cameraShape === 'circle' && asPip) {
+        sceneCtx.beginPath();
+        sceneCtx.arc(x + w / 2, y + h / 2, Math.min(w, h) / 2, 0, Math.PI * 2);
+        sceneCtx.closePath();
+        sceneCtx.clip();
+      } else if (sceneState.cameraShape === 'rounded') {
+        drawRoundedRectPath(sceneCtx, x, y, w, h, 26);
+        sceneCtx.clip();
+      } else if (sceneState.cameraShape === 'square') {
+        sceneCtx.beginPath();
+        sceneCtx.rect(x, y, w, h);
+        sceneCtx.clip();
+      }
+
+      sceneCtx.drawImage(cameraSourceVideo, x, y, w, h);
+      sceneCtx.restore();
+
+      if (asPip) {
+        sceneCtx.save();
+        sceneCtx.lineWidth = 6;
+        sceneCtx.strokeStyle = 'rgba(255,255,255,.75)';
+        if (sceneState.cameraShape === 'circle') {
+          sceneCtx.beginPath();
+          sceneCtx.arc(x + w / 2, y + h / 2, Math.min(w, h) / 2, 0, Math.PI * 2);
+          sceneCtx.stroke();
+        } else if (sceneState.cameraShape === 'rounded') {
+          drawRoundedRectPath(sceneCtx, x, y, w, h, 26);
+          sceneCtx.stroke();
+        } else {
+          sceneCtx.strokeRect(x, y, w, h);
+        }
+        sceneCtx.restore();
+      }
+    }
+
+    async function drawScene() {
+      if (!isBroadcaster) return;
+
+      const W = sceneCanvas.width;
+      const H = sceneCanvas.height;
+
+      sceneCtx.clearRect(0, 0, W, H);
+      sceneCtx.fillStyle = '#0b1120';
+      sceneCtx.fillRect(0, 0, W, H);
+
+      const hasCamera = !!rawCameraStream && !!cameraSourceVideo.srcObject;
+      const hasScreen = !!rawScreenStream && !!screenSourceVideo.srcObject;
+
+      if (sceneState.mode === 'screen_only') {
+        if (hasScreen) {
+          sceneCtx.drawImage(screenSourceVideo, 0, 0, W, H);
+        } else if (hasCamera) {
+          await drawCameraLayer(0, 0, W, H, false);
+        }
+      }
+
+      if (sceneState.mode === 'camera_only') {
+        if (hasCamera) {
+          await drawCameraLayer(0, 0, W, H, false);
+        } else {
+          sceneCtx.fillStyle = '#111827';
+          sceneCtx.fillRect(0, 0, W, H);
+        }
+      }
+
+      if (sceneState.mode === 'screen_camera') {
+        if (hasScreen) {
+          sceneCtx.drawImage(screenSourceVideo, 0, 0, W, H);
+        } else {
+          sceneCtx.fillStyle = '#111827';
+          sceneCtx.fillRect(0, 0, W, H);
+        }
+
+        if (hasCamera) {
+          const size = Math.round((sceneState.pipSizePercent / 100) * W);
+          const pipW = size;
+          const pipH = Math.round(size * 16 / 9);
+          const margin = 24;
+
+          let x = W - pipW - margin;
+          let y = H - pipH - margin;
+
+          if (sceneState.pipPosition === 'top-left') {
+            x = margin;
+            y = margin;
+          }
+          if (sceneState.pipPosition === 'top-right') {
+            x = W - pipW - margin;
+            y = margin;
+          }
+          if (sceneState.pipPosition === 'bottom-left') {
+            x = margin;
+            y = H - pipH - margin;
+          }
+          if (sceneState.pipPosition === 'bottom-right') {
+            x = W - pipW - margin;
+            y = H - pipH - margin;
+          }
+
+          await drawCameraLayer(x, y, pipW, pipH, true);
+        }
+      }
+
+      drawLoopHandle = requestAnimationFrame(drawScene);
+    }
+
+    function startDrawLoop() {
+      if (drawLoopHandle) cancelAnimationFrame(drawLoopHandle);
+      drawLoopHandle = requestAnimationFrame(drawScene);
+    }
+
+    function stopDrawLoop() {
+      if (drawLoopHandle) {
+        cancelAnimationFrame(drawLoopHandle);
+        drawLoopHandle = null;
+      }
+    }
+
+    async function ensureAudioMix() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (!audioDestination) {
+        audioDestination = audioContext.createMediaStreamDestination();
+      }
+
+      if (audioContext.state === 'suspended') {
+        try { await audioContext.resume(); } catch (_) {}
+      }
+
+      if (micSourceNode) { try { micSourceNode.disconnect(); } catch (_) {} }
+      if (screenSourceNode) { try { screenSourceNode.disconnect(); } catch (_) {} }
+      if (micGainNode) { try { micGainNode.disconnect(); } catch (_) {} }
+      if (screenGainNode) { try { screenGainNode.disconnect(); } catch (_) {} }
+
+      micSourceNode = null;
+      screenSourceNode = null;
+      micGainNode = null;
+      screenGainNode = null;
+
+      if (rawCameraStream && rawCameraStream.getAudioTracks().length) {
+        micSourceNode = audioContext.createMediaStreamSource(new MediaStream([rawCameraStream.getAudioTracks()[0]]));
+        micGainNode = audioContext.createGain();
+        micGainNode.gain.value = sceneState.micEnabled ? 1 : 0;
+        micSourceNode.connect(micGainNode).connect(audioDestination);
+      }
+
+      if (rawScreenStream && rawScreenStream.getAudioTracks().length) {
+        screenSourceNode = audioContext.createMediaStreamSource(new MediaStream([rawScreenStream.getAudioTracks()[0]]));
+        screenGainNode = audioContext.createGain();
+        screenGainNode.gain.value = sceneState.screenAudioEnabled ? 1 : 0;
+        screenSourceNode.connect(screenGainNode).connect(audioDestination);
+      }
+    }
+
+    async function rebuildOutboundStream() {
+      if (!isBroadcaster) return;
+
+      await ensureAudioMix();
+
+      if (canvasCaptureStream) {
+        canvasCaptureStream.getTracks().forEach(track => track.stop());
+      }
+
+      canvasCaptureStream = sceneCanvas.captureStream(30);
+      const videoTrack = canvasCaptureStream.getVideoTracks()[0];
+      const mixedAudioTracks = audioDestination ? audioDestination.stream.getAudioTracks() : [];
+
+      outboundStream = new MediaStream([
+        ...(videoTrack ? [videoTrack] : []),
+        ...mixedAudioTracks
+      ]);
+
+      showOutboundPreview();
+      await replacePeerTracks();
+    }
+
     async function cleanupMySignals() {
       if (!currentUser) return;
       await supabase
@@ -732,12 +1176,9 @@
         ]
       });
 
-      remoteStream = new MediaStream();
-
       pc.ontrack = (event) => {
         const inbound = event.streams?.[0];
         if (!inbound) return;
-
         remoteStream = inbound;
         showRemotePreview();
         pageStatusEl.textContent = 'Canlı yayın bağlantısı kuruldu.';
@@ -763,40 +1204,50 @@
         try { pc.close(); } catch (_) {}
         pc = null;
       }
-      remoteStream = new MediaStream();
+      remoteStream = null;
     }
 
-    async function stopAllTracks() {
-      if (!localStream) return;
-      localStream.getTracks().forEach(track => track.stop());
-      localStream = null;
+    async function stopRawStreams() {
+      if (rawCameraStream) {
+        rawCameraStream.getTracks().forEach(track => track.stop());
+        rawCameraStream = null;
+      }
+      if (rawScreenStream) {
+        rawScreenStream.getTracks().forEach(track => track.stop());
+        rawScreenStream = null;
+      }
+      cameraSourceVideo.srcObject = null;
+      screenSourceVideo.srcObject = null;
     }
 
-    async function addLocalTracks() {
-      if (!localStream) return;
+    async function replacePeerTracks() {
+      if (!pc || !outboundStream) return;
 
-      const peer = createPeerConnection();
-      const senders = peer.getSenders();
+      const senders = pc.getSenders();
+      const videoTrack = outboundStream.getVideoTracks()[0] || null;
+      const audioTrack = outboundStream.getAudioTracks()[0] || null;
 
-      for (const track of localStream.getTracks()) {
-        const existing = senders.find(sender => sender.track && sender.track.kind === track.kind);
-        if (existing) {
-          await existing.replaceTrack(track);
-        } else {
-          peer.addTrack(track, localStream);
-        }
+      const videoSender = senders.find(sender => sender.track && sender.track.kind === 'video');
+      const audioSender = senders.find(sender => sender.track && sender.track.kind === 'audio');
+
+      if (videoSender) {
+        await videoSender.replaceTrack(videoTrack);
+      } else if (videoTrack) {
+        pc.addTrack(videoTrack, outboundStream);
+      }
+
+      if (audioSender) {
+        await audioSender.replaceTrack(audioTrack);
+      } else if (audioTrack) {
+        pc.addTrack(audioTrack, outboundStream);
       }
     }
 
     async function publishOffer() {
       const peer = createPeerConnection();
-      await addLocalTracks();
+      await replacePeerTracks();
 
-      const offer = await peer.createOffer({
-        offerToReceiveAudio: false,
-        offerToReceiveVideo: false
-      });
-
+      const offer = await peer.createOffer();
       await peer.setLocalDescription(offer);
 
       await supabase.from('stream_signals').insert({
@@ -886,7 +1337,6 @@
 
     function startSignalPolling() {
       if (signalPollTimer) return;
-
       pollSignals();
       signalPollTimer = setInterval(() => {
         pollSignals();
@@ -905,21 +1355,31 @@
           return;
         }
 
-        await stopAllTracks();
-        await resetPeer();
-        await cleanupMySignals();
+        if (rawCameraStream) {
+          rawCameraStream.getTracks().forEach(track => track.stop());
+        }
 
-        localStream = await navigator.mediaDevices.getUserMedia({
+        rawCameraStream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user' },
           audio: true
         });
 
-        showLocalPreview();
-        await publishOffer();
-        startSignalPolling();
+        cameraSourceVideo.srcObject = rawCameraStream;
+        await cameraSourceVideo.play().catch(() => {});
 
-        muteMicBtn.textContent = 'Mikrofonu Kapat';
-        pageStatusEl.textContent = 'Kamera ve mikrofon açıldı. İzleyici bağlantısı bekleniyor.';
+        updateStateFromControls();
+        syncControlsFromState();
+
+        startDrawLoop();
+        await rebuildOutboundStream();
+
+        if (!pc) {
+          await cleanupMySignals();
+          await publishOffer();
+          startSignalPolling();
+        }
+
+        pageStatusEl.textContent = 'Kamera açıldı. Sahne güncellendi.';
       } catch (error) {
         console.error(error);
         if (!silent) {
@@ -940,26 +1400,46 @@
           return;
         }
 
-        await stopAllTracks();
-        await resetPeer();
-        await cleanupMySignals();
+        if (rawScreenStream) {
+          rawScreenStream.getTracks().forEach(track => track.stop());
+        }
 
-        localStream = await navigator.mediaDevices.getDisplayMedia({
+        rawScreenStream = await navigator.mediaDevices.getDisplayMedia({
           video: true,
           audio: true
         });
 
-        showLocalPreview();
-        await publishOffer();
-        startSignalPolling();
+        screenSourceVideo.srcObject = rawScreenStream;
+        await screenSourceVideo.play().catch(() => {});
 
-        muteMicBtn.textContent = 'Mikrofonu Kapat';
-        pageStatusEl.textContent = 'Ekran paylaşımı başladı. İzleyici bağlantısı bekleniyor.';
+        updateStateFromControls();
+        syncControlsFromState();
 
-        const videoTrack = localStream.getVideoTracks()[0];
+        startDrawLoop();
+        await rebuildOutboundStream();
+
+        if (!pc) {
+          await cleanupMySignals();
+          await publishOffer();
+          startSignalPolling();
+        } else {
+          await publishOffer();
+        }
+
+        pageStatusEl.textContent = 'Ekran paylaşımı açıldı. Sahne güncellendi.';
+
+        const videoTrack = rawScreenStream.getVideoTracks()[0];
         if (videoTrack) {
-          videoTrack.onended = () => {
-            stopPreviewOnly();
+          videoTrack.onended = async () => {
+            if (rawScreenStream) {
+              rawScreenStream.getTracks().forEach(track => track.stop());
+              rawScreenStream = null;
+              screenSourceVideo.srcObject = null;
+            }
+            await rebuildOutboundStream();
+            if (pc) {
+              await publishOffer();
+            }
             pageStatusEl.textContent = 'Ekran paylaşımı sona erdi.';
           };
         }
@@ -969,25 +1449,44 @@
       }
     }
 
-    function toggleMic() {
-      if (!localStream) {
-        pageStatusEl.textContent = 'Önce kamera başlat.';
+    async function applySceneSettings() {
+      updateStateFromControls();
+      syncControlsFromState();
+
+      if (!isBroadcaster) return;
+      if (!rawCameraStream && !rawScreenStream) {
+        pageStatusEl.textContent = 'Önce kamera veya ekran paylaşımı başlat.';
         return;
       }
 
-      const audioTracks = localStream.getAudioTracks();
-      if (!audioTracks.length) {
-        pageStatusEl.textContent = 'Bu akışta mikrofon yok.';
-        return;
+      startDrawLoop();
+      await rebuildOutboundStream();
+
+      if (pc) {
+        await publishOffer();
       }
 
-      const willMute = audioTracks[0].enabled;
-      audioTracks.forEach(track => {
-        track.enabled = !willMute;
-      });
+      pageStatusEl.textContent = 'Sahne ayarları uygulandı.';
+    }
 
-      muteMicBtn.textContent = willMute ? 'Mikrofonu Aç' : 'Mikrofonu Kapat';
-      pageStatusEl.textContent = willMute ? 'Mikrofon kapatıldı.' : 'Mikrofon açıldı.';
+    async function toggleMic() {
+      sceneState.micEnabled = !sceneState.micEnabled;
+      syncControlsFromState();
+
+      await rebuildOutboundStream();
+      if (pc) await publishOffer();
+
+      pageStatusEl.textContent = sceneState.micEnabled ? 'Mikrofon açıldı.' : 'Mikrofon kapatıldı.';
+    }
+
+    async function toggleScreenAudio() {
+      sceneState.screenAudioEnabled = !sceneState.screenAudioEnabled;
+      syncControlsFromState();
+
+      await rebuildOutboundStream();
+      if (pc) await publishOffer();
+
+      pageStatusEl.textContent = sceneState.screenAudioEnabled ? 'Ekran sesi açıldı.' : 'Ekran sesi kapatıldı.';
     }
 
     async function stopPreviewOnly() {
@@ -996,18 +1495,27 @@
         signalPollTimer = null;
       }
 
-      await stopAllTracks();
+      stopDrawLoop();
+
+      await stopRawStreams();
       await resetPeer();
 
       if (isBroadcaster) {
         await cleanupMySignals();
       }
 
+      if (canvasCaptureStream) {
+        canvasCaptureStream.getTracks().forEach(track => track.stop());
+        canvasCaptureStream = null;
+      }
+
+      outboundStream = null;
+
       if (currentStream) {
         renderImagePlayer(currentStream, currentProfile);
       }
 
-      muteMicBtn.textContent = 'Mikrofonu Kapat';
+      pageStatusEl.textContent = 'Önizleme durduruldu.';
     }
 
     async function stopLiveStream() {
@@ -1037,11 +1545,31 @@
       }
     }
 
+    uploadBackgroundBtn.addEventListener('click', () => {
+      backgroundFileInput.click();
+    });
+
+    backgroundFileInput.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      customBackgroundUrl = URL.createObjectURL(file);
+      backgroundModeEl.value = 'custom_image';
+      sceneState.backgroundMode = 'custom_image';
+
+      if (isBroadcaster && (rawCameraStream || rawScreenStream)) {
+        await applySceneSettings();
+      }
+    });
+
     followBtn.addEventListener('click', toggleFollow);
     chatFormEl.addEventListener('submit', sendMessage);
     startCameraBtn.addEventListener('click', () => startCamera(false));
     shareScreenBtn.addEventListener('click', shareScreen);
-    muteMicBtn.addEventListener('click', toggleMic);
+    toggleMicBtn.addEventListener('click', toggleMic);
+    toggleScreenAudioBtn.addEventListener('click', toggleScreenAudio);
+    applySceneBtn.addEventListener('click', applySceneSettings);
+    stopPreviewBtn.addEventListener('click', stopPreviewOnly);
     stopStreamBtn.addEventListener('click', stopLiveStream);
 
     await loadStream();
