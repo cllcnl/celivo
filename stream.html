@@ -436,10 +436,11 @@
     let isBroadcaster = false;
     let autoStartTried = false;
 
-    let peerConnection = null;
-    let signalingStarted = false;
+    let pc = null;
+    let remoteMedia = new MediaStream();
+    let signalChannel = null;
     let processedSignalIds = new Set();
-    let remoteStream = null;
+    let lastOfferSenderId = null;
 
     function safe(value, fallback = '') {
       return String(value ?? fallback)
@@ -498,13 +499,26 @@
       `;
     }
 
-    function renderVideoPlayer(stream, muted = true) {
+    function renderVideoPlayer(stream, muted = false) {
       playerEl.innerHTML = `
         <video id="live-video" autoplay playsinline ${muted ? 'muted' : ''}></video>
         <div class="live-badge">CANLI</div>
         <div class="viewer-chip">👁 ${safe(formatViewers(stream?.viewer_count || 0))} izleyici</div>
       `;
       return document.getElementById('live-video');
+    }
+
+    function attachLocalPreview() {
+      const videoEl = renderVideoPlayer(currentStream, true);
+      videoEl.srcObject = localStream;
+      videoEl.play().catch(() => {});
+    }
+
+    function attachRemotePreview() {
+      const videoEl = renderVideoPlayer(currentStream, false);
+      videoEl.srcObject = remoteMedia;
+      videoEl.muted = false;
+      videoEl.play().catch(() => {});
     }
 
     async function getCurrentUser() {
@@ -568,9 +582,7 @@
 
         if (!autoStartTried) {
           autoStartTried = true;
-          setTimeout(() => {
-            startCamera(true);
-          }, 350);
+          setTimeout(() => startCamera(true), 350);
         }
         return;
       }
@@ -703,42 +715,7 @@
       await loadMessages();
     }
 
-    function createPeerConnection() {
-      if (peerConnection) return peerConnection;
-
-      peerConnection = new RTCPeerConnection({
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-      });
-
-      remoteStream = new MediaStream();
-
-      peerConnection.ontrack = (event) => {
-        event.streams[0].getTracks().forEach(track => {
-          remoteStream.addTrack(track);
-        });
-
-        const videoEl = renderVideoPlayer(currentStream, false);
-        videoEl.srcObject = remoteStream;
-        videoEl.muted = false;
-        videoEl.play().catch(() => {});
-      };
-
-      peerConnection.onicecandidate = async (event) => {
-        if (!event.candidate || !currentUser) return;
-
-        await supabase.from('stream_signals').insert({
-          stream_id: streamId,
-          sender_id: currentUser.id,
-          target_id: null,
-          type: 'candidate',
-          payload: event.candidate.toJSON()
-        });
-      };
-
-      return peerConnection;
-    }
-
-    async function clearOldSignals() {
+    async function cleanupMySignals() {
       if (!currentUser) return;
       await supabase
         .from('stream_signals')
@@ -747,32 +724,74 @@
         .eq('sender_id', currentUser.id);
     }
 
+    async function cleanupPeer() {
+      if (pc) {
+        try { pc.onicecandidate = null; } catch (_) {}
+        try { pc.ontrack = null; } catch (_) {}
+        try { pc.close(); } catch (_) {}
+        pc = null;
+      }
+      remoteMedia = new MediaStream();
+    }
+
     async function stopAllTracks() {
       if (!localStream) return;
       localStream.getTracks().forEach(track => track.stop());
       localStream = null;
     }
 
-    async function recreateLocalTracksWithCurrentStream() {
-      if (!peerConnection || !localStream) return;
+    function ensurePeer() {
+      if (pc) return pc;
 
-      const senders = peerConnection.getSenders();
+      pc = new RTCPeerConnection({
+        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+      });
+
+      pc.ontrack = (event) => {
+        const inbound = event.streams[0];
+        if (!inbound) return;
+
+        remoteMedia = inbound;
+        attachRemotePreview();
+        pageStatusEl.textContent = 'Canlı yayın bağlantısı kuruldu.';
+      };
+
+      pc.onicecandidate = async (event) => {
+        if (!event.candidate || !currentUser) return;
+
+        await supabase.from('stream_signals').insert({
+          stream_id: streamId,
+          sender_id: currentUser.id,
+          target_id: isBroadcaster ? null : currentStream.streamer_id,
+          type: 'candidate',
+          payload: event.candidate.toJSON()
+        });
+      };
+
+      return pc;
+    }
+
+    async function addLocalTracksToPeer() {
+      if (!localStream) return;
+      const peer = ensurePeer();
+      const senders = peer.getSenders();
 
       for (const track of localStream.getTracks()) {
-        const existingSender = senders.find(s => s.track && s.track.kind === track.kind);
-        if (existingSender) {
-          await existingSender.replaceTrack(track);
+        const existing = senders.find(sender => sender.track && sender.track.kind === track.kind);
+        if (existing) {
+          await existing.replaceTrack(track);
         } else {
-          peerConnection.addTrack(track, localStream);
+          peer.addTrack(track, localStream);
         }
       }
     }
 
-    async function createAndSendOffer() {
-      if (!currentUser || !peerConnection) return;
+    async function createOfferAndPublish() {
+      const peer = ensurePeer();
+      await addLocalTracksToPeer();
 
-      const offer = await peerConnection.createOffer();
-      await peerConnection.setLocalDescription(offer);
+      const offer = await peer.createOffer();
+      await peer.setLocalDescription(offer);
 
       await supabase.from('stream_signals').insert({
         stream_id: streamId,
@@ -783,25 +802,88 @@
       });
     }
 
-    async function startBroadcasterSignaling() {
-      createPeerConnection();
-      await recreateLocalTracksWithCurrentStream();
-      await clearOldSignals();
-      await createAndSendOffer();
+    async function handleSignal(signal) {
+      if (!signal || processedSignalIds.has(signal.id)) return;
+      processedSignalIds.add(signal.id);
+
+      if (!currentUser) currentUser = await getCurrentUser();
+      if (!currentUser) return;
+
+      if (signal.sender_id === currentUser.id) return;
+
+      const peer = ensurePeer();
+
+      try {
+        if (signal.type === 'offer') {
+          if (isBroadcaster) return;
+
+          lastOfferSenderId = signal.sender_id || currentStream.streamer_id;
+
+          if (peer.signalingState !== 'stable') {
+            await cleanupPeer();
+          }
+
+          ensurePeer();
+
+          await pc.setRemoteDescription(new RTCSessionDescription(signal.payload));
+          const answer = await pc.createAnswer();
+          await pc.setLocalDescription(answer);
+
+          await supabase.from('stream_signals').insert({
+            stream_id: streamId,
+            sender_id: currentUser.id,
+            target_id: lastOfferSenderId,
+            type: 'answer',
+            payload: answer
+          });
+
+          pageStatusEl.textContent = 'Yayın sinyali alındı, bağlantı kuruluyor...';
+        }
+
+        if (signal.type === 'answer') {
+          if (!isBroadcaster) return;
+          if (signal.target_id && signal.target_id !== currentUser.id) return;
+          if (!pc) return;
+          if (!pc.localDescription) return;
+          if (pc.currentRemoteDescription) return;
+
+          await pc.setRemoteDescription(new RTCSessionDescription(signal.payload));
+          pageStatusEl.textContent = 'İzleyici bağlandı.';
+        }
+
+        if (signal.type === 'candidate') {
+          if (!pc) return;
+
+          if (signal.target_id && signal.target_id !== currentUser.id && !isBroadcaster) return;
+
+          try {
+            await pc.addIceCandidate(new RTCIceCandidate(signal.payload));
+          } catch (_) {}
+        }
+      } catch (err) {
+        console.error('Signal işleme hatası:', err);
+      }
     }
 
-    async function startViewerSignaling() {
-      createPeerConnection();
-      startSignalSubscription();
-      await pullExistingOfferIfAny();
+    async function loadExistingSignals() {
+      const { data, error } = await supabase
+        .from('stream_signals')
+        .select('*')
+        .eq('stream_id', streamId)
+        .order('created_at', { ascending: true });
+
+      if (error || !data) return;
+
+      for (const signal of data) {
+        await handleSignal(signal);
+      }
     }
 
-    function startSignalSubscription() {
-      if (signalingStarted) return;
-      signalingStarted = true;
+    function subscribeSignals() {
+      if (signalChannel) return;
 
-      supabase
-        .channel('stream-signals-' + streamId + '-' + Math.random().toString(36).slice(2))
+      signalChannel = supabase
+        .channel('signals-' + streamId + '-' + Math.random().toString(36).slice(2))
         .on(
           'postgres_changes',
           {
@@ -817,70 +899,6 @@
         .subscribe();
     }
 
-    async function pullExistingOfferIfAny() {
-      const { data, error } = await supabase
-        .from('stream_signals')
-        .select('*')
-        .eq('stream_id', streamId)
-        .order('created_at', { ascending: true });
-
-      if (error || !data) return;
-
-      for (const row of data) {
-        await handleSignal(row);
-      }
-    }
-
-    async function handleSignal(signal) {
-      if (!signal || processedSignalIds.has(signal.id)) return;
-      processedSignalIds.add(signal.id);
-
-      if (!currentUser) currentUser = await getCurrentUser();
-      const pc = createPeerConnection();
-
-      if (signal.sender_id === currentUser?.id) return;
-
-      try {
-        if (signal.type === 'offer') {
-          if (isBroadcaster) return;
-
-          if (pc.signalingState !== 'stable') return;
-
-          await pc.setRemoteDescription(new RTCSessionDescription(signal.payload));
-          const answer = await pc.createAnswer();
-          await pc.setLocalDescription(answer);
-
-          await supabase.from('stream_signals').insert({
-            stream_id: streamId,
-            sender_id: currentUser?.id || null,
-            target_id: signal.sender_id || null,
-            type: 'answer',
-            payload: answer
-          });
-
-          pageStatusEl.textContent = 'Canlı yayın bağlantısı kuruldu.';
-        }
-
-        if (signal.type === 'answer') {
-          if (!isBroadcaster) return;
-          if (!pc.localDescription) return;
-          if (pc.currentRemoteDescription) return;
-
-          await pc.setRemoteDescription(new RTCSessionDescription(signal.payload));
-          pageStatusEl.textContent = 'İzleyici bağlantısı kuruldu.';
-        }
-
-        if (signal.type === 'candidate') {
-          if (!signal.payload) return;
-          try {
-            await pc.addIceCandidate(new RTCIceCandidate(signal.payload));
-          } catch (_) {}
-        }
-      } catch (err) {
-        console.error('Signal işleme hatası:', err);
-      }
-    }
-
     async function startCamera(silent = false) {
       try {
         if (!isBroadcaster) {
@@ -894,23 +912,23 @@
         }
 
         await stopAllTracks();
+        await cleanupPeer();
+        await cleanupMySignals();
 
         localStream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user' },
           audio: true
         });
 
-        const videoEl = renderVideoPlayer(currentStream, true);
-        videoEl.srcObject = localStream;
-        videoEl.play().catch(() => {});
+        attachLocalPreview();
 
         isMicMuted = false;
         muteMicBtn.textContent = 'Mikrofonu Kapat';
 
-        await startBroadcasterSignaling();
-        startSignalSubscription();
+        await createOfferAndPublish();
+        subscribeSignals();
 
-        pageStatusEl.textContent = 'Kamera ve mikrofon açıldı. Yayın sinyali gönderildi.';
+        pageStatusEl.textContent = 'Kamera ve mikrofon açıldı. İzleyici bağlantısı bekleniyor.';
       } catch (error) {
         console.error(error);
         if (!silent) {
@@ -932,23 +950,23 @@
         }
 
         await stopAllTracks();
+        await cleanupPeer();
+        await cleanupMySignals();
 
         localStream = await navigator.mediaDevices.getDisplayMedia({
           video: true,
           audio: true
         });
 
-        const videoEl = renderVideoPlayer(currentStream, true);
-        videoEl.srcObject = localStream;
-        videoEl.play().catch(() => {});
+        attachLocalPreview();
 
         isMicMuted = false;
         muteMicBtn.textContent = 'Mikrofonu Kapat';
 
-        await startBroadcasterSignaling();
-        startSignalSubscription();
+        await createOfferAndPublish();
+        subscribeSignals();
 
-        pageStatusEl.textContent = 'Ekran paylaşımı başladı. Yayın sinyali gönderildi.';
+        pageStatusEl.textContent = 'Ekran paylaşımı başladı. İzleyici bağlantısı bekleniyor.';
 
         const videoTrack = localStream.getVideoTracks()[0];
         if (videoTrack) {
@@ -985,15 +1003,13 @@
       pageStatusEl.textContent = isMicMuted ? 'Mikrofon kapatıldı.' : 'Mikrofon açıldı.';
     }
 
-    function stopPreviewOnly() {
-      stopAllTracks();
+    async function stopPreviewOnly() {
+      await stopAllTracks();
+      await cleanupPeer();
 
-      if (peerConnection) {
-        peerConnection.close();
-        peerConnection = null;
+      if (isBroadcaster) {
+        await cleanupMySignals();
       }
-
-      remoteStream = null;
 
       if (currentStream) {
         renderImagePlayer(currentStream, currentProfile);
@@ -1007,7 +1023,7 @@
       try {
         if (!isBroadcaster || !currentStream) return;
 
-        stopPreviewOnly();
+        await stopPreviewOnly();
 
         const { error } = await supabase
           .from('streams')
@@ -1041,9 +1057,11 @@
     await loadFollowState();
     await loadMessages();
 
+    subscribeSignals();
+
     if (!isBroadcaster) {
-      startSignalSubscription();
-      await startViewerSignaling();
+      await loadExistingSignals();
+      pageStatusEl.textContent = 'Yayın bağlantısı bekleniyor...';
     }
 
     setInterval(async () => {
