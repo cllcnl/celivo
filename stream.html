@@ -203,10 +203,27 @@
       background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
     }
 
+    .btn-disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      filter: grayscale(.15);
+    }
+
     .panel-note {
       margin-top: 12px;
       color: var(--muted);
       font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .support-note {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      color: var(--muted);
+      font-size: 13px;
       line-height: 1.6;
     }
 
@@ -357,10 +374,12 @@
               <button id="mute-mic-btn" class="btn btn-secondary" type="button">Mikrofonu Kapat</button>
               <button id="stop-stream-btn" class="btn btn-danger" type="button">Yayını Durdur</button>
             </div>
+
             <div class="panel-note">
-              Kamera ve ekran paylaşımı bu cihazda destekleniyorsa burada açılır.
-              Mobil tarayıcı bazen otomatik başlatmayı engelleyebilir; o durumda butona basınca açılır.
+              Kamera bu cihazda destekleniyorsa burada açılır. Mobil tarayıcı bazen otomatik başlatmayı engelleyebilir; o durumda butona basınca açılır.
             </div>
+
+            <div id="screen-support-note" class="support-note" style="display:none;"></div>
           </div>
 
           <div class="status" id="page-status"></div>
@@ -402,6 +421,7 @@
     const shareScreenBtn = document.getElementById('share-screen-btn');
     const muteMicBtn = document.getElementById('mute-mic-btn');
     const stopStreamBtn = document.getElementById('stop-stream-btn');
+    const screenSupportNoteEl = document.getElementById('screen-support-note');
 
     const chatMessagesEl = document.getElementById('chat-messages');
     const chatFormEl = document.getElementById('chat-form');
@@ -433,6 +453,36 @@
     function getThumb(profile) {
       if (profile?.avatar_url) return profile.avatar_url;
       return 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80';
+    }
+
+    function isMobileDevice() {
+      return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    }
+
+    function hasScreenShareSupport() {
+      return !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
+    }
+
+    function configureScreenShareUI() {
+      const supported = hasScreenShareSupport();
+      const mobile = isMobileDevice();
+
+      if (supported && !mobile) {
+        shareScreenBtn.disabled = false;
+        shareScreenBtn.classList.remove('btn-disabled');
+        screenSupportNoteEl.style.display = 'none';
+        return;
+      }
+
+      shareScreenBtn.disabled = true;
+      shareScreenBtn.classList.add('btn-disabled');
+      screenSupportNoteEl.style.display = 'block';
+
+      if (!supported) {
+        screenSupportNoteEl.textContent = 'Ekran paylaşımı bu cihaz veya tarayıcıda desteklenmiyor.';
+      } else if (mobile) {
+        screenSupportNoteEl.textContent = 'Ekran paylaşımı genelde masaüstü tarayıcılarda daha stabil çalışır. Telefonda kısıtlı veya kapalı olabilir.';
+      }
     }
 
     function renderImagePlayer(stream, profile) {
@@ -509,6 +559,7 @@
         followBtn.textContent = 'Kendi yayının';
         followBtn.disabled = true;
         broadcasterPanelEl.classList.add('show');
+        configureScreenShareUI();
 
         if (!autoStartTried) {
           autoStartTried = true;
@@ -697,8 +748,8 @@
           return;
         }
 
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
-          pageStatusEl.textContent = 'Bu cihaz veya tarayıcı ekran paylaşımını desteklemiyor.';
+        if (!hasScreenShareSupport() || isMobileDevice()) {
+          pageStatusEl.textContent = 'Ekran paylaşımı bu cihazda kullanılamıyor. Bunu masaüstünde dene.';
           return;
         }
 
@@ -735,7 +786,7 @@
 
     function toggleMic() {
       if (!localStream) {
-        pageStatusEl.textContent = 'Önce kamera veya ekran paylaşımı başlat.';
+        pageStatusEl.textContent = 'Önce kamera başlat.';
         return;
       }
 
