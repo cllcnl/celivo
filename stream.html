@@ -502,7 +502,7 @@
             </div>
 
             <div class="panel-note">
-              Bu sürümde ekran paylaşımı ana sahne, kamera ise köşede yüz kamerası olarak birleşir. Mikrofon ve ekran sesi ayrı ayrı kontrol edilir.
+              Ekran paylaşımı ana sahne, kamera ise köşede yüz kamerası olarak birleşir. Mikrofon ve ekran sesi ayrı ayrı kontrol edilir. TURN desteği aktif.
             </div>
 
             <div id="screen-support-note" class="support-note" style="display:none;"></div>
@@ -536,6 +536,30 @@
       'https://nxxnhqtqvrkbdhltoijz.supabase.co',
       'sb_publishable_YKoXoU5eJNyO7bYBKWh73g_0RDK7bF0'
     );
+
+    const ICE_SERVERS = [
+      { urls: 'stun:stun.relay.metered.ca:80' },
+      {
+        urls: 'turn:standard.relay.metered.ca:80',
+        username: '723792a924e8af5e8e71e264',
+        credential: '88xPKO3pAq1AbOfd'
+      },
+      {
+        urls: 'turn:standard.relay.metered.ca:80?transport=tcp',
+        username: '723792a924e8af5e8e71e264',
+        credential: '88xPKO3pAq1AbOfd'
+      },
+      {
+        urls: 'turn:standard.relay.metered.ca:443',
+        username: '723792a924e8af5e8e71e264',
+        credential: '88xPKO3pAq1AbOfd'
+      },
+      {
+        urls: 'turns:standard.relay.metered.ca:443?transport=tcp',
+        username: '723792a924e8af5e8e71e264',
+        credential: '88xPKO3pAq1AbOfd'
+      }
+    ];
 
     const params = new URLSearchParams(window.location.search);
     const streamId = params.get('id');
@@ -662,7 +686,7 @@
       if (!supported) {
         screenSupportNoteEl.textContent = 'Ekran paylaşımı bu cihaz veya tarayıcıda desteklenmiyor.';
       } else if (mobile) {
-        screenSupportNoteEl.textContent = 'Ekran paylaşımı genelde masaüstü tarayıcılarda daha stabil çalışır. Telefonda kısıtlı veya kapalı olabilir.';
+        screenSupportNoteEl.textContent = 'Ekran paylaşımı genelde masaüstü tarayıcılarda daha stabil çalışır. Telefonda kısıtlı olabilir.';
       }
     }
 
@@ -1169,7 +1193,8 @@
       if (pc) return pc;
 
       pc = new RTCPeerConnection({
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        iceServers: ICE_SERVERS,
+        iceTransportPolicy: 'all'
       });
 
       pc.ontrack = (event) => {
@@ -1193,6 +1218,26 @@
 
         if (error) {
           console.error('Candidate yazılamadı:', error);
+        }
+      };
+
+      pc.onconnectionstatechange = () => {
+        const state = pc?.connectionState || '';
+        if (state === 'connected') {
+          pageStatusEl.textContent = 'Bağlantı kuruldu.';
+        } else if (state === 'connecting') {
+          pageStatusEl.textContent = 'Bağlantı kuruluyor...';
+        } else if (state === 'failed') {
+          pageStatusEl.textContent = 'Bağlantı başarısız.';
+        } else if (state === 'disconnected') {
+          pageStatusEl.textContent = 'Bağlantı kesildi.';
+        }
+      };
+
+      pc.oniceconnectionstatechange = () => {
+        const state = pc?.iceConnectionState || '';
+        if (state === 'failed') {
+          pageStatusEl.textContent = 'ICE bağlantısı başarısız.';
         }
       };
 
