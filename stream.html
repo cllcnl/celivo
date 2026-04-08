@@ -561,6 +561,10 @@
       }
     ];
 
+    const VIEWER_ACTIVE_WINDOW_MS = 20000;
+    const VIEWER_HEARTBEAT_MS = 8000;
+    const VIEWER_COUNT_POLL_MS = 5000;
+
     const params = new URLSearchParams(window.location.search);
     const streamId = params.get('id');
 
@@ -569,6 +573,7 @@
     const streamSubEl = document.getElementById('stream-sub');
     const pageStatusEl = document.getElementById('page-status');
     const followBtn = document.getElementById('follow-btn');
+    const viewerChipEl = document.getElementById('viewer-chip');
 
     const broadcasterPanelEl = document.getElementById('broadcaster-panel');
     const startCameraBtn = document.getElementById('start-camera-btn');
@@ -624,6 +629,9 @@
     let drawLoopHandle = null;
     let customBackgroundUrl = '';
 
+    let viewerHeartbeatTimer = null;
+    let viewerCountTimer = null;
+
     const presetBackgrounds = {
       preset_1: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1600&q=80',
       preset_2: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=1600&q=80',
@@ -656,6 +664,10 @@
       return `${n}`;
     }
 
+    function updateViewerChip(count) {
+      viewerChipEl.textContent = `👁 ${formatViewers(count)} izleyici`;
+    }
+
     function getThumb(profile) {
       if (profile?.avatar_url) return profile.avatar_url;
       return 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80';
@@ -684,6 +696,104 @@
       return actorId;
     }
 
+    async function upsertViewerPresence() {
+      if (!streamId) return;
+      await ensureActorId();
+
+      const { error } = await supabase
+        .from('stream_viewers')
+        .upsert({
+          stream_id: streamId,
+          viewer_id: actorId,
+          is_active: true,
+          last_seen: new Date().toISOString()
+        }, { onConflict: 'stream_id,viewer_id' });
+
+      if (error) {
+        console.error('Viewer presence yazılamadı:', error);
+      }
+    }
+
+    async function markViewerInactive() {
+      if (!streamId) return;
+      await ensureActorId();
+
+      const { error } = await supabase
+        .from('stream_viewers')
+        .update({
+          is_active: false,
+          last_seen: new Date().toISOString()
+        })
+        .eq('stream_id', streamId)
+        .eq('viewer_id', actorId);
+
+      if (error) {
+        console.error('Viewer pasiflenemedi:', error);
+      }
+    }
+
+    async function refreshViewerCount() {
+      if (!streamId) return;
+
+      const cutoffIso = new Date(Date.now() - VIEWER_ACTIVE_WINDOW_MS).toISOString();
+
+      const { data, error } = await supabase
+        .from('stream_viewers')
+        .select('viewer_id')
+        .eq('stream_id', streamId)
+        .eq('is_active', true)
+        .gte('last_seen', cutoffIso);
+
+      if (error) {
+        console.error('Viewer count alınamadı:', error);
+        return;
+      }
+
+      const count = Array.isArray(data) ? data.length : 0;
+      updateViewerChip(count);
+
+      if (currentStream) {
+        currentStream.viewer_count = count;
+      }
+
+      const { error: streamUpdateError } = await supabase
+        .from('streams')
+        .update({ viewer_count: count })
+        .eq('id', streamId);
+
+      if (streamUpdateError) {
+        console.error('streams.viewer_count güncellenemedi:', streamUpdateError);
+      }
+    }
+
+    function startViewerPresence() {
+      if (viewerHeartbeatTimer) return;
+
+      upsertViewerPresence();
+      refreshViewerCount();
+
+      viewerHeartbeatTimer = setInterval(async () => {
+        await upsertViewerPresence();
+      }, VIEWER_HEARTBEAT_MS);
+
+      viewerCountTimer = setInterval(async () => {
+        await refreshViewerCount();
+      }, VIEWER_COUNT_POLL_MS);
+    }
+
+    async function stopViewerPresence() {
+      if (viewerHeartbeatTimer) {
+        clearInterval(viewerHeartbeatTimer);
+        viewerHeartbeatTimer = null;
+      }
+      if (viewerCountTimer) {
+        clearInterval(viewerCountTimer);
+        viewerCountTimer = null;
+      }
+      await markViewerInactive();
+      await refreshViewerCount();
+    }
+
     function configureScreenShareUI() {
       const supported = hasScreenShareSupport();
       const mobile = isMobileDevice();
@@ -710,16 +820,24 @@
       playerEl.innerHTML = `
         <img src="${safe(getThumb(profile))}" alt="${safe(stream?.title || 'Yayın')}" />
         <div class="live-badge">CANLI</div>
-        <div class="viewer-chip">👁 ${safe(formatViewers(stream?.viewer_count || 0))} izleyici</div>
+        <div class="viewer-chip" id="viewer-chip">👁 ${safe(formatViewers(stream?.viewer_count || 0))} izleyici</div>
       `;
+      window.setTimeout(() => {
+        const chip = document.getElementById('viewer-chip');
+        if (chip) chip.textContent = `👁 ${formatViewers(currentStream?.viewer_count || 0)} izleyici`;
+      }, 0);
     }
 
     function renderVideoPlayer(stream, muted = false) {
       playerEl.innerHTML = `
         <video id="live-video" autoplay playsinline ${muted ? 'muted' : ''}></video>
         <div class="live-badge">CANLI</div>
-        <div class="viewer-chip">👁 ${safe(formatViewers(stream?.viewer_count || 0))} izleyici</div>
+        <div class="viewer-chip" id="viewer-chip">👁 ${safe(formatViewers(stream?.viewer_count || 0))} izleyici</div>
       `;
+      window.setTimeout(() => {
+        const chip = document.getElementById('viewer-chip');
+        if (chip) chip.textContent = `👁 ${formatViewers(currentStream?.viewer_count || 0)} izleyici`;
+      }, 0);
       return document.getElementById('live-video');
     }
 
@@ -1418,8 +1536,8 @@
     function startSignalPolling() {
       if (signalPollTimer) return;
       pollSignals();
-      signalPollTimer = setInterval(() => {
-        pollSignals();
+      signalPollTimer = setInterval(async () => {
+        await pollSignals();
       }, 1000);
     }
 
@@ -1614,10 +1732,11 @@
         if (!isBroadcaster || !currentStream) return;
 
         await stopPreviewOnly();
+        await stopViewerPresence();
 
         const { error } = await supabase
           .from('streams')
-          .update({ is_live: false })
+          .update({ is_live: false, viewer_count: 0 })
           .eq('id', currentStream.id);
 
         if (error) {
@@ -1663,12 +1782,29 @@
     stopPreviewBtn.addEventListener('click', stopPreviewOnly);
     stopStreamBtn.addEventListener('click', stopLiveStream);
 
+    window.addEventListener('beforeunload', () => {
+      if (!actorId || !streamId) return;
+      navigator.sendBeacon?.(
+        'data:text/plain,viewer-leaving',
+        ''
+      );
+    });
+
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState === 'hidden') {
+        await markViewerInactive();
+      } else {
+        await upsertViewerPresence();
+        await refreshViewerCount();
+      }
+    });
+
     await loadStream();
     await loadFollowState();
     await loadMessages();
     await ensureActorId();
-
     startSignalPolling();
+    startViewerPresence();
 
     if (!isBroadcaster) {
       pageStatusEl.textContent = currentUser
