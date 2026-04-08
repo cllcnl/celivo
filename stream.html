@@ -600,6 +600,7 @@
     let currentUser = null;
     let currentStream = null;
     let currentProfile = null;
+    let actorId = null;
     let isFollowing = false;
     let isBroadcaster = false;
     let autoStartTried = false;
@@ -666,6 +667,21 @@
 
     function hasScreenShareSupport() {
       return !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
+    }
+
+    function getGuestId() {
+      let guestId = localStorage.getItem('celivo_guest_id');
+      if (!guestId) {
+        guestId = crypto.randomUUID();
+        localStorage.setItem('celivo_guest_id', guestId);
+      }
+      return guestId;
+    }
+
+    async function ensureActorId() {
+      currentUser = await getCurrentUser();
+      actorId = currentUser?.id || getGuestId();
+      return actorId;
     }
 
     function configureScreenShareUI() {
@@ -767,13 +783,14 @@
 
     async function loadFollowState() {
       currentUser = await getCurrentUser();
+      await ensureActorId();
 
-      if (!currentUser || !currentStream) {
+      if (!currentStream) {
         followBtn.textContent = 'Takip et';
         return;
       }
 
-      isBroadcaster = currentUser.id === currentStream.streamer_id;
+      isBroadcaster = !!currentUser && currentUser.id === currentStream.streamer_id;
 
       if (isBroadcaster) {
         followBtn.textContent = 'Kendi yayının';
@@ -786,6 +803,11 @@
           autoStartTried = true;
           setTimeout(() => startCamera(true), 350);
         }
+        return;
+      }
+
+      if (!currentUser) {
+        followBtn.textContent = 'Takip et';
         return;
       }
 
@@ -1177,6 +1199,11 @@
     }
 
     async function clearAllSignalsForThisStream() {
+      if (!currentUser || !isBroadcaster) {
+        processedSignalIds.clear();
+        return;
+      }
+
       const { error } = await supabase
         .from('stream_signals')
         .delete()
@@ -1206,11 +1233,12 @@
       };
 
       pc.onicecandidate = async (event) => {
-        if (!event.candidate || !currentUser) return;
+        if (!event.candidate) return;
+        await ensureActorId();
 
         const { error } = await supabase.from('stream_signals').insert({
           stream_id: streamId,
-          sender_id: currentUser.id,
+          sender_id: actorId,
           target_id: isBroadcaster ? null : currentStream.streamer_id,
           type: 'candidate',
           payload: event.candidate.toJSON()
@@ -1291,13 +1319,14 @@
     async function publishOffer() {
       const peer = createPeerConnection();
       await replacePeerTracks();
+      await ensureActorId();
 
       const offer = await peer.createOffer();
       await peer.setLocalDescription(offer);
 
       await supabase.from('stream_signals').insert({
         stream_id: streamId,
-        sender_id: currentUser.id,
+        sender_id: actorId,
         target_id: null,
         type: 'offer',
         payload: offer
@@ -1308,10 +1337,9 @@
       if (!signal || processedSignalIds.has(signal.id)) return;
       processedSignalIds.add(signal.id);
 
-      if (!currentUser) currentUser = await getCurrentUser();
-      if (!currentUser) return;
+      await ensureActorId();
 
-      if (signal.sender_id === currentUser.id) return;
+      if (signal.sender_id === actorId) return;
 
       try {
         if (signal.type === 'offer') {
@@ -1324,10 +1352,11 @@
 
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
+          await ensureActorId();
 
           const { error: answerError } = await supabase.from('stream_signals').insert({
             stream_id: streamId,
-            sender_id: currentUser.id,
+            sender_id: actorId,
             target_id: signal.sender_id,
             type: 'answer',
             payload: answer
@@ -1335,7 +1364,7 @@
 
           if (answerError) {
             console.error('Answer yazılamadı:', answerError);
-            pageStatusEl.textContent = 'Yanıt gönderilemedi. İzleyici cihazda giriş yapıldığından emin ol.';
+            pageStatusEl.textContent = 'Yanıt gönderilemedi.';
             return;
           }
 
@@ -1345,7 +1374,7 @@
 
         if (signal.type === 'answer') {
           if (!isBroadcaster) return;
-          if (signal.target_id && signal.target_id !== currentUser.id) return;
+          if (signal.target_id && signal.target_id !== actorId) return;
           if (!pc) return;
           if (pc.currentRemoteDescription) return;
 
@@ -1358,9 +1387,9 @@
           if (!pc) return;
 
           if (isBroadcaster) {
-            if (signal.target_id && signal.target_id !== currentUser.id) return;
+            if (signal.target_id && signal.target_id !== actorId) return;
           } else {
-            if (signal.target_id && signal.target_id !== currentUser.id && signal.sender_id !== currentStream.streamer_id) return;
+            if (signal.target_id && signal.target_id !== actorId && signal.sender_id !== currentStream.streamer_id) return;
           }
 
           try {
@@ -1637,11 +1666,14 @@
     await loadStream();
     await loadFollowState();
     await loadMessages();
+    await ensureActorId();
 
     startSignalPolling();
 
     if (!isBroadcaster) {
-      pageStatusEl.textContent = 'Yayın bağlantısı bekleniyor...';
+      pageStatusEl.textContent = currentUser
+        ? 'Yayın bağlantısı bekleniyor...'
+        : 'Misafir izleyici olarak bağlanılıyor...';
     }
 
     setInterval(async () => {
