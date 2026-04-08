@@ -561,9 +561,9 @@
       }
     ];
 
-    const VIEWER_ACTIVE_WINDOW_MS = 80000;
-    const VIEWER_HEARTBEAT_MS = 3000;
-    const VIEWER_COUNT_POLL_MS = 2000;
+    const VIEWER_ACTIVE_WINDOW_MS = 6000;
+    const VIEWER_HEARTBEAT_MS = 2000;
+    const VIEWER_COUNT_POLL_MS = 1500;
 
     const params = new URLSearchParams(window.location.search);
     const streamId = params.get('id');
@@ -573,7 +573,7 @@
     const streamSubEl = document.getElementById('stream-sub');
     const pageStatusEl = document.getElementById('page-status');
     const followBtn = document.getElementById('follow-btn');
-    const viewerChipEl = document.getElementById('viewer-chip');
+    let viewerChipEl = document.getElementById('viewer-chip');
 
     const broadcasterPanelEl = document.getElementById('broadcaster-panel');
     const startCameraBtn = document.getElementById('start-camera-btn');
@@ -631,6 +631,7 @@
 
     let viewerHeartbeatTimer = null;
     let viewerCountTimer = null;
+    let countUpdateLock = false;
 
     const presetBackgrounds = {
       preset_1: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1600&q=80',
@@ -664,8 +665,15 @@
       return `${n}`;
     }
 
+    function syncViewerChipRef() {
+      viewerChipEl = document.getElementById('viewer-chip');
+    }
+
     function updateViewerChip(count) {
-      viewerChipEl.textContent = `👁 ${formatViewers(count)} izleyici`;
+      syncViewerChipRef();
+      if (viewerChipEl) {
+        viewerChipEl.textContent = `👁 ${formatViewers(count)} izleyici`;
+      }
     }
 
     function getThumb(profile) {
@@ -688,6 +696,12 @@
         localStorage.setItem('celivo_guest_id', guestId);
       }
       return guestId;
+    }
+
+    async function getCurrentUser() {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) return null;
+      return data?.session?.user || null;
     }
 
     async function ensureActorId() {
@@ -718,51 +732,58 @@
       if (!streamId) return;
       await ensureActorId();
 
-      const { error } = await supabase
-        .from('stream_viewers')
-        .update({
-          is_active: false,
-          last_seen: new Date().toISOString()
-        })
-        .eq('stream_id', streamId)
-        .eq('viewer_id', actorId);
+      try {
+        const { error } = await supabase
+          .from('stream_viewers')
+          .update({
+            is_active: false,
+            last_seen: new Date().toISOString()
+          })
+          .eq('stream_id', streamId)
+          .eq('viewer_id', actorId);
 
-      if (error) {
+        if (error) {
+          console.error('Viewer pasiflenemedi:', error);
+        }
+      } catch (error) {
         console.error('Viewer pasiflenemedi:', error);
       }
     }
 
     async function refreshViewerCount() {
-      if (!streamId) return;
+      if (!streamId || countUpdateLock) return;
+      countUpdateLock = true;
 
-      const cutoffIso = new Date(Date.now() - VIEWER_ACTIVE_WINDOW_MS).toISOString();
+      try {
+        const cutoffIso = new Date(Date.now() - VIEWER_ACTIVE_WINDOW_MS).toISOString();
 
-      const { data, error } = await supabase
-        .from('stream_viewers')
-        .select('viewer_id')
-        .eq('stream_id', streamId)
-        .eq('is_active', true)
-        .gte('last_seen', cutoffIso);
+        const { data, error } = await supabase
+          .from('stream_viewers')
+          .select('viewer_id')
+          .eq('stream_id', streamId)
+          .eq('is_active', true)
+          .gte('last_seen', cutoffIso);
 
-      if (error) {
-        console.error('Viewer count alınamadı:', error);
-        return;
-      }
+        if (error) {
+          console.error('Viewer count alınamadı:', error);
+          return;
+        }
 
-      const count = Array.isArray(data) ? data.length : 0;
-      updateViewerChip(count);
+        const count = Array.isArray(data) ? data.length : 0;
+        updateViewerChip(count);
 
-      if (currentStream) {
-        currentStream.viewer_count = count;
-      }
+        if (currentStream) currentStream.viewer_count = count;
 
-      const { error: streamUpdateError } = await supabase
-        .from('streams')
-        .update({ viewer_count: count })
-        .eq('id', streamId);
+        const { error: streamUpdateError } = await supabase
+          .from('streams')
+          .update({ viewer_count: count })
+          .eq('id', streamId);
 
-      if (streamUpdateError) {
-        console.error('streams.viewer_count güncellenemedi:', streamUpdateError);
+        if (streamUpdateError) {
+          console.error('streams.viewer_count güncellenemedi:', streamUpdateError);
+        }
+      } finally {
+        countUpdateLock = false;
       }
     }
 
@@ -822,10 +843,7 @@
         <div class="live-badge">CANLI</div>
         <div class="viewer-chip" id="viewer-chip">👁 ${safe(formatViewers(stream?.viewer_count || 0))} izleyici</div>
       `;
-      window.setTimeout(() => {
-        const chip = document.getElementById('viewer-chip');
-        if (chip) chip.textContent = `👁 ${formatViewers(currentStream?.viewer_count || 0)} izleyici`;
-      }, 0);
+      syncViewerChipRef();
     }
 
     function renderVideoPlayer(stream, muted = false) {
@@ -834,10 +852,7 @@
         <div class="live-badge">CANLI</div>
         <div class="viewer-chip" id="viewer-chip">👁 ${safe(formatViewers(stream?.viewer_count || 0))} izleyici</div>
       `;
-      window.setTimeout(() => {
-        const chip = document.getElementById('viewer-chip');
-        if (chip) chip.textContent = `👁 ${formatViewers(currentStream?.viewer_count || 0)} izleyici`;
-      }, 0);
+      syncViewerChipRef();
       return document.getElementById('live-video');
     }
 
@@ -854,12 +869,6 @@
       videoEl.srcObject = remoteStream;
       videoEl.muted = false;
       videoEl.play().catch(() => {});
-    }
-
-    async function getCurrentUser() {
-      const { data, error } = await supabase.auth.getSession();
-      if (error) return null;
-      return data?.session?.user || null;
     }
 
     async function loadStream() {
@@ -1461,6 +1470,7 @@
 
       try {
         if (signal.type === 'offer') {
+          if (!signal.payload) return;
           if (isBroadcaster) return;
 
           await resetPeer();
@@ -1470,7 +1480,6 @@
 
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
-          await ensureActorId();
 
           const { error: answerError } = await supabase.from('stream_signals').insert({
             stream_id: streamId,
@@ -1491,6 +1500,7 @@
         }
 
         if (signal.type === 'answer') {
+          if (!signal.payload) return;
           if (!isBroadcaster) return;
           if (signal.target_id && signal.target_id !== actorId) return;
           if (!pc) return;
@@ -1520,10 +1530,13 @@
     }
 
     async function pollSignals() {
+      const cutoffIso = new Date(Date.now() - 60000).toISOString();
+
       const { data, error } = await supabase
         .from('stream_signals')
         .select('*')
         .eq('stream_id', streamId)
+        .gte('created_at', cutoffIso)
         .order('created_at', { ascending: true });
 
       if (error || !data) return;
@@ -1559,7 +1572,11 @@
 
         rawCameraStream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user' },
-          audio: true
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
         });
 
         cameraSourceVideo.srcObject = rawCameraStream;
@@ -1575,9 +1592,6 @@
           await clearAllSignalsForThisStream();
           await publishOffer();
           startSignalPolling();
-        } else {
-          await clearAllSignalsForThisStream();
-          await publishOffer();
         }
 
         pageStatusEl.textContent = 'Kamera açıldı. Sahne güncellendi.';
@@ -1624,8 +1638,7 @@
           await publishOffer();
           startSignalPolling();
         } else {
-          await clearAllSignalsForThisStream();
-          await publishOffer();
+          await rebuildOutboundStream();
         }
 
         pageStatusEl.textContent = 'Ekran paylaşımı açıldı. Sahne güncellendi.';
@@ -1639,10 +1652,6 @@
               screenSourceVideo.srcObject = null;
             }
             await rebuildOutboundStream();
-            if (pc) {
-              await clearAllSignalsForThisStream();
-              await publishOffer();
-            }
             pageStatusEl.textContent = 'Ekran paylaşımı sona erdi.';
           };
         }
@@ -1664,12 +1673,6 @@
 
       startDrawLoop();
       await rebuildOutboundStream();
-
-      if (pc) {
-        await clearAllSignalsForThisStream();
-        await publishOffer();
-      }
-
       pageStatusEl.textContent = 'Sahne ayarları uygulandı.';
     }
 
@@ -1678,11 +1681,6 @@
       syncControlsFromState();
 
       await rebuildOutboundStream();
-      if (pc) {
-        await clearAllSignalsForThisStream();
-        await publishOffer();
-      }
-
       pageStatusEl.textContent = sceneState.micEnabled ? 'Mikrofon açıldı.' : 'Mikrofon kapatıldı.';
     }
 
@@ -1691,11 +1689,6 @@
       syncControlsFromState();
 
       await rebuildOutboundStream();
-      if (pc) {
-        await clearAllSignalsForThisStream();
-        await publishOffer();
-      }
-
       pageStatusEl.textContent = sceneState.screenAudioEnabled ? 'Ekran sesi açıldı.' : 'Ekran sesi kapatıldı.';
     }
 
@@ -1782,12 +1775,12 @@
     stopPreviewBtn.addEventListener('click', stopPreviewOnly);
     stopStreamBtn.addEventListener('click', stopLiveStream);
 
-    window.addEventListener('beforeunload', () => {
-      if (!actorId || !streamId) return;
-      navigator.sendBeacon?.(
-        'data:text/plain,viewer-leaving',
-        ''
-      );
+    window.addEventListener('pagehide', async () => {
+      await markViewerInactive();
+    });
+
+    window.addEventListener('beforeunload', async () => {
+      await markViewerInactive();
     });
 
     document.addEventListener('visibilitychange', async () => {
@@ -1803,6 +1796,7 @@
     await loadFollowState();
     await loadMessages();
     await ensureActorId();
+
     startSignalPolling();
     startViewerPresence();
 
