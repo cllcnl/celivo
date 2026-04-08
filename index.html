@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
@@ -138,7 +138,7 @@
 
     .filters-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 12px;
     }
 
@@ -172,6 +172,23 @@
       margin: 28px 0 16px;
       font-size: 28px;
       letter-spacing: -.03em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 800;
     }
 
     .featured {
@@ -187,6 +204,8 @@
       border-radius: 28px;
       box-shadow: var(--shadow);
       overflow: hidden;
+      text-decoration: none;
+      color: inherit;
     }
 
     .cover {
@@ -317,7 +336,9 @@
     }
 
     .stream-card:hover,
-    .profile-card:hover {
+    .profile-card:hover,
+    .featured-main:hover,
+    .mini-card:hover {
       transform: translateY(-2px);
     }
 
@@ -478,6 +499,10 @@
             <option value="45-54">45-54</option>
             <option value="55+">55+</option>
           </select>
+
+          <select id="category-filter" class="select">
+            <option value="">Kategori</option>
+          </select>
         </div>
 
         <div class="filters-actions">
@@ -493,7 +518,7 @@
     </section>
 
     <section>
-      <h2 class="section-title">Şu an canlı</h2>
+      <h2 class="section-title">Şu an canlı <span id="live-count-badge" class="count-badge">(0)</span></h2>
       <div id="streams-grid" class="stream-grid"></div>
       <div id="empty-streams" class="empty" style="display:none;">Filtreye uygun canlı yayın bulunamadı.</div>
     </section>
@@ -517,6 +542,7 @@
     let allProfiles = [];
     let countries = [];
     let citiesByCountry = {};
+    let refreshTimer = null;
 
     const searchInput = document.getElementById('search-input');
     const toggleFiltersBtn = document.getElementById('toggle-filters-btn');
@@ -528,12 +554,14 @@
     const cityFilter = document.getElementById('city-filter');
     const genderFilter = document.getElementById('gender-filter');
     const ageFilter = document.getElementById('age-filter');
+    const categoryFilter = document.getElementById('category-filter');
 
     const featuredWrap = document.getElementById('featured-wrap');
     const streamsGrid = document.getElementById('streams-grid');
     const profilesGrid = document.getElementById('profiles-grid');
     const emptyStreams = document.getElementById('empty-streams');
     const emptyProfiles = document.getElementById('empty-profiles');
+    const liveCountBadge = document.getElementById('live-count-badge');
 
     function safe(value, fallback = '') {
       return String(value ?? fallback)
@@ -545,6 +573,7 @@
 
     function formatViewers(count) {
       const n = Number(count || 0);
+      if (n >= 1000000) return `${(n / 1000000).toFixed(1)} M`;
       if (n >= 1000) return `${(n / 1000).toFixed(1)} B`;
       return `${n}`;
     }
@@ -593,6 +622,27 @@
       });
     }
 
+    function fillCategoryFilter(streams) {
+      const currentValue = categoryFilter.value;
+      const categories = [...new Set(
+        (streams || [])
+          .map(s => String(s.category || '').trim())
+          .filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b, 'tr'));
+
+      categoryFilter.innerHTML = '<option value="">Kategori</option>';
+      categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+      });
+
+      if (categories.includes(currentValue)) {
+        categoryFilter.value = currentValue;
+      }
+    }
+
     function inAgeRange(age, range) {
       const a = Number(age || 0);
       if (!range) return true;
@@ -610,10 +660,12 @@
       const city = cityFilter.value;
       const gender = genderFilter.value;
       const ageRange = ageFilter.value;
+      const category = categoryFilter.value;
 
       if (country && stream.country !== country) return false;
       if (city && stream.city !== city) return false;
       if (gender && stream.gender !== gender) return false;
+      if (category && stream.category !== category) return false;
       if (!inAgeRange(stream.age, ageRange)) return false;
 
       return true;
@@ -644,6 +696,10 @@
       ].join(' ').toLowerCase();
 
       return searchable.includes(q);
+    }
+
+    function updateLiveCountBadge(count) {
+      liveCountBadge.textContent = `(${count})`;
     }
 
     function renderFeatured(streams) {
@@ -693,6 +749,8 @@
     }
 
     function renderStreams(streams) {
+      updateLiveCountBadge(streams.length);
+
       if (!streams.length) {
         streamsGrid.innerHTML = '';
         emptyStreams.style.display = 'block';
@@ -730,31 +788,48 @@
 
       emptyProfiles.style.display = 'none';
 
-      profilesGrid.innerHTML = profiles.map(profile => `
-        <a class="profile-card" href="${liveStreamerIds.has(profile.id) ? '/stream.html?id=' + encodeURIComponent(liveStreams.find(x => x.streamer_id === profile.id).id) : '/profile.html'}">
-          <div class="profile-cover">
-            <div class="profile-head">
-              <div class="avatar">
-                ${profile.avatar_url ? `<img src="${safe(profile.avatar_url)}" alt="${safe(profile.username)}">` : '👤'}
+      profilesGrid.innerHTML = profiles.map(profile => {
+        const liveStream = liveStreams.find(x => x.streamer_id === profile.id);
+        const href = liveStream ? `/stream.html?id=${encodeURIComponent(liveStream.id)}` : '/profile.html';
+
+        return `
+          <a class="profile-card" href="${href}">
+            <div class="profile-cover">
+              <div class="profile-head">
+                <div class="avatar">
+                  ${profile.avatar_url ? `<img src="${safe(profile.avatar_url)}" alt="${safe(profile.username)}">` : '👤'}
+                </div>
+                <div>
+                  <div class="card-title" style="margin-bottom:4px;">${safe(profile.username || 'Kullanıcı')}</div>
+                  <div class="card-sub">${safe(profile.country || '')}${profile.city ? ' • ' + safe(profile.city) : ''}${profile.gender ? ' • ' + safe(profile.gender) : ''}${profile.age ? ' • ' + safe(profile.age + ' yaş') : ''}</div>
+                  <div class="role-pill">${safe((profile.role || 'free').toUpperCase())}</div>
+                </div>
               </div>
-              <div>
-                <div class="card-title" style="margin-bottom:4px;">${safe(profile.username || 'Kullanıcı')}</div>
-                <div class="card-sub">${safe(profile.country || '')}${profile.city ? ' • ' + safe(profile.city) : ''}${profile.gender ? ' • ' + safe(profile.gender) : ''}${profile.age ? ' • ' + safe(profile.age + ' yaş') : ''}</div>
-                <div class="role-pill">${safe((profile.role || 'free').toUpperCase())}</div>
-              </div>
+              ${liveStreamerIds.has(profile.id) ? '<div class="profile-live">● Şu an canlı</div>' : ''}
             </div>
-            ${liveStreamerIds.has(profile.id) ? '<div class="profile-live">● Şu an canlı</div>' : ''}
-          </div>
-          <div class="card-body">
-            <div class="card-sub">${safe(profile.bio || 'Henüz biyografi eklenmedi.')}</div>
-          </div>
-        </a>
-      `).join('');
+            <div class="card-body">
+              <div class="card-sub">${safe(profile.bio || 'Henüz biyografi eklenmedi.')}</div>
+            </div>
+          </a>
+        `;
+      }).join('');
     }
 
-    async function loadData() {
-      await loadLocationData();
+    async function fetchProfiles() {
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('updated_at', { ascending: false });
 
+      if (profilesError) {
+        console.error(profilesError);
+        return [];
+      }
+
+      return profilesData || [];
+    }
+
+    async function fetchLiveStreams() {
       const { data: streamsData, error: streamError } = await supabase
         .from('streams')
         .select('*')
@@ -763,24 +838,25 @@
 
       if (streamError) {
         console.error(streamError);
-        renderFeatured([]);
-        renderStreams([]);
-        renderProfiles([], []);
-        return;
+        return [];
       }
 
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('updated_at', { ascending: false });
+      return streamsData || [];
+    }
 
-      if (profilesError) {
-        console.error(profilesError);
+    async function loadData() {
+      if (!countries.length) {
+        await loadLocationData();
       }
 
-      allProfiles = profilesData || [];
+      const [profilesData, streamsData] = await Promise.all([
+        fetchProfiles(),
+        fetchLiveStreams()
+      ]);
 
-      allStreams = (streamsData || []).map(stream => {
+      allProfiles = profilesData;
+
+      allStreams = streamsData.map(stream => {
         const profile = allProfiles.find(p => p.id === stream.streamer_id);
         return {
           ...stream,
@@ -793,6 +869,7 @@
         };
       });
 
+      fillCategoryFilter(allStreams);
       applyAll();
     }
 
@@ -801,7 +878,8 @@
 
       const filteredStreams = allStreams
         .filter(stream => liveMatchesFilters(stream))
-        .filter(stream => streamMatchesSearch(stream, q));
+        .filter(stream => streamMatchesSearch(stream, q))
+        .sort((a, b) => Number(b.viewer_count || 0) - Number(a.viewer_count || 0));
 
       const searchedProfiles = allProfiles
         .filter(profile => profileMatchesSearch(profile, q));
@@ -809,6 +887,12 @@
       renderFeatured(filteredStreams);
       renderStreams(filteredStreams);
       renderProfiles(searchedProfiles, allStreams);
+    }
+
+    function startAutoRefresh() {
+      if (refreshTimer) return;
+      loadData();
+      refreshTimer = setInterval(loadData, 3000);
     }
 
     toggleFiltersBtn.onclick = () => {
@@ -823,6 +907,7 @@
       cityFilter.value = '';
       genderFilter.value = '';
       ageFilter.value = '';
+      categoryFilter.value = '';
       applyAll();
     };
 
@@ -835,9 +920,9 @@
     cityFilter.onchange = applyAll;
     genderFilter.onchange = applyAll;
     ageFilter.onchange = applyAll;
+    categoryFilter.onchange = applyAll;
 
-    loadData();
-    setInterval(loadData, 10000);
+    startAutoRefresh();
   </script>
 </body>
 </html>
