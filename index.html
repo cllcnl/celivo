@@ -40,7 +40,7 @@
       gap: 10px;
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 60;
       backdrop-filter: blur(18px);
       background: rgba(2,6,23,.78);
       border-bottom: 1px solid rgba(255,255,255,.06);
@@ -124,7 +124,6 @@
     .top-link:hover,
     .toolbar-btn:hover,
     .mini-btn:hover,
-    .stream-card:hover,
     .profile-card:hover,
     .carousel-card:hover,
     .category-chip:hover,
@@ -194,7 +193,7 @@
       margin-top: 12px;
     }
 
-    .input, .select {
+    .select {
       width: 100%;
       background: rgba(255,255,255,.04);
       border: 1px solid var(--border);
@@ -282,24 +281,30 @@
       z-index: 2;
     }
 
-    .carousel-nav:disabled {
+    .carousel-nav:disabled,
+    .section-nav-btn:disabled {
       opacity: .35;
       cursor: not-allowed;
       transform: none;
     }
 
-    .carousel-viewport {
+    .carousel-viewport,
+    .slider-viewport {
       overflow: hidden;
       width: 100%;
       min-width: 0;
     }
 
-    .carousel-track {
+    .carousel-track,
+    .slider-track {
       display: flex;
-      align-items: center;
-      gap: 18px;
       transition: transform .35s ease;
       will-change: transform;
+    }
+
+    .carousel-track {
+      align-items: center;
+      gap: 18px;
       padding: 6px 0;
     }
 
@@ -322,7 +327,9 @@
       box-shadow: 0 20px 40px rgba(0,0,0,.22);
     }
 
-    .carousel-media img {
+    .carousel-media img,
+    .card-cover img,
+    .avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -387,12 +394,6 @@
       justify-content: center;
       color: var(--muted-2);
       font-size: 12px;
-    }
-
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
 
     .carousel-text {
@@ -531,22 +532,8 @@
       cursor: pointer;
     }
 
-    .section-nav-btn:disabled {
-      opacity: .35;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .slider-viewport {
-      overflow: hidden;
-      width: 100%;
-    }
-
     .slider-track {
-      display: flex;
       gap: 16px;
-      transition: transform .35s ease;
-      will-change: transform;
       padding: 4px 0;
     }
 
@@ -572,13 +559,6 @@
       aspect-ratio: 16 / 9;
       background: #0f172a;
       overflow: hidden;
-    }
-
-    .card-cover img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
     }
 
     .card-status {
@@ -746,11 +726,11 @@
     .side-menu {
       position: fixed;
       top: 0;
-      left: -290px;
-      width: 280px;
+      left: -310px;
+      width: 300px;
       height: 100vh;
       z-index: 100;
-      background: linear-gradient(180deg, rgba(8,15,33,.98), rgba(3,8,20,.98));
+      background: linear-gradient(180deg, rgba(8,15,33,.985), rgba(3,8,20,.985));
       border-right: 1px solid rgba(255,255,255,.08);
       box-shadow: 0 20px 60px rgba(0,0,0,.45);
       transition: left .25s ease;
@@ -816,6 +796,114 @@
       cursor: pointer;
     }
 
+    .live-sidebar-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .live-sidebar-item {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      padding: 10px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .live-sidebar-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted-2);
+      font-size: 11px;
+    }
+
+    .live-sidebar-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .live-sidebar-meta {
+      min-width: 0;
+    }
+
+    .live-sidebar-name {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+
+    .live-sidebar-sub {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .live-sidebar-stats {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .live-sidebar-badge {
+      padding: 6px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .live-sidebar-badge.popular {
+      background: linear-gradient(90deg, rgba(139,92,246,.25), rgba(56,189,248,.25));
+      border: 1px solid rgba(99,102,241,.28);
+      color: #dbeafe;
+    }
+
+    .live-sidebar-badge.discovery {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(125,211,252,.18);
+      color: #bae6fd;
+    }
+
+    .sidebar-mini-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      padding: 10px 0 0;
+    }
+
     .side-backdrop {
       position: fixed;
       inset: 0;
@@ -847,9 +935,7 @@
         grid-template-columns: auto 1fr auto auto;
       }
 
-      .top-link.primary {
-        display: none;
-      }
+      .top-link.primary { display: none; }
 
       .carousel-card {
         flex: 0 0 100%;
@@ -873,51 +959,17 @@
       }
 
       .brand { font-size: 24px; }
-
-      .top-link {
-        padding: 10px 12px;
-        font-size: 12px;
-      }
-
-      .toolbar-row {
-        justify-content: stretch;
-      }
-
-      .toolbar-btn {
-        flex: 1;
-      }
-
-      .filters-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .profile-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .section-title {
-        font-size: 24px;
-      }
-
-      .carousel-stage {
-        grid-template-columns: 1fr;
-      }
-
-      .carousel-nav {
-        display: none;
-      }
-
-      .carousel-title {
-        font-size: 18px;
-      }
-
-      .slider-header {
-        align-items: flex-start;
-      }
-
-      .section-card {
-        flex: 0 0 86%;
-      }
+      .top-link { padding: 10px 12px; font-size: 12px; }
+      .toolbar-row { justify-content: stretch; }
+      .toolbar-btn { flex: 1; }
+      .filters-grid { grid-template-columns: 1fr; }
+      .profile-grid { grid-template-columns: 1fr; }
+      .section-title { font-size: 24px; }
+      .carousel-stage { grid-template-columns: 1fr; }
+      .carousel-nav { display: none; }
+      .carousel-title { font-size: 18px; }
+      .slider-header { align-items: flex-start; }
+      .section-card { flex: 0 0 86%; }
     }
   </style>
 </head>
@@ -943,18 +995,17 @@
     </div>
 
     <div class="side-section">
-      <div class="side-label">Hızlı işlemler</div>
-      <div class="side-nav">
-        <a href="/login.html">Giriş yap</a>
-        <a href="/profile.html">Profilim</a>
-        <a href="/profile.html">Yayına başla</a>
+      <div class="side-label">Kategori</div>
+      <div class="side-nav" id="side-category-links">
+        <button type="button" data-category="">Tümü</button>
       </div>
     </div>
 
     <div class="side-section">
-      <div class="side-label">Kategori</div>
-      <div class="side-nav" id="side-category-links">
-        <button type="button" data-category="">Tümü</button>
+      <div class="side-label">Şu an canlı kanallar</div>
+      <div id="live-sidebar-list" class="live-sidebar-list"></div>
+      <div class="sidebar-mini-note">
+        10 saniyede bir yenilenir. Liste %40 popüler, %60 keşif mantığıyla ve tekrar etmeyen yayıncı/yayın seçimiyle hazırlanır.
       </div>
     </div>
   </aside>
@@ -1078,10 +1129,13 @@
     let countries = [];
     let citiesByCountry = {};
     let refreshTimer = null;
+    let sidebarRotationTimer = null;
     let carouselIndex = 0;
     let visibleCards = window.innerWidth <= 900 ? 1 : 2;
     let currentUser = null;
     let followingIds = [];
+    let sidebarRecentStreamIds = [];
+    let sidebarRecentStreamerIds = [];
 
     const FIXED_CATEGORIES = [
       'Just Chatting',
@@ -1098,6 +1152,7 @@
     const sideMenu = document.getElementById('side-menu');
     const sideBackdrop = document.getElementById('side-backdrop');
     const sideCategoryLinks = document.getElementById('side-category-links');
+    const liveSidebarList = document.getElementById('live-sidebar-list');
     const loginLink = document.getElementById('login-link');
 
     const searchInput = document.getElementById('search-input');
@@ -1168,12 +1223,17 @@
     }
 
     function getRoleLabel(role) {
-      const map = {
-        free: 'FREE',
-        premium: 'PREMIUM',
-        vip: 'VIP'
-      };
+      const map = { free: 'FREE', premium: 'PREMIUM', vip: 'VIP' };
       return map[String(role || 'free').toLowerCase()] || 'FREE';
+    }
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
     }
 
     function openMenu() {
@@ -1194,11 +1254,7 @@
         return;
       }
       currentUser = data?.session?.user || null;
-      if (currentUser) {
-        loginLink.style.display = 'none';
-      } else {
-        loginLink.style.display = 'inline-flex';
-      }
+      loginLink.style.display = currentUser ? 'none' : 'inline-flex';
     }
 
     async function loadFollowingIds() {
@@ -1509,9 +1565,7 @@
             </div>
             <div class="carousel-text">
               <div class="carousel-title">${safe(stream.title)}</div>
-              <div class="carousel-sub">
-                ${safe(stream.streamer_name || stream.username || 'Yayıncı')} • ${safe(stream.category || 'Just Chatting')}
-              </div>
+              <div class="carousel-sub">${safe(stream.streamer_name || stream.username || 'Yayıncı')} • ${safe(stream.category || 'Just Chatting')}</div>
             </div>
           </div>
         </a>
@@ -1524,7 +1578,12 @@
       const isScheduled = type === 'scheduled';
       const statusLabel = isScheduled ? 'PLANLI' : 'CANLI';
       const statusClass = isScheduled ? 'soon' : 'live';
-      const rank = type === 'followed' ? 'Takipte' : type === 'new' ? 'Yeni' : type === 'scheduled' ? 'Yakında' : `Trend #${index + 1}`;
+      const rank =
+        type === 'followed' ? 'Takipte'
+        : type === 'new' ? 'Yeni'
+        : type === 'scheduled' ? 'Yakında'
+        : `Trend #${index + 1}`;
+
       const secondaryInfo = isScheduled
         ? `${safe(stream.streamer_name || stream.username || 'Yayıncı')} • ${safe(stream.category || '')}<br/>${stream.scheduled_at ? formatDate(stream.scheduled_at) : 'Tarih eklenecek'}`
         : `${safe(stream.streamer_name || stream.username || 'Yayıncı')} • ${safe(stream.category || '')}`;
@@ -1559,13 +1618,7 @@
     }
 
     function renderSliderSection(container, options) {
-      const {
-        id,
-        title,
-        items,
-        type = 'live',
-        emptyText = 'Gösterilecek yayın bulunamadı.'
-      } = options;
+      const { id, title, items, type = 'live', emptyText = 'Gösterilecek yayın bulunamadı.' } = options;
 
       if (!items.length) {
         container.innerHTML = `
@@ -1600,7 +1653,7 @@
       const track = document.getElementById(`${id}-track`);
       const prev = document.getElementById(`${id}-prev`);
       const next = document.getElementById(`${id}-next`);
-      let index = 0;
+      let sliderIndex = 0;
 
       const getVisibleCount = () => {
         if (window.innerWidth <= 760) return 1;
@@ -1618,20 +1671,20 @@
 
         const visible = getVisibleCount();
         const maxIndex = Math.max(0, cards.length - visible);
-        if (index > maxIndex) index = maxIndex;
+        if (sliderIndex > maxIndex) sliderIndex = maxIndex;
 
         const firstCard = cards[0];
         const style = window.getComputedStyle(track);
         const gap = parseFloat(style.columnGap || style.gap || 16);
         const cardWidth = firstCard.offsetWidth + gap;
-        track.style.transform = `translateX(-${index * cardWidth}px)`;
+        track.style.transform = `translateX(-${sliderIndex * cardWidth}px)`;
 
-        prev.disabled = index <= 0;
-        next.disabled = index >= maxIndex;
+        prev.disabled = sliderIndex <= 0;
+        next.disabled = sliderIndex >= maxIndex;
       };
 
       prev.onclick = () => {
-        index = Math.max(0, index - 1);
+        sliderIndex = Math.max(0, sliderIndex - 1);
         update();
       };
 
@@ -1639,12 +1692,9 @@
         const cards = Array.from(track.children);
         const visible = getVisibleCount();
         const maxIndex = Math.max(0, cards.length - visible);
-        index = Math.min(maxIndex, index + 1);
+        sliderIndex = Math.min(maxIndex, sliderIndex + 1);
         update();
       };
-
-      const onResize = () => update();
-      window.addEventListener('resize', onResize);
 
       update();
     }
@@ -1673,9 +1723,7 @@
                 </div>
                 <div>
                   <div class="card-title" style="margin-bottom:4px;">${safe(profile.username || 'Kullanıcı')}</div>
-                  <div class="card-sub">
-                    ${safe(profile.country || '')}${profile.city ? ' • ' + safe(profile.city) : ''}${profile.gender ? ' • ' + safe(profile.gender) : ''}${profile.age ? ' • ' + safe(profile.age + ' yaş') : ''}
-                  </div>
+                  <div class="card-sub">${safe(profile.country || '')}${profile.city ? ' • ' + safe(profile.city) : ''}${profile.gender ? ' • ' + safe(profile.gender) : ''}${profile.age ? ' • ' + safe(profile.age + ' yaş') : ''}</div>
                   <div class="role-pill">${safe(getRoleLabel(profile.role || profile.subscription_status || 'free'))}</div>
                 </div>
               </div>
@@ -1697,32 +1745,32 @@
     }
 
     async function fetchProfiles() {
-      const { data: profilesData, error: profilesError } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .order('updated_at', { ascending: false });
 
-      if (profilesError) {
-        console.error(profilesError);
+      if (error) {
+        console.error(error);
         return [];
       }
 
-      return profilesData || [];
+      return data || [];
     }
 
     async function fetchLiveStreams() {
-      const { data: streamsData, error: streamError } = await supabase
+      const { data, error } = await supabase
         .from('streams')
         .select('*')
         .eq('is_live', true)
         .order('viewer_count', { ascending: false });
 
-      if (streamError) {
-        console.error(streamError);
+      if (error) {
+        console.error(error);
         return [];
       }
 
-      return streamsData || [];
+      return data || [];
     }
 
     async function fetchScheduledStreams() {
@@ -1763,6 +1811,156 @@
       });
     }
 
+    function pickRandomUnique(pool, count, usedStreamIds, usedStreamerIds, excludedRecentStreamIds = [], excludedRecentStreamerIds = []) {
+      const candidates = shuffle(pool).filter(item =>
+        !usedStreamIds.has(item.id) &&
+        !usedStreamerIds.has(item.streamer_id) &&
+        !excludedRecentStreamIds.includes(item.id) &&
+        !excludedRecentStreamerIds.includes(item.streamer_id)
+      );
+
+      const selected = [];
+
+      for (const item of candidates) {
+        if (selected.length >= count) break;
+        if (usedStreamIds.has(item.id) || usedStreamerIds.has(item.streamer_id)) continue;
+
+        selected.push(item);
+        usedStreamIds.add(item.id);
+        usedStreamerIds.add(item.streamer_id);
+      }
+
+      if (selected.length < count) {
+        const fallbackCandidates = shuffle(pool).filter(item =>
+          !usedStreamIds.has(item.id) &&
+          !usedStreamerIds.has(item.streamer_id)
+        );
+
+        for (const item of fallbackCandidates) {
+          if (selected.length >= count) break;
+          if (usedStreamIds.has(item.id) || usedStreamerIds.has(item.streamer_id)) continue;
+
+          selected.push(item);
+          usedStreamIds.add(item.id);
+          usedStreamerIds.add(item.streamer_id);
+        }
+      }
+
+      return selected;
+    }
+
+    function pickDiscoveryWithCategorySpread(pool, count, usedStreamIds, usedStreamerIds, excludedRecentStreamIds = [], excludedRecentStreamerIds = []) {
+      const freshPool = shuffle(pool).filter(item =>
+        !usedStreamIds.has(item.id) &&
+        !usedStreamerIds.has(item.streamer_id) &&
+        !excludedRecentStreamIds.includes(item.id) &&
+        !excludedRecentStreamerIds.includes(item.streamer_id)
+      );
+
+      const grouped = new Map();
+      freshPool.forEach(item => {
+        const key = String(item.category || 'Diğer');
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key).push(item);
+      });
+
+      const categoryOrder = shuffle([...grouped.keys()]);
+      const selected = [];
+
+      for (const category of categoryOrder) {
+        if (selected.length >= count) break;
+        const items = grouped.get(category) || [];
+        const found = items.find(item =>
+          !usedStreamIds.has(item.id) &&
+          !usedStreamerIds.has(item.streamer_id)
+        );
+
+        if (found) {
+          selected.push(found);
+          usedStreamIds.add(found.id);
+          usedStreamerIds.add(found.streamer_id);
+        }
+      }
+
+      if (selected.length < count) {
+        const fallback = pickRandomUnique(pool, count - selected.length, usedStreamIds, usedStreamerIds, excludedRecentStreamIds, excludedRecentStreamerIds);
+        selected.push(...fallback);
+      }
+
+      return selected;
+    }
+
+    function buildSidebarLiveSelection(liveStreams) {
+      const usedStreamIds = new Set();
+      const usedStreamerIds = new Set();
+
+      const popularPool = [...liveStreams]
+        .sort((a, b) => Number(b.viewer_count || 0) - Number(a.viewer_count || 0))
+        .slice(0, Math.min(12, liveStreams.length));
+
+      const popularSelected = pickRandomUnique(
+        popularPool,
+        4,
+        usedStreamIds,
+        usedStreamerIds,
+        sidebarRecentStreamIds,
+        sidebarRecentStreamerIds
+      ).map(item => ({ ...item, sidebar_type: 'popular' }));
+
+      const remainingForDiscovery = liveStreams.filter(item =>
+        !usedStreamIds.has(item.id) &&
+        !usedStreamerIds.has(item.streamer_id)
+      );
+
+      const discoverySelected = pickDiscoveryWithCategorySpread(
+        remainingForDiscovery,
+        6,
+        usedStreamIds,
+        usedStreamerIds,
+        sidebarRecentStreamIds,
+        sidebarRecentStreamerIds
+      ).map(item => ({ ...item, sidebar_type: 'discovery' }));
+
+      const combined = [...popularSelected, ...discoverySelected];
+
+      sidebarRecentStreamIds = combined.map(item => item.id).slice(-20);
+      sidebarRecentStreamerIds = combined.map(item => item.streamer_id).slice(-20);
+
+      return combined;
+    }
+
+    function renderLiveSidebarList(liveStreams) {
+      const selection = buildSidebarLiveSelection(liveStreams);
+
+      if (!selection.length) {
+        liveSidebarList.innerHTML = `<div class="empty" style="padding:14px;">Şu anda canlı kanal yok.</div>`;
+        return;
+      }
+
+      liveSidebarList.innerHTML = selection.map(item => `
+        <a class="live-sidebar-item" href="/stream.html?id=${encodeURIComponent(item.id)}">
+          <div class="live-sidebar-avatar">
+            ${item.avatar_url ? `<img src="${safe(item.avatar_url)}" alt="${safe(item.username || item.streamer_name || 'Yayıncı')}">` : '👤'}
+          </div>
+
+          <div class="live-sidebar-meta">
+            <div class="live-sidebar-name">${safe(item.streamer_name || item.username || 'Yayıncı')}</div>
+            <div class="live-sidebar-sub">${safe(item.category || 'Just Chatting')}</div>
+            <div class="live-sidebar-stats">
+              <span class="live-dot"></span>
+              <span>Canlı</span>
+              <span>•</span>
+              <span>${safe(formatViewers(item.viewer_count || 0))} izliyor</span>
+            </div>
+          </div>
+
+          <div class="live-sidebar-badge ${item.sidebar_type === 'popular' ? 'popular' : 'discovery'}">
+            ${item.sidebar_type === 'popular' ? 'Popüler' : 'Keşfet'}
+          </div>
+        </a>
+      `).join('');
+    }
+
     async function loadData() {
       if (!countries.length) {
         await loadLocationData();
@@ -1801,8 +1999,7 @@
         .filter(stream => streamMatchesSearch(stream, q))
         .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
 
-      const searchedProfiles = allProfiles
-        .filter(profile => profileMatchesSearch(profile, q));
+      const searchedProfiles = allProfiles.filter(profile => profileMatchesSearch(profile, q));
 
       const followedStreams = filteredLiveStreams
         .filter(stream => followingIds.includes(stream.streamer_id))
@@ -1823,6 +2020,7 @@
 
       updateLiveCountBadge(filteredLiveStreams.length);
       renderFeaturedCarousel(filteredLiveStreams.slice(0, 8));
+      renderLiveSidebarList(filteredLiveStreams);
 
       renderSliderSection(followedSlider, {
         id: 'followed',
@@ -1865,6 +2063,21 @@
       if (refreshTimer) return;
       loadData();
       refreshTimer = setInterval(loadData, 4000);
+    }
+
+    function startSidebarRotation() {
+      if (sidebarRotationTimer) clearInterval(sidebarRotationTimer);
+      sidebarRotationTimer = setInterval(() => {
+        const q = searchInput.value.trim().toLowerCase();
+
+        const filteredLiveStreams = allStreams
+          .filter(stream => stream.is_live === true)
+          .filter(stream => liveMatchesFilters(stream))
+          .filter(stream => streamMatchesSearch(stream, q))
+          .sort((a, b) => Number(b.viewer_count || 0) - Number(a.viewer_count || 0));
+
+        renderLiveSidebarList(filteredLiveStreams);
+      }, 10000);
     }
 
     function handleResize() {
@@ -1928,6 +2141,7 @@
     window.addEventListener('resize', handleResize);
 
     startAutoRefresh();
+    startSidebarRotation();
   </script>
 </body>
 </html>
