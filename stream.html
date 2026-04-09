@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
@@ -9,19 +9,26 @@
 
     :root {
       --border: rgba(255,255,255,.08);
+      --border-strong: rgba(255,255,255,.14);
       --muted: #cbd5e1;
       --muted-2: #94a3b8;
+      --text: #f8fafc;
       --shadow: 0 20px 50px rgba(0,0,0,.35);
-      --success: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
-      --danger: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
+      --shadow-soft: 0 14px 30px rgba(0,0,0,.22);
       --primary: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%);
-      --card: linear-gradient(180deg, rgba(12,20,40,.9), rgba(6,11,25,.96));
+      --danger: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
+      --success: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
+      --glass: rgba(255,255,255,.05);
+      --card: linear-gradient(180deg, rgba(12,20,40,.92), rgba(6,11,25,.98));
+      --sidebar: linear-gradient(180deg, rgba(8,15,33,.98), rgba(3,8,20,.98));
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
       font-family: Inter, Arial, sans-serif;
-      color: #fff;
+      color: var(--text);
       min-height: 100vh;
       background:
         radial-gradient(circle at 20% 20%, rgba(59,130,246,.18), transparent 28%),
@@ -30,18 +37,32 @@
         linear-gradient(180deg, #040816 0%, #020617 100%);
     }
 
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .06;
+      background-image:
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 140px 140px;
+      mask-image: radial-gradient(circle at center, black, transparent 85%);
+      z-index: -1;
+    }
+
     .topbar {
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 10px;
       position: sticky;
       top: 0;
-      z-index: 50;
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
+      z-index: 70;
       backdrop-filter: blur(18px);
-      background: rgba(2,6,23,.72);
-      border-bottom: 1px solid var(--border);
+      background: rgba(2,6,23,.82);
+      border-bottom: 1px solid rgba(255,255,255,.06);
     }
 
     .brand {
@@ -51,97 +72,94 @@
       background: linear-gradient(90deg, #60a5fa, #8b5cf6, #ec4899);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      user-select: none;
       white-space: nowrap;
+    }
+
+    .top-search-wrap {
+      position: relative;
+      min-width: 0;
+      max-width: 540px;
+      width: 100%;
+      justify-self: center;
+    }
+
+    .top-search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted-2);
+      pointer-events: none;
+      font-size: 14px;
+    }
+
+    .top-search {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: white;
+      padding: 13px 16px 13px 38px;
+      outline: none;
+      font-size: 14px;
+      transition: .18s ease;
+    }
+
+    .top-search::placeholder { color: var(--muted-2); }
+
+    .top-search:focus {
+      border-color: rgba(96,165,250,.55);
+      box-shadow: 0 0 0 4px rgba(59,130,246,.12);
+      background: rgba(255,255,255,.06);
     }
 
     .top-actions {
       display: flex;
       gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      align-items: center;
+      justify-self: end;
     }
 
-    .back-link {
+    .top-link,
+    .btn,
+    .chip-btn,
+    .quick-btn,
+    .panel-btn {
+      transition: .16s ease;
+    }
+
+    .top-link {
       text-decoration: none;
       color: #fff;
       background: rgba(255,255,255,.06);
       border: 1px solid var(--border);
-      padding: 10px 16px;
+      padding: 10px 15px;
       border-radius: 999px;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
     }
 
-    .back-link.primary {
-      background: var(--primary);
-      border: none;
+    .top-link:hover,
+    .btn:hover,
+    .chip-btn:hover,
+    .quick-btn:hover,
+    .panel-btn:hover {
+      transform: translateY(-1px);
     }
 
     .page {
-      max-width: 1500px;
+      max-width: 1480px;
       margin: 0 auto;
-      padding: 18px 16px 40px;
-    }
-
-    .hero {
-      margin-bottom: 20px;
-      background:
-        radial-gradient(circle at right top, rgba(139,92,246,.18), transparent 30%),
-        radial-gradient(circle at left bottom, rgba(56,189,248,.12), transparent 30%),
-        linear-gradient(180deg, rgba(12,20,40,.88), rgba(6,11,25,.98));
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      padding: 24px;
-    }
-
-    .hero-topline {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 14px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      padding: 8px 12px;
-      background: rgba(255,255,255,.05);
-    }
-
-    .hero-title {
-      margin: 0 0 10px;
-      font-size: 38px;
-      letter-spacing: -.04em;
-      line-height: 1.08;
-    }
-
-    .hero-sub {
-      color: var(--muted);
-      line-height: 1.65;
-      font-size: 15px;
-      max-width: 920px;
+      padding: 14px;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.3fr) 380px;
-      gap: 20px;
+      grid-template-columns: minmax(0, 1.38fr) minmax(350px, .78fr);
+      gap: 18px;
       align-items: start;
-    }
-
-    .left-col {
-      min-width: 0;
-      display: grid;
-      gap: 20px;
-    }
-
-    .right-col {
-      min-width: 0;
-      display: grid;
-      gap: 20px;
-      position: sticky;
-      top: 96px;
     }
 
     .card {
@@ -152,11 +170,31 @@
       overflow: hidden;
     }
 
+    .stream-main {
+      min-width: 0;
+    }
+
+    .player-shell {
+      position: relative;
+      padding: 16px 16px 0;
+    }
+
     .player {
       aspect-ratio: 16 / 9;
       background: #0f172a;
       position: relative;
       overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .player::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.1) 55%, rgba(0,0,0,.34));
+      pointer-events: none;
     }
 
     .player video,
@@ -192,6 +230,7 @@
       padding: 8px 12px;
       border-radius: 999px;
       z-index: 2;
+      box-shadow: 0 10px 24px rgba(239,68,68,.18);
     }
 
     .viewer-chip {
@@ -205,17 +244,46 @@
       padding: 8px 12px;
       border-radius: 999px;
       z-index: 2;
+      backdrop-filter: blur(8px);
+    }
+
+    .quality-chip {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      background: rgba(2,6,23,.72);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #fff;
+      font-size: 12px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      z-index: 2;
+      backdrop-filter: blur(8px);
+      font-weight: 800;
     }
 
     .content {
-      padding: 18px;
+      padding: 18px 18px 16px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .title-wrap {
+      min-width: 0;
+      flex: 1;
     }
 
     .title {
-      font-size: 32px;
-      line-height: 1.15;
+      font-size: 34px;
+      line-height: 1.08;
       letter-spacing: -.04em;
-      margin: 0 0 10px;
+      margin: 0 0 8px;
       font-weight: 800;
     }
 
@@ -225,31 +293,222 @@
       font-size: 15px;
     }
 
-    .tag-row {
+    .stream-meta-row {
       display: flex;
-      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
       flex-wrap: wrap;
-      margin-top: 14px;
+      margin-top: 16px;
     }
 
-    .tag {
-      display: inline-flex;
+    .streamer-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 18px;
+      padding: 10px 12px;
+      flex: 1;
+    }
+
+    .streamer-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,.08);
+      flex-shrink: 0;
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--border);
-      color: var(--muted);
+      color: var(--muted-2);
       font-size: 12px;
+    }
+
+    .streamer-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .streamer-meta {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .streamer-name {
+      font-size: 16px;
       font-weight: 800;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .streamer-sub {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .streamer-live-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(239,68,68,.14);
+      border: 1px solid rgba(239,68,68,.18);
+      color: #fecaca;
+      font-size: 11px;
+      font-weight: 800;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #ef4444;
+      box-shadow: 0 0 10px rgba(239,68,68,.45);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.18); opacity: .75; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .actions {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
       margin-top: 16px;
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .btn,
+    .quick-btn,
+    .panel-btn {
+      border: none;
+      border-radius: 18px;
+      padding: 12px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      color: white;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      box-shadow: 0 12px 28px rgba(56,189,248,.14);
+    }
+
+    .btn-secondary,
+    .quick-btn,
+    .panel-btn {
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      box-shadow: 0 12px 28px rgba(239,68,68,.14);
+    }
+
+    .btn-success {
+      background: var(--success);
+      box-shadow: 0 12px 28px rgba(16,185,129,.14);
+    }
+
+    .btn-disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      filter: grayscale(.15);
+    }
+
+    .btn-active {
+      box-shadow: 0 0 0 2px rgba(56,189,248,.35) inset;
+    }
+
+    .quick-btn {
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .quick-btn.primary {
+      background: var(--primary);
+      border: none;
+    }
+
+    .stream-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .mini-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .mini-stat {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 18px;
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .mini-stat .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .mini-stat .value {
+      font-size: 20px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .broadcaster-panel {
@@ -263,12 +522,35 @@
 
     .broadcaster-panel.show {
       display: block;
+      animation: panelIn .22s ease;
+    }
+
+    .panel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
     }
 
     .panel-title {
       font-size: 18px;
       font-weight: 800;
-      margin: 0 0 12px;
+      margin: 0;
+    }
+
+    .panel-status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
     }
 
     .panel-grid {
@@ -308,61 +590,17 @@
       padding: 12px 14px;
       outline: none;
       font-size: 14px;
+      transition: .18s ease;
+    }
+
+    .select:focus,
+    .range:focus {
+      border-color: rgba(96,165,250,.55);
+      box-shadow: 0 0 0 4px rgba(59,130,246,.12);
     }
 
     .range {
       padding: 10px 12px;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 18px;
-      padding: 12px 18px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      color: white;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: .15s ease;
-    }
-
-    .btn:hover { transform: translateY(-1px); }
-
-    .btn-primary {
-      background: var(--primary);
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--border);
-    }
-
-    .btn-danger {
-      background: var(--danger);
-    }
-
-    .btn-success {
-      background: var(--success);
-    }
-
-    .btn-disabled {
-      opacity: .5;
-      cursor: not-allowed;
-      filter: grayscale(.15);
-    }
-
-    .btn-active {
-      box-shadow: 0 0 0 2px rgba(56,189,248,.35) inset;
-    }
-
-    .btn.following {
-      background: rgba(16,185,129,.14);
-      border: 1px solid rgba(16,185,129,.28);
-      color: #d1fae5;
     }
 
     .panel-note {
@@ -383,11 +621,21 @@
       line-height: 1.6;
     }
 
-    .hidden-file {
-      display: none;
+    .hidden-file { display: none; }
+
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-height: 720px;
     }
 
     .side-card {
+      background: var(--sidebar);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       min-height: 720px;
@@ -396,6 +644,10 @@
     .side-header {
       padding: 18px;
       border-bottom: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
 
     .side-title {
@@ -404,18 +656,62 @@
       letter-spacing: -.03em;
     }
 
+    .chat-tools {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .chip-btn {
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .chip-btn.active {
+      background: var(--primary);
+      border-color: transparent;
+    }
+
+    .chat-pinned {
+      padding: 12px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
     .chat-messages {
       flex: 1;
       padding: 14px 18px;
       overflow-y: auto;
       max-height: 560px;
-      min-height: 320px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,.12) transparent;
+    }
+
+    .chat-messages::-webkit-scrollbar { width: 8px; }
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.12);
+      border-radius: 999px;
     }
 
     .msg {
       display: flex;
       gap: 10px;
       margin-bottom: 14px;
+      animation: msgIn .16s ease;
+    }
+
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .msg-avatar {
@@ -442,28 +738,54 @@
     .msg-body {
       flex: 1;
       min-width: 0;
+      background: rgba(255,255,255,.025);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 18px;
+      padding: 10px 12px;
     }
 
     .msg-head {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--muted);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .msg-head strong {
       color: #fff;
-      margin-right: 6px;
+      margin-right: 0;
+    }
+
+    .msg-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--muted);
     }
 
     .msg-text {
       line-height: 1.55;
       color: #f8fafc;
       word-break: break-word;
+      font-size: 14px;
+    }
+
+    .chat-form-wrap {
+      padding: 14px 18px 18px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.02);
     }
 
     .chat-form {
-      padding: 14px 18px 18px;
-      border-top: 1px solid rgba(255,255,255,.06);
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 10px;
@@ -478,10 +800,49 @@
       padding: 14px 14px;
       outline: none;
       font-size: 15px;
+      transition: .18s ease;
     }
 
     .input::placeholder {
       color: var(--muted-2);
+    }
+
+    .input:focus {
+      border-color: rgba(96,165,250,.55);
+      box-shadow: 0 0 0 4px rgba(59,130,246,.12);
+      background: rgba(255,255,255,.06);
+    }
+
+    .chat-footer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+
+    .info-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 24px;
+      box-shadow: var(--shadow-soft);
+      padding: 16px;
+    }
+
+    .info-card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      letter-spacing: -.01em;
+    }
+
+    .info-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 13px;
     }
 
     .status {
@@ -491,6 +852,10 @@
       line-height: 1.6;
       min-height: 22px;
     }
+
+    .status.success { color: #4ade80; }
+    .status.error { color: #f87171; }
+    .status.info { color: #93c5fd; }
 
     .hidden-media {
       position: fixed;
@@ -502,274 +867,106 @@
       top: -9999px;
     }
 
-    .streamer-card {
-      padding: 18px;
-    }
-
-    .streamer-head {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .avatar {
-      width: 74px;
-      height: 74px;
-      border-radius: 50%;
-      overflow: hidden;
-      background: #0f172a;
-      border: 1px solid rgba(255,255,255,.08);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted-2);
-      font-size: 12px;
-    }
-
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .streamer-name {
-      font-size: 22px;
-      font-weight: 800;
-      margin-bottom: 4px;
-      line-height: 1.2;
-    }
-
-    .streamer-sub {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.55;
-    }
-
-    .role-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--border);
-      font-size: 12px;
-      font-weight: 800;
-      margin-top: 8px;
-    }
-
-    .streamer-bio {
-      color: var(--muted);
-      line-height: 1.65;
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-
-    .streamer-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .stat-box {
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px 10px;
-      text-align: center;
-    }
-
-    .stat-box .num {
-      font-weight: 800;
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-
-    .stat-box .label {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .social-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-
-    .social-link {
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      padding: 9px 11px;
-      border-radius: 999px;
-    }
-
-    .social-link:hover {
-      color: white;
-      background: rgba(255,255,255,.08);
-    }
-
-    .other-live-card {
-      padding: 18px;
-    }
-
-    .mini-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .mini-card {
-      display: flex;
-      gap: 12px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 10px;
-      transition: .15s ease;
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .mini-card:hover {
-      transform: translateY(-1px);
-      background: rgba(255,255,255,.06);
-    }
-
-    .mini-thumb {
-      width: 110px;
-      aspect-ratio: 16 / 9;
-      overflow: hidden;
-      border-radius: 12px;
-      background: #0f172a;
-      flex-shrink: 0;
-    }
-
-    .mini-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .mini-meta {
-      min-width: 0;
-    }
-
-    .mini-title {
-      font-size: 14px;
-      font-weight: 800;
-      line-height: 1.35;
-      margin-bottom: 4px;
-    }
-
-    .mini-sub {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(2,6,23,.7);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 1000;
-    }
-
-    .modal.show { display: flex; }
-
-    .modal-card {
-      width: 100%;
-      max-width: 520px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .modal-header {
-      padding: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-
-    .modal-title {
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .modal-close {
-      border: none;
-      background: rgba(255,255,255,.06);
-      color: white;
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .modal-body {
-      padding: 18px;
-    }
-
     @media (max-width: 1180px) {
       .layout {
         grid-template-columns: 1fr;
       }
-      .right-col {
-        position: static;
+
+      .side-column,
+      .side-card {
+        min-height: auto;
       }
     }
 
     @media (max-width: 980px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
       .title {
-        font-size: 26px;
+        font-size: 28px;
       }
-      .side-card {
-        min-height: auto;
+
+      .mini-stats {
+        grid-template-columns: 1fr 1fr;
       }
+
       .panel-grid,
-      .panel-grid-3,
-      .streamer-stats {
+      .panel-grid-3 {
         grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .top-search-wrap {
+        max-width: none;
+      }
+
+      .top-actions a:last-child {
+        display: none;
       }
     }
 
     @media (max-width: 760px) {
       .topbar {
-        flex-wrap: wrap;
+        padding: 10px;
       }
 
-      .top-actions {
+      .brand {
+        font-size: 22px;
+      }
+
+      .top-search {
+        font-size: 12px;
+        padding: 11px 12px 11px 34px;
+      }
+
+      .top-link {
+        padding: 9px 10px;
+        font-size: 11px;
+      }
+
+      .page {
+        padding: 10px;
+      }
+
+      .player-shell {
+        padding: 12px 12px 0;
+      }
+
+      .content {
+        padding: 16px 14px 14px;
+      }
+
+      .title {
+        font-size: 24px;
+      }
+
+      .stream-meta-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .streamer-card {
         width: 100%;
-        justify-content: flex-start;
       }
 
-      .hero-title {
-        font-size: 30px;
+      .mini-stats {
+        grid-template-columns: 1fr;
       }
 
       .chat-form {
         grid-template-columns: 1fr;
+      }
+
+      .side-header {
+        padding: 16px 14px;
+      }
+
+      .chat-messages {
+        padding: 12px 14px;
+      }
+
+      .chat-form-wrap {
+        padding: 12px 14px 14px;
       }
     }
   </style>
@@ -777,43 +974,88 @@
 <body>
   <header class="topbar">
     <div class="brand">Celivo</div>
+
+    <div class="top-search-wrap">
+      <span class="top-search-icon">⌕</span>
+      <input class="top-search" type="text" placeholder="Yayın içinde ara, kullanıcı ara..." />
+    </div>
+
     <div class="top-actions">
-      <a href="/index.html" class="back-link">← Ana sayfaya dön</a>
-      <a id="top-profile-link" href="/profile.html" class="back-link">Profil</a>
-      <a href="/profile.html" class="back-link primary">Yayına başla</a>
+      <a href="/index.html" class="top-link">← Ana sayfa</a>
+      <a href="/profile.html" class="top-link">Profil</a>
     </div>
   </header>
 
   <main class="page">
-    <section class="hero">
-      <div class="hero-topline" id="hero-topline">● Canlı yayın aktif</div>
-      <h1 class="hero-title" id="hero-title">Yayın yükleniyor...</h1>
-      <div class="hero-sub" id="hero-sub">Canlı yayına katıl, yayıncıyı takip et ve sohbet bölümünde topluluğun parçası ol.</div>
-    </section>
-
     <section class="layout">
-      <div class="left-col">
+      <section class="stream-main">
         <section class="card">
-          <div class="player" id="player">
-            <div class="live-badge">CANLI</div>
-            <div class="viewer-chip" id="viewer-chip">👁 0 izleyici</div>
-            <div class="player-placeholder">Yayın yükleniyor...</div>
+          <div class="player-shell">
+            <div class="player" id="player">
+              <div class="live-badge">CANLI</div>
+              <div class="viewer-chip" id="viewer-chip">👁 0 izleyici</div>
+              <div class="quality-chip">Auto • HD</div>
+              <div class="player-placeholder">Yayın yükleniyor...</div>
+            </div>
           </div>
 
           <div class="content">
-            <h1 class="title" id="stream-title">Yayın yükleniyor...</h1>
-            <div class="sub" id="stream-sub">...</div>
-            <div class="tag-row" id="stream-tags"></div>
+            <div class="title-row">
+              <div class="title-wrap">
+                <h1 class="title" id="stream-title">Yayın yükleniyor...</h1>
+                <div class="sub" id="stream-sub">...</div>
+              </div>
+            </div>
+
+            <div class="stream-meta-row">
+              <div class="streamer-card">
+                <div class="streamer-avatar" id="streamer-avatar">👤</div>
+                <div class="streamer-meta">
+                  <div class="streamer-name" id="streamer-name">Yayıncı</div>
+                  <div class="streamer-sub" id="streamer-meta-line">Kategori • Lokasyon</div>
+                </div>
+                <div class="streamer-live-note"><span class="pulse-dot"></span> Şu an canlı</div>
+              </div>
+            </div>
 
             <div class="actions">
-              <button id="follow-btn" class="btn btn-primary" type="button">Takip et</button>
-              <button id="donate-btn" class="btn btn-secondary" type="button">Bağış yap</button>
-              <button id="share-btn" class="btn btn-secondary" type="button">Paylaş</button>
-              <a id="profile-link-btn" href="/profile.html" class="btn btn-secondary">Profil</a>
+              <button id="follow-btn" class="btn btn-primary" type="button">Takibe al</button>
+              <a href="/profile.html" class="btn btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;">Profili aç</a>
+              <button id="support-btn" class="btn btn-secondary" type="button">Destekle</button>
+              <button id="subscribe-btn" class="btn btn-secondary" type="button">Abone ol</button>
+            </div>
+
+            <div class="quick-actions">
+              <button id="share-btn" class="quick-btn" type="button">Bağlantıyı paylaş</button>
+              <button id="clip-btn" class="quick-btn" type="button">Klip al</button>
+              <button id="report-btn" class="quick-btn" type="button">Bildir</button>
+              <button id="theater-btn" class="quick-btn" type="button">Tiyatro modu</button>
+            </div>
+
+            <div class="stream-tags" id="stream-tags">
+              <span class="tag-pill">Canlı</span>
+            </div>
+
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <div class="label">Anlık izleyici</div>
+                <div class="value" id="stat-viewers">0</div>
+              </div>
+              <div class="mini-stat">
+                <div class="label">Sohbet mesajı</div>
+                <div class="value" id="stat-messages">0</div>
+              </div>
+              <div class="mini-stat">
+                <div class="label">Bağlantı durumu</div>
+                <div class="value" id="stat-connection">Bekleniyor</div>
+              </div>
             </div>
 
             <div id="broadcaster-panel" class="broadcaster-panel">
-              <h3 class="panel-title">Yayıncı kontrol paneli</h3>
+              <div class="panel-top">
+                <h3 class="panel-title">Yayıncı kontrol paneli</h3>
+                <div class="panel-status-chip" id="panel-status-chip">Hazır</div>
+              </div>
 
               <div class="panel-grid">
                 <button id="start-camera-btn" class="btn btn-success" type="button">Kamerayı Aç</button>
@@ -878,7 +1120,7 @@
 
                   <div>
                     <label class="mini-label" for="upload-background-btn">Özel görsel</label>
-                    <button id="upload-background-btn" class="btn btn-secondary" type="button">Görsel Yükle</button>
+                    <button id="upload-background-btn" class="panel-btn" type="button">Görsel Yükle</button>
                     <input id="background-file-input" class="hidden-file" type="file" accept="image/*" />
                   </div>
                 </div>
@@ -900,89 +1142,44 @@
             <div class="status" id="page-status"></div>
           </div>
         </section>
+      </section>
 
-        <section class="card streamer-card">
-          <div class="streamer-head">
-            <div class="avatar" id="streamer-avatar">👤</div>
-            <div>
-              <div class="streamer-name" id="streamer-name">Yayıncı</div>
-              <div class="streamer-sub" id="streamer-sub">Profil bilgileri yükleniyor...</div>
-              <div class="role-pill" id="streamer-role">FREE</div>
-            </div>
-          </div>
-
-          <div class="streamer-bio" id="streamer-bio">Henüz biyografi eklenmedi.</div>
-
-          <div class="streamer-stats">
-            <div class="stat-box">
-              <div class="num" id="stat-followers">0</div>
-              <div class="label">Takipçi</div>
-            </div>
-            <div class="stat-box">
-              <div class="num" id="stat-following">0</div>
-              <div class="label">Takip edilen</div>
-            </div>
-            <div class="stat-box">
-              <div class="num" id="stat-viewers">0</div>
-              <div class="label">İzleyici</div>
-            </div>
-          </div>
-
-          <div class="social-row" id="social-row"></div>
-
-          <div class="actions">
-            <a id="profile-link-btn-2" href="/profile.html" class="btn btn-secondary">Profili gör</a>
-            <button id="follow-btn-2" class="btn btn-primary" type="button">Takip et</button>
-            <button id="donate-btn-2" class="btn btn-secondary" type="button">Bağış yap</button>
-          </div>
-        </section>
-
-        <section class="card other-live-card">
-          <h3 class="panel-title" style="padding:18px 18px 0;">Diğer canlı yayınlar</h3>
-          <div class="mini-list" id="other-streams" style="padding:18px;"></div>
-        </section>
-      </div>
-
-      <aside class="right-col">
-        <section class="card side-card">
+      <aside class="side-column">
+        <section class="side-card">
           <div class="side-header">
             <h2 class="side-title">Canlı sohbet</h2>
+            <div class="chat-tools">
+              <button id="slowmode-btn" class="chip-btn" type="button">Yavaş mod</button>
+              <button id="chat-pin-btn" class="chip-btn active" type="button">Canlı</button>
+            </div>
           </div>
+
+          <div class="chat-pinned">
+            Sohbet gerçek zamanlı yenilenir. Takip ettiğin ve abone olduğun yayıncılar için gelecekte burada sabit duyuru, anket ve moderasyon alanı kullanılabilir.
+          </div>
+
           <div class="chat-messages" id="chat-messages"></div>
-          <form class="chat-form" id="chat-form">
-            <input id="chat-input" class="input" type="text" placeholder="Mesaj yaz..." maxlength="400" />
-            <button class="btn btn-primary" type="submit">Gönder</button>
-          </form>
+
+          <div class="chat-form-wrap">
+            <form class="chat-form" id="chat-form">
+              <input id="chat-input" class="input" type="text" placeholder="Mesaj yaz..." maxlength="400" />
+              <button class="btn btn-primary" type="submit">Gönder</button>
+            </form>
+
+            <div class="chat-footer-meta">
+              <div id="chat-user-note">Giriş yaptıysan mesaj gönderebilirsin.</div>
+              <div id="chat-count-note">0 mesaj</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="info-card">
+          <h3>Yayın bilgisi</h3>
+          <p id="stream-info-card-text">Bağlantı kuruluyor. Yayın başladıktan sonra kalite, bağlantı ve yayıncı durumu bu bölümde daha görünür olacak.</p>
         </section>
       </aside>
     </section>
   </main>
-
-  <div class="modal" id="donate-modal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div class="modal-title">Bağış yap</div>
-        <button class="modal-close" id="donate-close" type="button">✕</button>
-      </div>
-      <div class="modal-body">
-        <div style="color:var(--muted);line-height:1.6;margin-bottom:14px;">
-          Yayıncıyı desteklemek için tutar seç veya özel tutar gir.
-        </div>
-
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
-          <button class="btn btn-secondary donate-preset" data-amount="25" type="button">₺25</button>
-          <button class="btn btn-secondary donate-preset" data-amount="50" type="button">₺50</button>
-          <button class="btn btn-secondary donate-preset" data-amount="100" type="button">₺100</button>
-          <button class="btn btn-secondary donate-preset" data-amount="250" type="button">₺250</button>
-        </div>
-
-        <input id="donate-amount" class="input" type="number" min="1" placeholder="Özel tutar gir" />
-        <div style="height:12px;"></div>
-        <button id="confirm-donate-btn" class="btn btn-primary" type="button" style="width:100%;">Bağışı onayla</button>
-        <div id="donate-status" class="status"></div>
-      </div>
-    </div>
-  </div>
 
   <video id="camera-source-video" class="hidden-media" autoplay muted playsinline></video>
   <video id="screen-source-video" class="hidden-media" autoplay muted playsinline></video>
@@ -1032,30 +1229,29 @@
     const streamSubEl = document.getElementById('stream-sub');
     const pageStatusEl = document.getElementById('page-status');
     const followBtn = document.getElementById('follow-btn');
-    const followBtn2 = document.getElementById('follow-btn-2');
-    const donateBtn = document.getElementById('donate-btn');
-    const donateBtn2 = document.getElementById('donate-btn-2');
-    const shareBtn = document.getElementById('share-btn');
-    const streamTagsEl = document.getElementById('stream-tags');
-    const heroTitleEl = document.getElementById('hero-title');
-    const heroSubEl = document.getElementById('hero-sub');
-    const heroToplineEl = document.getElementById('hero-topline');
-    const topProfileLink = document.getElementById('top-profile-link');
-    const profileLinkBtn = document.getElementById('profile-link-btn');
-    const profileLinkBtn2 = document.getElementById('profile-link-btn-2');
-    const otherStreamsEl = document.getElementById('other-streams');
+    let viewerChipEl = document.getElementById('viewer-chip');
 
     const streamerAvatarEl = document.getElementById('streamer-avatar');
     const streamerNameEl = document.getElementById('streamer-name');
-    const streamerSubEl = document.getElementById('streamer-sub');
-    const streamerRoleEl = document.getElementById('streamer-role');
-    const streamerBioEl = document.getElementById('streamer-bio');
-    const statFollowersEl = document.getElementById('stat-followers');
-    const statFollowingEl = document.getElementById('stat-following');
-    const statViewersEl = document.getElementById('stat-viewers');
-    const socialRowEl = document.getElementById('social-row');
+    const streamerMetaLineEl = document.getElementById('streamer-meta-line');
+    const streamTagsEl = document.getElementById('stream-tags');
 
-    let viewerChipEl = document.getElementById('viewer-chip');
+    const statViewersEl = document.getElementById('stat-viewers');
+    const statMessagesEl = document.getElementById('stat-messages');
+    const statConnectionEl = document.getElementById('stat-connection');
+    const streamInfoCardTextEl = document.getElementById('stream-info-card-text');
+    const chatCountNoteEl = document.getElementById('chat-count-note');
+    const chatUserNoteEl = document.getElementById('chat-user-note');
+    const panelStatusChipEl = document.getElementById('panel-status-chip');
+
+    const supportBtn = document.getElementById('support-btn');
+    const subscribeBtn = document.getElementById('subscribe-btn');
+    const shareBtn = document.getElementById('share-btn');
+    const clipBtn = document.getElementById('clip-btn');
+    const reportBtn = document.getElementById('report-btn');
+    const theaterBtn = document.getElementById('theater-btn');
+    const slowmodeBtn = document.getElementById('slowmode-btn');
+    const chatPinBtn = document.getElementById('chat-pin-btn');
 
     const broadcasterPanelEl = document.getElementById('broadcaster-panel');
     const startCameraBtn = document.getElementById('start-camera-btn');
@@ -1079,12 +1275,6 @@
     const chatFormEl = document.getElementById('chat-form');
     const chatInputEl = document.getElementById('chat-input');
 
-    const donateModal = document.getElementById('donate-modal');
-    const donateClose = document.getElementById('donate-close');
-    const donateAmountEl = document.getElementById('donate-amount');
-    const donateStatusEl = document.getElementById('donate-status');
-    const confirmDonateBtn = document.getElementById('confirm-donate-btn');
-
     const cameraSourceVideo = document.getElementById('camera-source-video');
     const screenSourceVideo = document.getElementById('screen-source-video');
     const sceneCanvas = document.getElementById('scene-canvas');
@@ -1097,6 +1287,9 @@
     let isFollowing = false;
     let isBroadcaster = false;
     let autoStartTried = false;
+    let lastMessageCount = 0;
+    let theaterMode = false;
+    let slowmodeEnabled = false;
 
     let rawCameraStream = null;
     let rawScreenStream = null;
@@ -1153,27 +1346,17 @@
       return `${n}`;
     }
 
-    function getRoleLabel(roleValue) {
-      const map = { free: 'FREE', premium: 'PREMIUM', vip: 'VIP' };
-      return map[String(roleValue || 'free').toLowerCase()] || 'FREE';
+    function setStatus(message = '', type = 'info') {
+      pageStatusEl.textContent = message;
+      pageStatusEl.className = `status ${type}`;
     }
 
-    function normalizeUrl(raw) {
-      const v = String(raw || '').trim();
-      if (!v) return '';
-      if (v.startsWith('http://') || v.startsWith('https://')) return v;
-      return 'https://' + v;
+    function setPanelStatus(message) {
+      panelStatusChipEl.textContent = message;
     }
 
-    function getProfileSocials(profile) {
-      return [
-        { label: 'Instagram', value: profile?.instagram_url || profile?.instagram || '' },
-        { label: 'X', value: profile?.x_url || profile?.x || profile?.twitter || '' },
-        { label: 'YouTube', value: profile?.youtube_url || profile?.youtube || '' },
-        { label: 'TikTok', value: profile?.tiktok_url || profile?.tiktok || '' },
-        { label: 'Discord', value: profile?.discord_url || profile?.discord || '' },
-        { label: 'Website', value: profile?.website_url || profile?.website || '' }
-      ].filter(item => String(item.value || '').trim());
+    function setConnectionStateLabel(value) {
+      statConnectionEl.textContent = value;
     }
 
     function syncViewerChipRef() {
@@ -1191,6 +1374,18 @@
     function getThumb(profile) {
       if (profile?.avatar_url) return profile.avatar_url;
       return 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80';
+    }
+
+    function renderStreamTags(stream, profile) {
+      const tags = [
+        stream?.category || 'Just Chatting',
+        profile?.country || '',
+        profile?.city || '',
+        profile?.gender || '',
+        profile?.age ? `${profile.age} yaş` : ''
+      ].filter(Boolean).slice(0, 5);
+
+      streamTagsEl.innerHTML = tags.map(tag => `<span class="tag-pill">${safe(tag)}</span>`).join('') || '<span class="tag-pill">Canlı</span>';
     }
 
     function isMobileDevice() {
@@ -1219,6 +1414,9 @@
     async function ensureActorId() {
       currentUser = await getCurrentUser();
       actorId = currentUser?.id || getGuestId();
+      chatUserNoteEl.textContent = currentUser
+        ? 'Giriş yaptın. Sohbete katılabilirsin.'
+        : 'Misafir izliyorsun. Mesaj için giriş yap.';
       return actorId;
     }
 
@@ -1352,8 +1550,9 @@
     function renderImagePlayer(stream, profile) {
       playerEl.innerHTML = `
         <img src="${safe(getThumb(profile))}" alt="${safe(stream?.title || 'Yayın')}" />
-        <div class="live-badge">${stream?.is_live ? 'CANLI' : 'KAPALI'}</div>
+        <div class="live-badge">CANLI</div>
         <div class="viewer-chip" id="viewer-chip">👁 ${safe(formatViewers(stream?.viewer_count || 0))} izleyici</div>
+        <div class="quality-chip">Auto • HD</div>
       `;
       syncViewerChipRef();
     }
@@ -1361,8 +1560,9 @@
     function renderVideoPlayer(stream, muted = false) {
       playerEl.innerHTML = `
         <video id="live-video" autoplay playsinline ${muted ? 'muted' : ''}></video>
-        <div class="live-badge">${stream?.is_live ? 'CANLI' : 'KAPALI'}</div>
+        <div class="live-badge">CANLI</div>
         <div class="viewer-chip" id="viewer-chip">👁 ${safe(formatViewers(stream?.viewer_count || 0))} izleyici</div>
+        <div class="quality-chip">Auto • HD</div>
       `;
       syncViewerChipRef();
       return document.getElementById('live-video');
@@ -1373,6 +1573,7 @@
       const videoEl = renderVideoPlayer(currentStream, true);
       videoEl.srcObject = outboundStream;
       videoEl.play().catch(() => {});
+      setConnectionStateLabel('Önizleme');
     }
 
     function showRemotePreview() {
@@ -1381,125 +1582,16 @@
       videoEl.srcObject = remoteStream;
       videoEl.muted = false;
       videoEl.play().catch(() => {});
-    }
-
-    async function fetchProfile(userId) {
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
-
-      return data || null;
-    }
-
-    async function renderOtherStreams() {
-      if (!streamId) return;
-
-      const { data, error } = await supabase
-        .from('streams')
-        .select('*')
-        .eq('is_live', true)
-        .neq('id', streamId)
-        .order('viewer_count', { ascending: false })
-        .limit(6);
-
-      if (error || !data || !data.length) {
-        otherStreamsEl.innerHTML = `<div class="sub" style="padding:4px 0;">Şu an başka canlı yayın görünmüyor.</div>`;
-        return;
-      }
-
-      const items = await Promise.all(data.map(async (stream) => {
-        const profile = await fetchProfile(stream.streamer_id);
-        return { stream, profile };
-      }));
-
-      otherStreamsEl.innerHTML = items.map(({ stream, profile }) => `
-        <a class="mini-card" href="/stream.html?id=${encodeURIComponent(stream.id)}">
-          <div class="mini-thumb">
-            <img src="${safe(stream.thumbnail_url || profile?.avatar_url || getThumb(profile))}" alt="${safe(stream.title)}" />
-          </div>
-          <div class="mini-meta">
-            <div class="mini-title">${safe(stream.title || 'Canlı yayın')}</div>
-            <div class="mini-sub">
-              ${safe(profile?.username || stream.streamer_name || 'Yayıncı')} • ${safe(stream.category || 'Canlı yayın')}<br/>
-              👁 ${safe(formatViewers(stream.viewer_count || 0))}
-            </div>
-          </div>
-        </a>
-      `).join('');
-    }
-
-    function renderStreamerCard(profile, stream) {
-      if (profile?.avatar_url) {
-        streamerAvatarEl.innerHTML = `<img src="${safe(profile.avatar_url)}" alt="${safe(profile.username || 'Yayıncı')}">`;
-      } else {
-        streamerAvatarEl.textContent = '👤';
-      }
-
-      streamerNameEl.textContent = profile?.username || stream?.streamer_name || 'Yayıncı';
-      streamerSubEl.textContent = `${profile?.country || ''}${profile?.city ? ' • ' + profile.city : ''}${profile?.gender ? ' • ' + profile.gender : ''}${profile?.age ? ' • ' + profile.age + ' yaş' : ''}`;
-      streamerRoleEl.textContent = getRoleLabel(profile?.role || profile?.subscription_status || 'free');
-      streamerBioEl.textContent = profile?.bio || 'Henüz biyografi eklenmedi.';
-      statFollowersEl.textContent = profile?.followers_count || 0;
-      statFollowingEl.textContent = profile?.following_count || 0;
-      statViewersEl.textContent = formatViewers(stream?.viewer_count || 0);
-
-      const socials = getProfileSocials(profile);
-      socialRowEl.innerHTML = socials.length
-        ? socials.map(item => `<a class="social-link" href="${safe(normalizeUrl(item.value))}" target="_blank" rel="noopener noreferrer">${safe(item.label)}</a>`).join('')
-        : '';
-    }
-
-    async function syncFollowCounts(profileId) {
-      try {
-        const [{ count: followersCount }, { count: followingCount }] = await Promise.all([
-          supabase.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', profileId),
-          supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', profileId)
-        ]);
-
-        const nextFollowers = Number(followersCount || 0);
-        const nextFollowing = Number(followingCount || 0);
-
-        await supabase
-          .from('profiles')
-          .update({
-            followers_count: nextFollowers,
-            following_count: nextFollowing
-          })
-          .eq('id', profileId);
-
-        return {
-          followers_count: nextFollowers,
-          following_count: nextFollowing
-        };
-      } catch (err) {
-        console.error('syncFollowCounts', err);
-        return {
-          followers_count: Number(currentProfile?.followers_count || 0),
-          following_count: Number(currentProfile?.following_count || 0)
-        };
-      }
-    }
-
-    function applyFollowUI() {
-      const text = isBroadcaster ? 'Kendi yayının' : (isFollowing ? 'Takip ediliyor' : 'Takip et');
-
-      followBtn.textContent = text;
-      followBtn2.textContent = text;
-
-      followBtn.classList.toggle('following', !isBroadcaster && isFollowing);
-      followBtn2.classList.toggle('following', !isBroadcaster && isFollowing);
-
-      followBtn.disabled = isBroadcaster;
-      followBtn2.disabled = isBroadcaster;
+      setConnectionStateLabel('Canlı');
     }
 
     async function loadStream() {
       if (!streamId) {
-        pageStatusEl.textContent = 'Geçersiz yayın bağlantısı.';
+        setStatus('Geçersiz yayın bağlantısı.', 'error');
         return;
       }
+
+      localStorage.setItem('celivo_active_stream_id', streamId);
 
       const { data: stream, error } = await supabase
         .from('streams')
@@ -1509,45 +1601,48 @@
 
       if (error || !stream) {
         console.error(error);
-        pageStatusEl.textContent = 'Yayın bulunamadı.';
+        setStatus('Yayın bulunamadı.', 'error');
         return;
       }
 
       currentStream = stream;
-      currentProfile = await fetchProfile(stream.streamer_id);
+      localStorage.setItem('celivo_active_stream_id', stream.id);
 
-      renderImagePlayer(stream, currentProfile);
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id, username, avatar_url, country, city, gender, age, bio, followers_count')
+        .eq('id', stream.streamer_id)
+        .maybeSingle();
+
+      currentProfile = profile || null;
+      if (profile?.id) localStorage.setItem('celivo_active_streamer_id', profile.id);
+
+      renderImagePlayer(stream, profile);
 
       streamTitleEl.textContent = stream.title || 'Canlı yayın';
-      heroTitleEl.textContent = stream.title || 'Canlı yayın';
-      heroSubEl.textContent = `${safe(currentProfile?.username || stream.streamer_name || 'Yayıncı')} yayınında canlı içerik, sohbet ve topluluk etkileşimi burada.`;
-      heroToplineEl.textContent = stream.is_live ? '● Canlı yayın aktif' : '● Yayın şu an kapalı';
-
       streamSubEl.innerHTML = `
-        <strong>${safe(stream.streamer_name || currentProfile?.username || 'Yayıncı')}</strong> • ${safe(stream.category || 'Just Chatting')}<br/>
-        ${safe(currentProfile?.country || '')}${currentProfile?.city ? ' • ' + safe(currentProfile.city) : ''}${currentProfile?.gender ? ' • ' + safe(currentProfile.gender) : ''}${currentProfile?.age ? ' • ' + safe(currentProfile.age + ' yaş') : ''}
+        <strong>${safe(stream.streamer_name || profile?.username || 'Yayıncı')}</strong> • ${safe(stream.category || 'Just Chatting')}<br/>
+        ${safe(profile?.country || '')}${profile?.city ? ' • ' + safe(profile.city) : ''}${profile?.gender ? ' • ' + safe(profile.gender) : ''}${profile?.age ? ' • ' + safe(profile.age + ' yaş') : ''}
       `;
 
-      streamTagsEl.innerHTML = [
-        stream.category || '',
-        currentProfile?.country || '',
-        currentProfile?.city || '',
-        stream.is_live ? 'Canlı' : 'Offline'
-      ].filter(Boolean).map(tag => `<span class="tag">${safe(tag)}</span>`).join('');
+      streamerNameEl.textContent = stream.streamer_name || profile?.username || 'Yayıncı';
+      streamerMetaLineEl.textContent = [
+        stream.category || 'Just Chatting',
+        profile?.country || '',
+        profile?.city || '',
+        profile?.followers_count ? `${profile.followers_count} takipçi` : ''
+      ].filter(Boolean).join(' • ');
 
-      const profileHref = `/profile.html?id=${encodeURIComponent(stream.streamer_id)}`;
-      profileLinkBtn.href = profileHref;
-      profileLinkBtn2.href = profileHref;
-      topProfileLink.href = profileHref;
+      streamerAvatarEl.innerHTML = profile?.avatar_url
+        ? `<img src="${safe(profile.avatar_url)}" alt="${safe(profile.username || 'Yayıncı')}">`
+        : '👤';
 
-      if (currentProfile) {
-        const counts = await syncFollowCounts(currentProfile.id);
-        currentProfile.followers_count = counts.followers_count;
-        currentProfile.following_count = counts.following_count;
-      }
+      renderStreamTags(stream, profile);
+      updateViewerChip(stream.viewer_count || 0);
 
-      renderStreamerCard(currentProfile, stream);
-      await renderOtherStreams();
+      streamInfoCardTextEl.textContent = profile?.bio
+        ? profile.bio
+        : 'Bu yayın için henüz açıklama girilmedi. Sohbete katılıp yayıncıyla etkileşime geçebilirsin.';
     }
 
     async function loadFollowState() {
@@ -1555,13 +1650,15 @@
       await ensureActorId();
 
       if (!currentStream) {
-        applyFollowUI();
+        followBtn.textContent = 'Takibe al';
         return;
       }
 
       isBroadcaster = !!currentUser && currentUser.id === currentStream.streamer_id;
 
       if (isBroadcaster) {
+        followBtn.textContent = 'Kendi yayının';
+        followBtn.disabled = true;
         broadcasterPanelEl.classList.add('show');
         configureScreenShareUI();
         syncControlsFromState();
@@ -1570,14 +1667,11 @@
           autoStartTried = true;
           setTimeout(() => startCamera(true), 350);
         }
-
-        applyFollowUI();
         return;
       }
 
       if (!currentUser) {
-        isFollowing = false;
-        applyFollowUI();
+        followBtn.textContent = 'Takibe al';
         return;
       }
 
@@ -1589,14 +1683,14 @@
         .maybeSingle();
 
       isFollowing = !!data;
-      applyFollowUI();
+      followBtn.textContent = isFollowing ? 'Takibi bırak' : 'Takibe al';
     }
 
     async function toggleFollow() {
       currentUser = await getCurrentUser();
 
       if (!currentUser) {
-        pageStatusEl.textContent = 'Takip etmek için giriş yapmalısın.';
+        setStatus('Takip etmek için giriş yapmalısın.', 'error');
         return;
       }
 
@@ -1610,12 +1704,13 @@
           .eq('following_id', currentStream.streamer_id);
 
         if (error) {
-          pageStatusEl.textContent = 'Takipten çıkılamadı.';
+          setStatus('Takipten çıkılamadı.', 'error');
           return;
         }
 
         isFollowing = false;
-        pageStatusEl.textContent = 'Takip bırakıldı.';
+        followBtn.textContent = 'Takibe al';
+        setStatus('Takip bırakıldı.', 'success');
       } else {
         const { error } = await supabase
           .from('follows')
@@ -1625,22 +1720,13 @@
           });
 
         if (error) {
-          pageStatusEl.textContent = 'Takip edilemedi.';
+          setStatus('Takip edilemedi.', 'error');
           return;
         }
 
         isFollowing = true;
-        pageStatusEl.textContent = 'Yayıncı takip edildi.';
-      }
-
-      applyFollowUI();
-
-      if (currentProfile?.id) {
-        const counts = await syncFollowCounts(currentProfile.id);
-        currentProfile.followers_count = counts.followers_count;
-        currentProfile.following_count = counts.following_count;
-        statFollowersEl.textContent = currentProfile.followers_count || 0;
-        statFollowingEl.textContent = currentProfile.following_count || 0;
+        followBtn.textContent = 'Takibi bırak';
+        setStatus('Yayıncı takip edildi.', 'success');
       }
     }
 
@@ -1657,6 +1743,10 @@
         return;
       }
 
+      lastMessageCount = (data || []).length;
+      statMessagesEl.textContent = String(lastMessageCount);
+      chatCountNoteEl.textContent = `${lastMessageCount} mesaj`;
+
       if (!data || !data.length) {
         chatMessagesEl.innerHTML = '<div class="msg-text">Henüz mesaj yok. İlk mesajı sen gönder.</div>';
         return;
@@ -1671,6 +1761,7 @@
             <div class="msg-head">
               <strong>${safe(msg.username)}</strong>
               <span>${new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</span>
+              <span class="msg-badge">Canlı</span>
             </div>
             <div class="msg-text">${safe(msg.message)}</div>
           </div>
@@ -1685,12 +1776,17 @@
 
       currentUser = await getCurrentUser();
       if (!currentUser) {
-        pageStatusEl.textContent = 'Mesaj göndermek için giriş yapmalısın.';
+        setStatus('Mesaj göndermek için giriş yapmalısın.', 'error');
         return;
       }
 
       const message = chatInputEl.value.trim();
       if (!message) return;
+
+      if (slowmodeEnabled) {
+        setStatus('Yavaş mod açık. Biraz bekleyip tekrar deneyin.', 'info');
+        return;
+      }
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -1709,7 +1805,7 @@
         });
 
       if (error) {
-        pageStatusEl.textContent = 'Mesaj gönderilemedi.';
+        setStatus('Mesaj gönderilemedi.', 'error');
         return;
       }
 
@@ -2007,7 +2103,7 @@
         if (!inbound) return;
         remoteStream = inbound;
         showRemotePreview();
-        pageStatusEl.textContent = 'Canlı yayın bağlantısı kuruldu.';
+        setStatus('Canlı yayın bağlantısı kuruldu.', 'success');
       };
 
       pc.onicecandidate = async (event) => {
@@ -2030,20 +2126,25 @@
       pc.onconnectionstatechange = () => {
         const state = pc?.connectionState || '';
         if (state === 'connected') {
-          pageStatusEl.textContent = 'Bağlantı kuruldu.';
+          setStatus('Bağlantı kuruldu.', 'success');
+          setConnectionStateLabel('Bağlı');
         } else if (state === 'connecting') {
-          pageStatusEl.textContent = 'Bağlantı kuruluyor...';
+          setStatus('Bağlantı kuruluyor...', 'info');
+          setConnectionStateLabel('Bağlanıyor');
         } else if (state === 'failed') {
-          pageStatusEl.textContent = 'Bağlantı başarısız.';
+          setStatus('Bağlantı başarısız.', 'error');
+          setConnectionStateLabel('Hata');
         } else if (state === 'disconnected') {
-          pageStatusEl.textContent = 'Bağlantı kesildi.';
+          setStatus('Bağlantı kesildi.', 'error');
+          setConnectionStateLabel('Koptu');
         }
       };
 
       pc.oniceconnectionstatechange = () => {
         const state = pc?.iceConnectionState || '';
         if (state === 'failed') {
-          pageStatusEl.textContent = 'ICE bağlantısı başarısız.';
+          setStatus('ICE bağlantısı başarısız.', 'error');
+          setConnectionStateLabel('ICE hata');
         }
       };
 
@@ -2142,11 +2243,11 @@
 
           if (answerError) {
             console.error('Answer yazılamadı:', answerError);
-            pageStatusEl.textContent = 'Yanıt gönderilemedi.';
+            setStatus('Yanıt gönderilemedi.', 'error');
             return;
           }
 
-          pageStatusEl.textContent = 'Yayın sinyali alındı, bağlantı kuruluyor...';
+          setStatus('Yayın sinyali alındı, bağlantı kuruluyor...', 'info');
           return;
         }
 
@@ -2158,7 +2259,7 @@
           if (pc.currentRemoteDescription) return;
 
           await pc.setRemoteDescription(new RTCSessionDescription(signal.payload));
-          pageStatusEl.textContent = 'İzleyici bağlandı.';
+          setStatus('İzleyici bağlandı.', 'success');
           return;
         }
 
@@ -2208,12 +2309,12 @@
     async function startCamera(silent = false) {
       try {
         if (!isBroadcaster) {
-          if (!silent) pageStatusEl.textContent = 'Bu panel sadece yayıncıya açık.';
+          if (!silent) setStatus('Bu panel sadece yayıncıya açık.', 'error');
           return;
         }
 
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          pageStatusEl.textContent = 'Bu tarayıcı kamera erişimini desteklemiyor.';
+          setStatus('Bu tarayıcı kamera erişimini desteklemiyor.', 'error');
           return;
         }
 
@@ -2245,11 +2346,12 @@
           startSignalPolling();
         }
 
-        pageStatusEl.textContent = 'Kamera açıldı. Sahne güncellendi.';
+        setStatus('Kamera açıldı. Sahne güncellendi.', 'success');
+        setPanelStatus('Kamera aktif');
       } catch (error) {
         console.error(error);
         if (!silent) {
-          pageStatusEl.textContent = 'Kamera açılamadı. Tarayıcı izinlerini kontrol et.';
+          setStatus('Kamera açılamadı. Tarayıcı izinlerini kontrol et.', 'error');
         }
       }
     }
@@ -2257,12 +2359,12 @@
     async function shareScreen() {
       try {
         if (!isBroadcaster) {
-          pageStatusEl.textContent = 'Bu panel sadece yayıncıya açık.';
+          setStatus('Bu panel sadece yayıncıya açık.', 'error');
           return;
         }
 
         if (!hasScreenShareSupport() || isMobileDevice()) {
-          pageStatusEl.textContent = 'Ekran paylaşımı bu cihazda kullanılamıyor. Bunu masaüstünde dene.';
+          setStatus('Ekran paylaşımı bu cihazda kullanılamıyor. Bunu masaüstünde dene.', 'error');
           return;
         }
 
@@ -2292,7 +2394,8 @@
           await rebuildOutboundStream();
         }
 
-        pageStatusEl.textContent = 'Ekran paylaşımı açıldı. Sahne güncellendi.';
+        setStatus('Ekran paylaşımı açıldı. Sahne güncellendi.', 'success');
+        setPanelStatus('Ekran aktif');
 
         const videoTrack = rawScreenStream.getVideoTracks()[0];
         if (videoTrack) {
@@ -2303,12 +2406,13 @@
               screenSourceVideo.srcObject = null;
             }
             await rebuildOutboundStream();
-            pageStatusEl.textContent = 'Ekran paylaşımı sona erdi.';
+            setStatus('Ekran paylaşımı sona erdi.', 'info');
+            setPanelStatus('Hazır');
           };
         }
       } catch (error) {
         console.error(error);
-        pageStatusEl.textContent = 'Ekran paylaşımı başlatılamadı.';
+        setStatus('Ekran paylaşımı başlatılamadı.', 'error');
       }
     }
 
@@ -2318,13 +2422,14 @@
 
       if (!isBroadcaster) return;
       if (!rawCameraStream && !rawScreenStream) {
-        pageStatusEl.textContent = 'Önce kamera veya ekran paylaşımı başlat.';
+        setStatus('Önce kamera veya ekran paylaşımı başlat.', 'error');
         return;
       }
 
       startDrawLoop();
       await rebuildOutboundStream();
-      pageStatusEl.textContent = 'Sahne ayarları uygulandı.';
+      setStatus('Sahne ayarları uygulandı.', 'success');
+      setPanelStatus('Sahne güncel');
     }
 
     async function toggleMic() {
@@ -2332,7 +2437,8 @@
       syncControlsFromState();
 
       await rebuildOutboundStream();
-      pageStatusEl.textContent = sceneState.micEnabled ? 'Mikrofon açıldı.' : 'Mikrofon kapatıldı.';
+      setStatus(sceneState.micEnabled ? 'Mikrofon açıldı.' : 'Mikrofon kapatıldı.', 'info');
+      setPanelStatus(sceneState.micEnabled ? 'Mikrofon açık' : 'Mikrofon kapalı');
     }
 
     async function toggleScreenAudio() {
@@ -2340,7 +2446,8 @@
       syncControlsFromState();
 
       await rebuildOutboundStream();
-      pageStatusEl.textContent = sceneState.screenAudioEnabled ? 'Ekran sesi açıldı.' : 'Ekran sesi kapatıldı.';
+      setStatus(sceneState.screenAudioEnabled ? 'Ekran sesi açıldı.' : 'Ekran sesi kapatıldı.', 'info');
+      setPanelStatus(sceneState.screenAudioEnabled ? 'Ekran sesi açık' : 'Ekran sesi kapalı');
     }
 
     async function stopPreviewOnly() {
@@ -2368,7 +2475,9 @@
         renderImagePlayer(currentStream, currentProfile);
       }
 
-      pageStatusEl.textContent = 'Önizleme durduruldu.';
+      setStatus('Önizleme durduruldu.', 'info');
+      setPanelStatus('Hazır');
+      setConnectionStateLabel('Bekleniyor');
     }
 
     async function stopLiveStream() {
@@ -2385,49 +2494,67 @@
 
         if (error) {
           console.error(error);
-          pageStatusEl.textContent = 'Yayın veritabanında kapatılamadı.';
+          setStatus('Yayın veritabanında kapatılamadı.', 'error');
           return;
         }
 
-        pageStatusEl.textContent = 'Yayın kapatıldı. Ana sayfaya yönlendiriliyorsun...';
+        setStatus('Yayın kapatıldı. Ana sayfaya yönlendiriliyorsun...', 'success');
         setTimeout(() => {
           window.location.href = '/index.html';
         }, 1200);
       } catch (error) {
         console.error(error);
-        pageStatusEl.textContent = 'Yayın durdurulurken hata oluştu.';
+        setStatus('Yayın durdurulurken hata oluştu.', 'error');
       }
     }
 
-    function openDonateModal() {
-      donateModal.classList.add('show');
-      donateStatusEl.textContent = '';
-    }
-
-    function closeDonateModal() {
-      donateModal.classList.remove('show');
-      donateAmountEl.value = '';
-      donateStatusEl.textContent = '';
-    }
-
-    async function confirmDonation() {
-      const amount = Number(donateAmountEl.value || 0);
-      if (!amount || amount <= 0) {
-        donateStatusEl.textContent = 'Geçerli bir tutar gir.';
-        return;
+    function toggleTheaterMode() {
+      theaterMode = !theaterMode;
+      const sideColumn = document.querySelector('.side-column');
+      if (theaterMode) {
+        sideColumn.style.display = 'none';
+        document.querySelector('.layout').style.gridTemplateColumns = '1fr';
+        theaterBtn.classList.add('primary');
+        setStatus('Tiyatro modu açıldı.', 'info');
+      } else {
+        sideColumn.style.display = '';
+        document.querySelector('.layout').style.gridTemplateColumns = '';
+        theaterBtn.classList.remove('primary');
+        setStatus('Tiyatro modu kapatıldı.', 'info');
       }
-
-      donateStatusEl.textContent = `${amount} TL destek hazırlandı. Cüzdan tahsilatını sonraki aşamada gerçek akışa bağlayabiliriz.`;
     }
 
-    async function shareCurrentStream() {
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        pageStatusEl.textContent = 'Yayın bağlantısı kopyalandı.';
-      } catch (err) {
-        console.error(err);
-        pageStatusEl.textContent = 'Bağlantı kopyalanamadı.';
-      }
+    function copyShareLink() {
+      navigator.clipboard.writeText(window.location.href)
+        .then(() => setStatus('Yayın bağlantısı kopyalandı.', 'success'))
+        .catch(() => setStatus('Bağlantı kopyalanamadı.', 'error'));
+    }
+
+    function fakeClip() {
+      setStatus('Klip sistemi sonraki fazda gerçek kayıt mantığıyla bağlanacak.', 'info');
+    }
+
+    function fakeSupport() {
+      setStatus('Destekle butonu hazır. Sonraki aşamada cüzdan/ödeme akışına bağlanacak.', 'info');
+    }
+
+    function fakeSubscribe() {
+      setStatus('Abonelik UI hazır. Sonraki aşamada plan ve ödeme altyapısına bağlanacak.', 'info');
+    }
+
+    function fakeReport() {
+      setStatus('Bildirim kaydedildi. Moderasyon ekranı sonraki fazda bağlanabilir.', 'info');
+    }
+
+    function toggleSlowmode() {
+      slowmodeEnabled = !slowmodeEnabled;
+      slowmodeBtn.classList.toggle('active', slowmodeEnabled);
+      setStatus(slowmodeEnabled ? 'Yavaş mod simülasyonu açıldı.' : 'Yavaş mod kapatıldı.', 'info');
+    }
+
+    function toggleLiveChatBadge() {
+      chatPinBtn.classList.toggle('active');
+      setStatus('Sohbet görünümü güncellendi.', 'info');
     }
 
     uploadBackgroundBtn.addEventListener('click', () => {
@@ -2448,11 +2575,6 @@
     });
 
     followBtn.addEventListener('click', toggleFollow);
-    followBtn2.addEventListener('click', toggleFollow);
-    donateBtn.addEventListener('click', openDonateModal);
-    donateBtn2.addEventListener('click', openDonateModal);
-    shareBtn.addEventListener('click', shareCurrentStream);
-
     chatFormEl.addEventListener('submit', sendMessage);
     startCameraBtn.addEventListener('click', () => startCamera(false));
     shareScreenBtn.addEventListener('click', shareScreen);
@@ -2462,17 +2584,14 @@
     stopPreviewBtn.addEventListener('click', stopPreviewOnly);
     stopStreamBtn.addEventListener('click', stopLiveStream);
 
-    donateClose.addEventListener('click', closeDonateModal);
-    donateModal.addEventListener('click', (e) => {
-      if (e.target === donateModal) closeDonateModal();
-    });
-    confirmDonateBtn.addEventListener('click', confirmDonation);
-
-    document.querySelectorAll('.donate-preset').forEach(btn => {
-      btn.addEventListener('click', () => {
-        donateAmountEl.value = btn.dataset.amount || '';
-      });
-    });
+    supportBtn.addEventListener('click', fakeSupport);
+    subscribeBtn.addEventListener('click', fakeSubscribe);
+    shareBtn.addEventListener('click', copyShareLink);
+    clipBtn.addEventListener('click', fakeClip);
+    reportBtn.addEventListener('click', fakeReport);
+    theaterBtn.addEventListener('click', toggleTheaterMode);
+    slowmodeBtn.addEventListener('click', toggleSlowmode);
+    chatPinBtn.addEventListener('click', toggleLiveChatBadge);
 
     window.addEventListener('pagehide', async () => {
       await markViewerInactive();
@@ -2500,14 +2619,15 @@
     startViewerPresence();
 
     if (!isBroadcaster) {
-      pageStatusEl.textContent = currentUser
+      setStatus(currentUser
         ? 'Yayın bağlantısı bekleniyor...'
-        : 'Misafir izleyici olarak bağlanılıyor...';
+        : 'Misafir izleyici olarak bağlanılıyor...', 'info');
+    } else {
+      setPanelStatus('Yayıncı modu');
     }
 
     setInterval(async () => {
       await loadMessages();
-      await renderOtherStreams();
     }, 4000);
   </script>
 </body>
