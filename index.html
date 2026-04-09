@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
@@ -16,6 +16,8 @@
       --danger: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
       --success: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
       --bg-card: linear-gradient(180deg, rgba(12,20,40,.92), rgba(6,11,25,.98));
+      --sidebar-bg: linear-gradient(180deg, rgba(8,15,33,.98), rgba(3,8,20,.98));
+      --active-glow: 0 0 0 1px rgba(99,102,241,.45), 0 14px 30px rgba(99,102,241,.12);
     }
 
     html { scroll-behavior: smooth; }
@@ -31,6 +33,8 @@
         radial-gradient(circle at 50% 80%, rgba(56,189,248,.12), transparent 34%),
         linear-gradient(180deg, #040816 0%, #020617 100%);
     }
+
+    a { color: inherit; }
 
     .topbar {
       padding: 12px 14px;
@@ -51,19 +55,6 @@
       align-items: center;
       gap: 10px;
       min-width: 0;
-    }
-
-    .menu-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      color: #fff;
-      font-size: 18px;
-      cursor: pointer;
-      flex-shrink: 0;
-      display: none;
     }
 
     .brand {
@@ -99,7 +90,8 @@
     .mini-btn,
     .section-nav-btn,
     .category-chip,
-    .carousel-nav {
+    .carousel-nav,
+    .sidebar-category-chip {
       transition: .16s ease;
     }
 
@@ -127,7 +119,8 @@
     .carousel-card:hover,
     .category-chip:hover,
     .section-card:hover,
-    .section-nav-btn:hover {
+    .section-nav-btn:hover,
+    .sidebar-category-chip:hover {
       transform: translateY(-1px);
     }
 
@@ -146,11 +139,11 @@
       top: 82px;
       height: calc(100vh - 96px);
       overflow-y: auto;
-      background: linear-gradient(180deg, rgba(8,15,33,.96), rgba(3,8,20,.96));
+      background: var(--sidebar-bg);
       border: 1px solid rgba(255,255,255,.08);
       border-radius: 26px;
       box-shadow: var(--shadow);
-      padding: 16px;
+      padding: 14px;
       scrollbar-width: thin;
       scrollbar-color: rgba(255,255,255,.12) transparent;
     }
@@ -162,37 +155,6 @@
     }
 
     .page { min-width: 0; }
-
-    .mobile-live-block {
-      display: none;
-      margin-bottom: 18px;
-      background: linear-gradient(180deg, rgba(8,15,33,.96), rgba(3,8,20,.96));
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      padding: 14px;
-    }
-
-    .mobile-live-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .mobile-live-title {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -.02em;
-    }
-
-    .mobile-live-note {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-      margin-top: 10px;
-    }
 
     .toolbar-wrap {
       margin-bottom: 18px;
@@ -520,15 +482,18 @@
       white-space: nowrap;
     }
 
-    .category-chip svg {
+    .category-chip svg,
+    .sidebar-category-chip svg {
       width: 18px;
       height: 18px;
       flex-shrink: 0;
       opacity: .95;
     }
 
-    .category-chip .icon-stroke { stroke: currentColor; }
-    .category-chip .icon-fill { fill: currentColor; }
+    .category-chip .icon-stroke,
+    .sidebar-category-chip .icon-stroke { stroke: currentColor; }
+    .category-chip .icon-fill,
+    .sidebar-category-chip .icon-fill { fill: currentColor; }
 
     .category-chip.active {
       background: var(--primary);
@@ -771,11 +736,36 @@
       border-radius: 20px;
     }
 
-    .side-section { margin-bottom: 18px; }
+    .side-section { margin-bottom: 16px; }
 
-    .side-label {
+    .side-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .side-live-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+
+    .side-refresh {
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
       color: var(--muted);
-      font-size: 12px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.06);
+      white-space: nowrap;
+    }
+
+    .side-section-title {
+      color: var(--muted);
+      font-size: 11px;
       font-weight: 800;
       letter-spacing: .08em;
       text-transform: uppercase;
@@ -784,45 +774,120 @@
 
     .side-nav {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .side-nav a,
-    .side-nav button {
+    .side-nav a {
       text-decoration: none;
       color: #fff;
       background: rgba(255,255,255,.04);
       border: 1px solid var(--border);
-      padding: 12px 14px;
-      border-radius: 16px;
-      font-size: 14px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
       font-weight: 700;
       text-align: left;
+    }
+
+    .sidebar-category-wrap {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+    }
+
+    .sidebar-category-wrap::-webkit-scrollbar { display: none; }
+
+    .sidebar-category-chip {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: #fff;
       cursor: pointer;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .sidebar-category-chip.active {
+      background: var(--primary);
+      border-color: transparent;
+      box-shadow: 0 10px 24px rgba(56,189,248,.18);
     }
 
     .live-sidebar-list {
       display: grid;
-      gap: 10px;
+      gap: 8px;
+      transition: opacity .28s ease, transform .28s ease;
+    }
+
+    .live-sidebar-list.animating-out {
+      opacity: .25;
+      transform: translateX(-8px);
+    }
+
+    .live-sidebar-list.animating-in {
+      animation: sidebarListIn .32s ease;
+    }
+
+    @keyframes sidebarListIn {
+      from { opacity: .15; transform: translateX(10px); }
+      to { opacity: 1; transform: translateX(0); }
     }
 
     .live-sidebar-item {
       display: grid;
-      grid-template-columns: 42px 1fr auto;
+      grid-template-columns: 32px 1fr auto;
       gap: 10px;
       align-items: center;
       text-decoration: none;
       color: inherit;
-      padding: 10px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.04);
+      padding: 8px 9px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.035);
       border: 1px solid rgba(255,255,255,.05);
+      position: relative;
+      overflow: hidden;
+      transition: .18s ease;
+      min-height: 56px;
+    }
+
+    .live-sidebar-item::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(99,102,241,.14), transparent 55%);
+      opacity: 0;
+      transition: .18s ease;
+      pointer-events: none;
+    }
+
+    .live-sidebar-item:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,.08);
+      box-shadow: 0 12px 25px rgba(0,0,0,.18);
+    }
+
+    .live-sidebar-item:hover::before {
+      opacity: 1;
+    }
+
+    .live-sidebar-item.active-channel {
+      background: linear-gradient(90deg, rgba(99,102,241,.18), rgba(255,255,255,.02));
+      border-color: rgba(99,102,241,.38);
+      box-shadow: var(--active-glow);
     }
 
     .live-sidebar-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
       overflow: hidden;
       background: #0f172a;
       border: 1px solid rgba(255,255,255,.08);
@@ -830,7 +895,8 @@
       align-items: center;
       justify-content: center;
       color: var(--muted-2);
-      font-size: 11px;
+      font-size: 10px;
+      flex-shrink: 0;
     }
 
     .live-sidebar-avatar img {
@@ -840,35 +906,38 @@
       display: block;
     }
 
-    .live-sidebar-meta { min-width: 0; }
+    .live-sidebar-meta {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
 
     .live-sidebar-name {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       line-height: 1.2;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-bottom: 3px;
     }
 
     .live-sidebar-sub {
       color: var(--muted);
-      font-size: 11px;
-      line-height: 1.35;
+      font-size: 10px;
+      line-height: 1.3;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .live-sidebar-stats {
-      margin-top: 4px;
-      font-size: 11px;
-      color: var(--muted);
       display: flex;
       align-items: center;
       gap: 6px;
-      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-self: stretch;
+      white-space: nowrap;
     }
 
     .live-dot {
@@ -878,14 +947,25 @@
       background: #22c55e;
       display: inline-block;
       flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(34,197,94,.4);
+    }
+
+    .live-sidebar-count {
+      font-size: 11px;
+      font-weight: 800;
+      color: #fff;
     }
 
     .live-sidebar-badge {
-      padding: 6px 8px;
+      position: absolute;
+      right: 8px;
+      top: 7px;
+      padding: 4px 7px;
       border-radius: 999px;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
       white-space: nowrap;
+      opacity: .92;
     }
 
     .live-sidebar-badge.popular {
@@ -900,65 +980,33 @@
       color: #bae6fd;
     }
 
+    .live-sidebar-watch {
+      position: absolute;
+      right: 8px;
+      bottom: 7px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 800;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.08);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: .18s ease;
+      pointer-events: none;
+    }
+
+    .live-sidebar-item:hover .live-sidebar-watch {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .sidebar-mini-note {
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.5;
-      padding-top: 10px;
+      padding-top: 8px;
     }
-
-    .mobile-drawer {
-      position: fixed;
-      top: 0;
-      left: -310px;
-      width: 300px;
-      height: 100vh;
-      z-index: 100;
-      background: linear-gradient(180deg, rgba(8,15,33,.985), rgba(3,8,20,.985));
-      border-right: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 20px 60px rgba(0,0,0,.45);
-      transition: left .25s ease;
-      padding: 18px 16px;
-      overflow-y: auto;
-    }
-
-    .mobile-drawer.show { left: 0; }
-
-    .mobile-drawer-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
-    }
-
-    .mobile-drawer-title {
-      font-size: 22px;
-      font-weight: 800;
-      background: linear-gradient(90deg, #60a5fa, #8b5cf6, #ec4899);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .close-menu-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      color: #fff;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    .side-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(2,6,23,.55);
-      z-index: 90;
-      display: none;
-    }
-
-    .side-backdrop.show { display: block; }
 
     @media (max-width: 1320px) {
       .section-card {
@@ -966,17 +1014,7 @@
       }
     }
 
-    @media (max-width: 1180px) {
-      .desktop-sidebar { display: none; }
-
-      .shell {
-        grid-template-columns: 1fr;
-      }
-
-      .menu-btn { display: inline-flex; align-items: center; justify-content: center; }
-
-      .mobile-live-block { display: block; }
-
+    @media (max-width: 1100px) {
       .filters-grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -986,16 +1024,29 @@
       }
     }
 
-    @media (min-width: 1181px) {
-      .mobile-drawer { display: none; }
-    }
+    @media (max-width: 980px) {
+      .shell {
+        grid-template-columns: 120px minmax(0, 1fr);
+        gap: 12px;
+        padding: 10px;
+      }
 
-    @media (max-width: 900px) {
+      .desktop-sidebar {
+        top: 72px;
+        height: calc(100vh - 86px);
+        padding: 10px;
+        border-radius: 20px;
+      }
+
+      .brand { font-size: 24px; }
+
       .topbar {
         grid-template-columns: auto 1fr auto auto;
       }
 
-      .top-link.primary { display: none; }
+      .top-link.primary {
+        display: none;
+      }
 
       .carousel-card {
         flex: 0 0 100%;
@@ -1009,100 +1060,121 @@
       .section-card {
         flex: 0 0 calc((100% - 16px) / 2);
       }
+
+      .side-live-title {
+        font-size: 13px;
+      }
+
+      .side-refresh,
+      .live-sidebar-badge,
+      .live-sidebar-watch,
+      .sidebar-mini-note {
+        display: none;
+      }
+
+      .side-nav a {
+        font-size: 11px;
+        padding: 9px 8px;
+        border-radius: 12px;
+      }
+
+      .sidebar-category-chip {
+        font-size: 10px;
+        padding: 8px 9px;
+      }
+
+      .live-sidebar-item {
+        grid-template-columns: 1fr;
+        gap: 5px;
+        padding: 8px;
+        min-height: auto;
+      }
+
+      .live-sidebar-avatar {
+        width: 30px;
+        height: 30px;
+      }
+
+      .live-sidebar-name {
+        font-size: 11px;
+      }
+
+      .live-sidebar-sub,
+      .live-sidebar-count {
+        font-size: 10px;
+      }
+
+      .live-sidebar-stats {
+        justify-content: flex-start;
+      }
     }
 
     @media (max-width: 760px) {
       .topbar {
-        padding: 12px;
-        grid-template-columns: auto 1fr auto;
+        padding: 10px;
         gap: 8px;
+        grid-template-columns: auto 1fr auto auto;
       }
 
-      .brand { font-size: 24px; }
-      .top-link { padding: 10px 12px; font-size: 12px; }
-      .toolbar-row { justify-content: stretch; }
-      .toolbar-btn { flex: 1; }
-      .filters-grid { grid-template-columns: 1fr; }
-      .profile-grid { grid-template-columns: 1fr; }
-      .section-title { font-size: 24px; }
-      .carousel-stage { grid-template-columns: 1fr; }
-      .carousel-nav { display: none; }
-      .carousel-title { font-size: 18px; }
-      .slider-header { align-items: flex-start; }
-      .section-card { flex: 0 0 86%; }
-      .shell { padding: 12px; }
+      .brand {
+        font-size: 18px;
+      }
+
+      .top-search {
+        padding: 11px 12px;
+        font-size: 12px;
+      }
+
+      .top-link {
+        padding: 9px 10px;
+        font-size: 11px;
+      }
+
+      .toolbar-row {
+        justify-content: stretch;
+      }
+
+      .toolbar-btn {
+        flex: 1;
+      }
+
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title {
+        font-size: 22px;
+      }
+
+      .carousel-stage {
+        grid-template-columns: 1fr;
+      }
+
+      .carousel-nav {
+        display: none;
+      }
+
+      .carousel-title {
+        font-size: 17px;
+      }
+
+      .slider-header {
+        align-items: flex-start;
+      }
+
+      .section-card {
+        flex: 0 0 82%;
+      }
+
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="side-backdrop" class="side-backdrop"></div>
-
-  <aside class="desktop-sidebar">
-    <div class="side-section">
-      <div class="side-label">Gezin</div>
-      <div class="side-nav">
-        <a href="#featured-section">Popüler yayınlar</a>
-        <a href="#followed-section">Takip ettiğin yayıncılar</a>
-        <a href="#live-section">Canlı yayınlar</a>
-        <a href="#new-section">Yeni başlayan yayıncılar</a>
-        <a href="#scheduled-section">İleri tarihli yayınlar</a>
-        <a href="#profiles-section">Kullanıcılar</a>
-      </div>
-    </div>
-
-    <div class="side-section">
-      <div class="side-label">Kategori</div>
-      <div class="side-nav" id="desktop-category-links">
-        <button type="button" data-category="">Tümü</button>
-      </div>
-    </div>
-
-    <div class="side-section">
-      <div class="side-label">Şu an canlı kanallar</div>
-      <div id="desktop-live-sidebar-list" class="live-sidebar-list"></div>
-      <div class="sidebar-mini-note">
-        10 saniyede bir yenilenir. %40 popüler, %60 keşif mantığıyla ve tekrar etmeyen yayın/yayıncı seçimiyle hazırlanır.
-      </div>
-    </div>
-  </aside>
-
-  <aside id="mobile-drawer" class="mobile-drawer">
-    <div class="mobile-drawer-top">
-      <div class="mobile-drawer-title">Celivo</div>
-      <button id="close-menu-btn" class="close-menu-btn" type="button">✕</button>
-    </div>
-
-    <div class="side-section">
-      <div class="side-label">Gezin</div>
-      <div class="side-nav">
-        <a href="#featured-section">Popüler yayınlar</a>
-        <a href="#followed-section">Takip ettiğin yayıncılar</a>
-        <a href="#live-section">Canlı yayınlar</a>
-        <a href="#new-section">Yeni başlayan yayıncılar</a>
-        <a href="#scheduled-section">İleri tarihli yayınlar</a>
-        <a href="#profiles-section">Kullanıcılar</a>
-      </div>
-    </div>
-
-    <div class="side-section">
-      <div class="side-label">Kategori</div>
-      <div class="side-nav" id="mobile-category-links">
-        <button type="button" data-category="">Tümü</button>
-      </div>
-    </div>
-
-    <div class="side-section">
-      <div class="side-label">Şu an canlı kanallar</div>
-      <div id="mobile-live-sidebar-list" class="live-sidebar-list"></div>
-      <div class="sidebar-mini-note">
-        10 saniyede bir yenilenir. %40 popüler, %60 keşif mantığıyla döner.
-      </div>
-    </div>
-  </aside>
-
   <header class="topbar">
     <div class="left-wrap">
-      <button id="menu-btn" class="menu-btn" type="button">☰</button>
       <div class="brand">Celivo</div>
     </div>
 
@@ -1116,18 +1188,39 @@
   </header>
 
   <div class="shell">
-    <main class="page">
-      <section class="mobile-live-block">
-        <div class="mobile-live-head">
-          <div class="mobile-live-title">Şu an canlı kanallar</div>
-          <span class="count-badge">10 sn</span>
+    <aside class="desktop-sidebar">
+      <div class="side-section">
+        <div class="side-topbar">
+          <div class="side-live-title">Canlı kanallar</div>
+          <span class="side-refresh">10 sn</span>
         </div>
-        <div id="mobile-live-inline-list" class="live-sidebar-list"></div>
-        <div class="mobile-live-note">
-          Bu alan mobilde de görünür. Liste 10 saniyede bir yenilenir ve aynı yayın/yayıncı tekrarını azaltır.
-        </div>
-      </section>
+      </div>
 
+      <div class="side-section">
+        <div class="side-section-title">Gezin</div>
+        <div class="side-nav">
+          <a href="#featured-section">Popüler</a>
+          <a href="#followed-section">Takip</a>
+          <a href="#live-section">Canlı</a>
+          <a href="#new-section">Yeni</a>
+          <a href="#scheduled-section">Planlı</a>
+        </div>
+      </div>
+
+      <div class="side-section">
+        <div class="side-section-title">Kategori</div>
+        <div id="sidebar-category-wrap" class="sidebar-category-wrap"></div>
+      </div>
+
+      <div class="side-section">
+        <div id="desktop-live-sidebar-list" class="live-sidebar-list"></div>
+        <div class="sidebar-mini-note">
+          Liste 10 saniyede yenilenir. Aynı yayın ve yayıncı tekrarları azaltılır. Son baktığın yayıncılar mümkünse üstte sabitlenir.
+        </div>
+      </div>
+    </aside>
+
+    <main class="page">
       <section class="toolbar-wrap">
         <div class="toolbar-row">
           <button id="toggle-filters-btn" class="toolbar-btn" type="button">Filtrele</button>
@@ -1234,11 +1327,13 @@
     let refreshTimer = null;
     let sidebarRotationTimer = null;
     let carouselIndex = 0;
-    let visibleCards = window.innerWidth <= 900 ? 1 : 2;
+    let visibleCards = window.innerWidth <= 980 ? 1 : 2;
     let currentUser = null;
     let followingIds = [];
     let sidebarRecentStreamIds = [];
     let sidebarRecentStreamerIds = [];
+    let activeViewedStreamId = localStorage.getItem('celivo_active_stream_id') || '';
+    let activeViewedStreamerId = localStorage.getItem('celivo_active_streamer_id') || '';
 
     const FIXED_CATEGORIES = [
       'Just Chatting',
@@ -1250,16 +1345,9 @@
       'Futbol'
     ];
 
-    const menuBtn = document.getElementById('menu-btn');
-    const closeMenuBtn = document.getElementById('close-menu-btn');
-    const mobileDrawer = document.getElementById('mobile-drawer');
-    const sideBackdrop = document.getElementById('side-backdrop');
-    const desktopCategoryLinks = document.getElementById('desktop-category-links');
-    const mobileCategoryLinks = document.getElementById('mobile-category-links');
-    const desktopLiveSidebarList = document.getElementById('desktop-live-sidebar-list');
-    const mobileLiveSidebarList = document.getElementById('mobile-live-sidebar-list');
-    const mobileLiveInlineList = document.getElementById('mobile-live-inline-list');
     const loginLink = document.getElementById('login-link');
+    const desktopLiveSidebarList = document.getElementById('desktop-live-sidebar-list');
+    const sidebarCategoryWrap = document.getElementById('sidebar-category-wrap');
 
     const searchInput = document.getElementById('search-input');
     const toggleFiltersBtn = document.getElementById('toggle-filters-btn');
@@ -1342,14 +1430,35 @@
       return arr;
     }
 
-    function openMenu() {
-      mobileDrawer.classList.add('show');
-      sideBackdrop.classList.add('show');
+    function rememberViewedStream(stream) {
+      if (!stream) return;
+
+      activeViewedStreamId = String(stream.id || '');
+      activeViewedStreamerId = String(stream.streamer_id || '');
+
+      if (activeViewedStreamId) localStorage.setItem('celivo_active_stream_id', activeViewedStreamId);
+      if (activeViewedStreamerId) localStorage.setItem('celivo_active_streamer_id', activeViewedStreamerId);
+
+      let recentStreamers = [];
+      try {
+        recentStreamers = JSON.parse(localStorage.getItem('celivo_recent_streamers') || '[]');
+        if (!Array.isArray(recentStreamers)) recentStreamers = [];
+      } catch {
+        recentStreamers = [];
+      }
+
+      recentStreamers = recentStreamers.filter(id => id !== activeViewedStreamerId);
+      recentStreamers.unshift(activeViewedStreamerId);
+      localStorage.setItem('celivo_recent_streamers', JSON.stringify(recentStreamers.slice(0, 8)));
     }
 
-    function closeMenu() {
-      mobileDrawer.classList.remove('show');
-      sideBackdrop.classList.remove('show');
+    function getPinnedStreamerIds() {
+      try {
+        const arr = JSON.parse(localStorage.getItem('celivo_recent_streamers') || '[]');
+        return Array.isArray(arr) ? arr.filter(Boolean) : [];
+      } catch {
+        return [];
+      }
     }
 
     async function loadCurrentUser() {
@@ -1415,44 +1524,6 @@
       });
     }
 
-    function renderCategoryNav(container, categories) {
-      container.innerHTML = `
-        <button type="button" data-category="">Tümü</button>
-        ${categories.map(category => `
-          <button type="button" data-category="${safe(category)}">${safe(category)}</button>
-        `).join('')}
-      `;
-
-      Array.from(container.querySelectorAll('[data-category]')).forEach(btn => {
-        btn.onclick = () => {
-          categoryFilter.value = btn.dataset.category || '';
-          renderCategoryRail();
-          applyAll();
-          closeMenu();
-        };
-      });
-    }
-
-    function fillCategoryFilter() {
-      const currentValue = categoryFilter.value;
-
-      categoryFilter.innerHTML = '<option value="">Kategori</option>';
-      FIXED_CATEGORIES.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        categoryFilter.appendChild(option);
-      });
-
-      if (FIXED_CATEGORIES.includes(currentValue)) {
-        categoryFilter.value = currentValue;
-      }
-
-      renderCategoryNav(desktopCategoryLinks, FIXED_CATEGORIES);
-      renderCategoryNav(mobileCategoryLinks, FIXED_CATEGORIES);
-      renderCategoryRail();
-    }
-
     function getCategoryIcon(category) {
       const icons = {
         'Tümü': `
@@ -1509,6 +1580,51 @@
       return icons[category] || icons['Tümü'];
     }
 
+    function renderSidebarCategoryWrap() {
+      const activeCategory = categoryFilter.value || '';
+
+      sidebarCategoryWrap.innerHTML = `
+        <button class="sidebar-category-chip ${activeCategory === '' ? 'active' : ''}" type="button" data-category="">
+          ${getCategoryIcon('Tümü')}
+          <span>Tümü</span>
+        </button>
+        ${FIXED_CATEGORIES.map(category => `
+          <button class="sidebar-category-chip ${activeCategory === category ? 'active' : ''}" type="button" data-category="${safe(category)}">
+            ${getCategoryIcon(category)}
+            <span>${safe(category)}</span>
+          </button>
+        `).join('')}
+      `;
+
+      Array.from(sidebarCategoryWrap.querySelectorAll('[data-category]')).forEach(btn => {
+        btn.onclick = () => {
+          categoryFilter.value = btn.dataset.category || '';
+          renderCategoryRail();
+          renderSidebarCategoryWrap();
+          applyAll();
+        };
+      });
+    }
+
+    function fillCategoryFilter() {
+      const currentValue = categoryFilter.value;
+
+      categoryFilter.innerHTML = '<option value="">Kategori</option>';
+      FIXED_CATEGORIES.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+      });
+
+      if (FIXED_CATEGORIES.includes(currentValue)) {
+        categoryFilter.value = currentValue;
+      }
+
+      renderCategoryRail();
+      renderSidebarCategoryWrap();
+    }
+
     function renderCategoryRail() {
       const activeCategory = categoryFilter.value || '';
 
@@ -1529,6 +1645,7 @@
         btn.onclick = () => {
           categoryFilter.value = btn.dataset.category || '';
           renderCategoryRail();
+          renderSidebarCategoryWrap();
           applyAll();
         };
       });
@@ -1659,7 +1776,7 @@
       }
 
       featuredTrack.innerHTML = streams.map((stream, index) => `
-        <a class="carousel-card" href="/stream.html?id=${stream.id}">
+        <a class="carousel-card js-stream-link" href="/stream.html?id=${stream.id}" data-stream-id="${safe(stream.id)}" data-streamer-id="${safe(stream.streamer_id)}">
           <div class="carousel-media">
             <img src="${safe(getThumb(stream, index))}" alt="${safe(stream.title)}" />
             <div class="live-badge">CANLI</div>
@@ -1696,7 +1813,7 @@
         : `${safe(stream.streamer_name || stream.username || 'Yayıncı')} • ${safe(stream.category || '')}`;
 
       return `
-        <a class="section-card" href="/stream.html?id=${stream.id}">
+        <a class="section-card js-stream-link" href="/stream.html?id=${stream.id}" data-stream-id="${safe(stream.id)}" data-streamer-id="${safe(stream.streamer_id)}">
           <div class="card-cover">
             <img src="${safe(getThumb(stream, index))}" alt="${safe(stream.title)}" />
             <div class="card-status ${statusClass}">${statusLabel}</div>
@@ -1998,14 +2115,35 @@
     function buildSidebarLiveSelection(liveStreams) {
       const usedStreamIds = new Set();
       const usedStreamerIds = new Set();
+      const pinnedStreamerIds = getPinnedStreamerIds();
 
-      const popularPool = [...liveStreams]
+      const pinned = [];
+      for (const streamerId of pinnedStreamerIds) {
+        const liveMatch = liveStreams.find(item =>
+          item.streamer_id === streamerId &&
+          !usedStreamIds.has(item.id) &&
+          !usedStreamerIds.has(item.streamer_id)
+        );
+        if (liveMatch) {
+          pinned.push({ ...liveMatch, sidebar_type: 'popular', pinned: true });
+          usedStreamIds.add(liveMatch.id);
+          usedStreamerIds.add(liveMatch.streamer_id);
+        }
+        if (pinned.length >= 2) break;
+      }
+
+      const remainingPool = liveStreams.filter(item =>
+        !usedStreamIds.has(item.id) &&
+        !usedStreamerIds.has(item.streamer_id)
+      );
+
+      const popularPool = [...remainingPool]
         .sort((a, b) => Number(b.viewer_count || 0) - Number(a.viewer_count || 0))
-        .slice(0, Math.min(12, liveStreams.length));
+        .slice(0, Math.min(12, remainingPool.length));
 
       const popularSelected = pickRandomUnique(
         popularPool,
-        4,
+        Math.max(0, 4 - pinned.length),
         usedStreamIds,
         usedStreamerIds,
         sidebarRecentStreamIds,
@@ -2019,14 +2157,14 @@
 
       const discoverySelected = pickDiscoveryWithCategorySpread(
         remainingForDiscovery,
-        6,
+        10 - pinned.length - popularSelected.length,
         usedStreamIds,
         usedStreamerIds,
         sidebarRecentStreamIds,
         sidebarRecentStreamerIds
       ).map(item => ({ ...item, sidebar_type: 'discovery' }));
 
-      const combined = [...popularSelected, ...discoverySelected];
+      const combined = [...pinned, ...popularSelected, ...discoverySelected].slice(0, 10);
 
       sidebarRecentStreamIds = combined.map(item => item.id).slice(-20);
       sidebarRecentStreamerIds = combined.map(item => item.streamer_id).slice(-20);
@@ -2034,37 +2172,62 @@
       return combined;
     }
 
-    function renderLiveSidebarList(liveStreams) {
+    function renderLiveSidebarList(liveStreams, animated = false) {
       const selection = buildSidebarLiveSelection(liveStreams);
 
       const html = !selection.length
         ? `<div class="empty" style="padding:14px;">Şu anda canlı kanal yok.</div>`
-        : selection.map(item => `
-          <a class="live-sidebar-item" href="/stream.html?id=${encodeURIComponent(item.id)}">
-            <div class="live-sidebar-avatar">
-              ${item.avatar_url ? `<img src="${safe(item.avatar_url)}" alt="${safe(item.username || item.streamer_name || 'Yayıncı')}">` : '👤'}
-            </div>
+        : selection.map(item => {
+            const isActive = String(item.id) === String(activeViewedStreamId) || String(item.streamer_id) === String(activeViewedStreamerId);
+            const badgeLabel = item.pinned ? 'Sabit' : (item.sidebar_type === 'popular' ? 'Popüler' : 'Keşfet');
 
-            <div class="live-sidebar-meta">
-              <div class="live-sidebar-name">${safe(item.streamer_name || item.username || 'Yayıncı')}</div>
-              <div class="live-sidebar-sub">${safe(item.category || 'Just Chatting')}</div>
-              <div class="live-sidebar-stats">
-                <span class="live-dot"></span>
-                <span>Canlı</span>
-                <span>•</span>
-                <span>${safe(formatViewers(item.viewer_count || 0))} izliyor</span>
-              </div>
-            </div>
+            return `
+              <a class="live-sidebar-item js-stream-link ${isActive ? 'active-channel' : ''}" href="/stream.html?id=${encodeURIComponent(item.id)}" data-stream-id="${safe(item.id)}" data-streamer-id="${safe(item.streamer_id)}">
+                <div class="live-sidebar-avatar">
+                  ${item.avatar_url ? `<img src="${safe(item.avatar_url)}" alt="${safe(item.username || item.streamer_name || 'Yayıncı')}">` : '👤'}
+                </div>
 
-            <div class="live-sidebar-badge ${item.sidebar_type === 'popular' ? 'popular' : 'discovery'}">
-              ${item.sidebar_type === 'popular' ? 'Popüler' : 'Keşfet'}
-            </div>
-          </a>
-        `).join('');
+                <div class="live-sidebar-meta">
+                  <div class="live-sidebar-name">${safe(item.streamer_name || item.username || 'Yayıncı')}</div>
+                  <div class="live-sidebar-sub">${safe(item.category || 'Just Chatting')}</div>
+                </div>
 
-      desktopLiveSidebarList.innerHTML = html;
-      mobileLiveSidebarList.innerHTML = html;
-      mobileLiveInlineList.innerHTML = html;
+                <div class="live-sidebar-stats">
+                  <span class="live-dot"></span>
+                  <span class="live-sidebar-count">${safe(formatViewers(item.viewer_count || 0))}</span>
+                </div>
+
+                <div class="live-sidebar-badge ${item.sidebar_type === 'popular' || item.pinned ? 'popular' : 'discovery'}">
+                  ${safe(badgeLabel)}
+                </div>
+                <div class="live-sidebar-watch">İzle</div>
+              </a>
+            `;
+          }).join('');
+
+      if (animated) {
+        desktopLiveSidebarList.classList.remove('animating-in');
+        desktopLiveSidebarList.classList.add('animating-out');
+        setTimeout(() => {
+          desktopLiveSidebarList.innerHTML = html;
+          desktopLiveSidebarList.classList.remove('animating-out');
+          desktopLiveSidebarList.classList.add('animating-in');
+          setTimeout(() => desktopLiveSidebarList.classList.remove('animating-in'), 340);
+        }, 140);
+      } else {
+        desktopLiveSidebarList.innerHTML = html;
+      }
+    }
+
+    function bindRememberLinks() {
+      document.querySelectorAll('.js-stream-link').forEach(link => {
+        link.addEventListener('click', () => {
+          rememberViewedStream({
+            id: link.dataset.streamId,
+            streamer_id: link.dataset.streamerId
+          });
+        }, { once: true });
+      });
     }
 
     async function loadData() {
@@ -2087,10 +2250,10 @@
 
       allStreams = [...enrichedLiveStreams, ...enrichedScheduledStreams];
       fillCategoryFilter();
-      applyAll();
+      applyAll(false);
     }
 
-    function applyAll() {
+    function applyAll(sidebarAnimated = false) {
       const q = searchInput.value.trim().toLowerCase();
 
       const filteredLiveStreams = allStreams
@@ -2126,7 +2289,7 @@
 
       updateLiveCountBadge(filteredLiveStreams.length);
       renderFeaturedCarousel(filteredLiveStreams.slice(0, 8));
-      renderLiveSidebarList(filteredLiveStreams);
+      renderLiveSidebarList(filteredLiveStreams, sidebarAnimated);
 
       renderSliderSection(followedSlider, {
         id: 'followed',
@@ -2163,6 +2326,7 @@
       });
 
       renderProfiles(searchedProfiles, filteredLiveStreams);
+      bindRememberLinks();
     }
 
     function startAutoRefresh() {
@@ -2182,25 +2346,22 @@
           .filter(stream => streamMatchesSearch(stream, q))
           .sort((a, b) => Number(b.viewer_count || 0) - Number(a.viewer_count || 0));
 
-        renderLiveSidebarList(filteredLiveStreams);
+        renderLiveSidebarList(filteredLiveStreams, true);
+        bindRememberLinks();
       }, 10000);
     }
 
     function handleResize() {
-      visibleCards = window.innerWidth <= 900 ? 1 : 2;
+      visibleCards = window.innerWidth <= 980 ? 1 : 2;
       updateCarouselPosition();
     }
-
-    menuBtn.onclick = openMenu;
-    closeMenuBtn.onclick = closeMenu;
-    sideBackdrop.onclick = closeMenu;
 
     toggleFiltersBtn.onclick = () => {
       filtersPanel.classList.toggle('show');
     };
 
     applyFiltersBtn.onclick = () => {
-      applyAll();
+      applyAll(false);
       filtersPanel.classList.remove('show');
     };
 
@@ -2213,21 +2374,23 @@
       categoryFilter.value = '';
       searchInput.value = '';
       renderCategoryRail();
-      applyAll();
+      renderSidebarCategoryWrap();
+      applyAll(false);
     };
 
-    searchInput.oninput = applyAll;
+    searchInput.oninput = () => applyAll(false);
 
     countryFilter.onchange = () => {
       fillCityFilter(countryFilter.value);
     };
 
-    cityFilter.onchange = applyAll;
-    genderFilter.onchange = applyAll;
-    ageFilter.onchange = applyAll;
+    cityFilter.onchange = () => applyAll(false);
+    genderFilter.onchange = () => applyAll(false);
+    ageFilter.onchange = () => applyAll(false);
     categoryFilter.onchange = () => {
       renderCategoryRail();
-      applyAll();
+      renderSidebarCategoryWrap();
+      applyAll(false);
     };
 
     carouselPrev.onclick = () => {
@@ -2245,6 +2408,15 @@
     };
 
     window.addEventListener('resize', handleResize);
+
+    document.addEventListener('click', (e) => {
+      const streamLink = e.target.closest('.js-stream-link');
+      if (!streamLink) return;
+      rememberViewedStream({
+        id: streamLink.dataset.streamId,
+        streamer_id: streamLink.dataset.streamerId
+      });
+    });
 
     startAutoRefresh();
     startSidebarRotation();
