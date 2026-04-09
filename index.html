@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
@@ -12,12 +12,14 @@
       --muted: #cbd5e1;
       --muted-2: #94a3b8;
       --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --shadow-soft: 0 14px 34px rgba(0,0,0,.22);
       --primary: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%);
       --danger: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
       --success: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
       --bg-card: linear-gradient(180deg, rgba(12,20,40,.92), rgba(6,11,25,.98));
       --sidebar-bg: linear-gradient(180deg, rgba(8,15,33,.98), rgba(3,8,20,.98));
       --active-glow: 0 0 0 1px rgba(99,102,241,.45), 0 14px 30px rgba(99,102,241,.12);
+      --glass: rgba(255,255,255,.05);
     }
 
     html { scroll-behavior: smooth; }
@@ -32,6 +34,20 @@
         radial-gradient(circle at 80% 20%, rgba(168,85,247,.16), transparent 26%),
         radial-gradient(circle at 50% 80%, rgba(56,189,248,.12), transparent 34%),
         linear-gradient(180deg, #040816 0%, #020617 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .08;
+      background-image:
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 140px 140px;
+      mask-image: radial-gradient(circle at center, black, transparent 85%);
+      z-index: -1;
     }
 
     a { color: inherit; }
@@ -65,11 +81,22 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       white-space: nowrap;
+      user-select: none;
     }
 
     .top-search-wrap {
       position: relative;
       min-width: 0;
+    }
+
+    .top-search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted-2);
+      pointer-events: none;
+      font-size: 14px;
     }
 
     .top-search {
@@ -78,12 +105,19 @@
       border: 1px solid var(--border);
       border-radius: 999px;
       color: white;
-      padding: 13px 16px;
+      padding: 13px 16px 13px 38px;
       outline: none;
       font-size: 14px;
+      transition: .18s ease;
     }
 
     .top-search::placeholder { color: var(--muted-2); }
+
+    .top-search:focus {
+      border-color: rgba(96,165,250,.55);
+      box-shadow: 0 0 0 4px rgba(59,130,246,.12);
+      background: rgba(255,255,255,.06);
+    }
 
     .top-link,
     .toolbar-btn,
@@ -110,6 +144,7 @@
     .top-link.primary {
       background: var(--primary);
       border: none;
+      box-shadow: 0 12px 28px rgba(56,189,248,.16);
     }
 
     .top-link:hover,
@@ -182,6 +217,7 @@
     .toolbar-btn.primary {
       background: var(--primary);
       border: none;
+      box-shadow: 0 12px 28px rgba(56,189,248,.14);
     }
 
     .filters-panel {
@@ -192,6 +228,13 @@
       border-radius: 24px;
       box-shadow: var(--shadow);
       padding: 14px;
+      transform-origin: top;
+      animation: panelIn .22s ease;
+    }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(-8px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .filters-panel.show { display: block; }
@@ -209,6 +252,26 @@
       margin-top: 12px;
     }
 
+    .active-filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.07);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
     .select {
       width: 100%;
       background: rgba(255,255,255,.04);
@@ -218,6 +281,12 @@
       padding: 14px 16px;
       outline: none;
       font-size: 15px;
+      transition: .18s ease;
+    }
+
+    .select:focus {
+      border-color: rgba(96,165,250,.55);
+      box-shadow: 0 0 0 4px rgba(59,130,246,.12);
     }
 
     .select option { color: #111827; }
@@ -252,6 +321,13 @@
       flex-wrap: wrap;
     }
 
+    .section-title small {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
     .count-badge {
       display: inline-flex;
       align-items: center;
@@ -272,6 +348,16 @@
       box-shadow: var(--shadow);
       padding: 18px;
       overflow: hidden;
+      position: relative;
+    }
+
+    .carousel-shell::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 90px;
+      pointer-events: none;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.06));
     }
 
     .carousel-stage {
@@ -341,6 +427,15 @@
       box-shadow: 0 20px 40px rgba(0,0,0,.22);
     }
 
+    .carousel-media::after,
+    .card-cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.14) 55%, rgba(0,0,0,.46));
+      pointer-events: none;
+    }
+
     .carousel-media img,
     .card-cover img,
     .avatar img {
@@ -348,6 +443,12 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      transition: transform .28s ease;
+    }
+
+    .carousel-card:hover .carousel-media img,
+    .section-card:hover .card-cover img {
+      transform: scale(1.05);
     }
 
     .carousel-card.side {
@@ -372,6 +473,7 @@
       padding: 8px 12px;
       border-radius: 999px;
       z-index: 2;
+      box-shadow: 0 10px 24px rgba(239,68,68,.18);
     }
 
     .viewer-chip {
@@ -385,6 +487,7 @@
       padding: 8px 12px;
       border-radius: 999px;
       z-index: 2;
+      backdrop-filter: blur(8px);
     }
 
     .carousel-meta {
@@ -454,6 +557,8 @@
 
     .category-rail-wrap {
       margin-top: 18px;
+      position: relative;
+      z-index: 2;
     }
 
     .category-rail {
@@ -488,6 +593,12 @@
       height: 18px;
       flex-shrink: 0;
       opacity: .95;
+      transition: transform .18s ease;
+    }
+
+    .category-chip:hover svg,
+    .sidebar-category-chip:hover svg {
+      transform: scale(1.08);
     }
 
     .category-chip .icon-stroke,
@@ -561,12 +672,13 @@
       border: 1px solid rgba(255,255,255,.05);
       border-radius: 22px;
       overflow: hidden;
-      transition: transform .18s ease, box-shadow .18s ease;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
 
     .section-card:hover {
       transform: scale(1.03);
       box-shadow: 0 16px 36px rgba(0,0,0,.24);
+      border-color: rgba(255,255,255,.09);
     }
 
     .card-cover {
@@ -603,6 +715,7 @@
       font-weight: 800;
       color: #fff;
       z-index: 2;
+      backdrop-filter: blur(8px);
     }
 
     .card-viewers {
@@ -616,6 +729,7 @@
       font-size: 12px;
       color: #fff;
       z-index: 2;
+      backdrop-filter: blur(8px);
     }
 
     .card-body { padding: 14px; }
@@ -736,6 +850,27 @@
       border-radius: 20px;
     }
 
+    .skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .skeleton-card {
+      border-radius: 22px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.04) 25%, rgba(255,255,255,.08) 38%, rgba(255,255,255,.04) 55%);
+      background-size: 200% 100%;
+      animation: shimmer 1.3s linear infinite;
+      border: 1px solid rgba(255,255,255,.05);
+      min-height: 260px;
+    }
+
+    @keyframes shimmer {
+      from { background-position: 200% 0; }
+      to { background-position: -200% 0; }
+    }
+
     .side-section { margin-bottom: 16px; }
 
     .side-topbar {
@@ -787,6 +922,12 @@
       font-size: 13px;
       font-weight: 700;
       text-align: left;
+      transition: .18s ease;
+    }
+
+    .side-nav a:hover {
+      background: rgba(255,255,255,.07);
+      transform: translateY(-1px);
     }
 
     .sidebar-category-wrap {
@@ -897,6 +1038,11 @@
       color: var(--muted-2);
       font-size: 10px;
       flex-shrink: 0;
+      transition: transform .18s ease;
+    }
+
+    .live-sidebar-item:hover .live-sidebar-avatar {
+      transform: scale(1.04);
     }
 
     .live-sidebar-avatar img {
@@ -948,6 +1094,13 @@
       display: inline-block;
       flex-shrink: 0;
       box-shadow: 0 0 10px rgba(34,197,94,.4);
+      animation: livePulse 1.5s infinite;
+    }
+
+    @keyframes livePulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.18); opacity: .72; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .live-sidebar-count {
@@ -1012,6 +1165,10 @@
       .section-card {
         flex: 0 0 calc((100% - 32px) / 3);
       }
+
+      .skeleton-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
     }
 
     @media (max-width: 1100px) {
@@ -1059,6 +1216,10 @@
 
       .section-card {
         flex: 0 0 calc((100% - 16px) / 2);
+      }
+
+      .skeleton-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .side-live-title {
@@ -1121,7 +1282,12 @@
       }
 
       .top-search {
-        padding: 11px 12px;
+        padding: 11px 12px 11px 34px;
+        font-size: 12px;
+      }
+
+      .top-search-icon {
+        left: 12px;
         font-size: 12px;
       }
 
@@ -1169,6 +1335,10 @@
       .profile-grid {
         grid-template-columns: 1fr;
       }
+
+      .skeleton-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -1179,6 +1349,7 @@
     </div>
 
     <div class="top-search-wrap">
+      <span class="top-search-icon">⌕</span>
       <input id="search-input" class="top-search" type="text" placeholder="Yayın, yayıncı, kategori veya şehir ara..." />
     </div>
 
@@ -1263,11 +1434,13 @@
           <div class="filters-actions">
             <button id="apply-filters-btn" class="btn-small btn-primary" type="button">Filtreyi uygula</button>
           </div>
+
+          <div id="active-filter-row" class="active-filter-row"></div>
         </div>
       </section>
 
       <section id="featured-section" class="section">
-        <h2 class="section-title">Popüler yayınlar <span id="live-count-badge" class="count-badge">(0)</span></h2>
+        <h2 class="section-title">Popüler yayınlar <span id="live-count-badge" class="count-badge">(0)</span> <small>Öne çıkan yayınlar</small></h2>
 
         <div class="carousel-shell">
           <div class="carousel-stage">
@@ -1289,23 +1462,71 @@
       </section>
 
       <section id="followed-section" class="section">
-        <div id="followed-slider"></div>
+        <div id="followed-slider">
+          <div class="slider-section">
+            <div class="slider-header">
+              <div class="slider-title">Takip ettiğin yayıncılar</div>
+            </div>
+            <div class="skeleton-grid">
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="live-section" class="section">
-        <div id="live-slider"></div>
+        <div id="live-slider">
+          <div class="slider-section">
+            <div class="slider-header">
+              <div class="slider-title">Canlı yayınlar</div>
+            </div>
+            <div class="skeleton-grid">
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="new-section" class="section">
-        <div id="new-slider"></div>
+        <div id="new-slider">
+          <div class="slider-section">
+            <div class="slider-header">
+              <div class="slider-title">Yeni başlayan yayıncılar</div>
+            </div>
+            <div class="skeleton-grid">
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="scheduled-section" class="section">
-        <div id="scheduled-slider"></div>
+        <div id="scheduled-slider">
+          <div class="slider-section">
+            <div class="slider-header">
+              <div class="slider-title">İleri tarihli yayınlar</div>
+            </div>
+            <div class="skeleton-grid">
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="profiles-section" class="section">
-        <h2 class="section-title">Kullanıcılar</h2>
+        <h2 class="section-title">Kullanıcılar <small>Keşfedebileceğin profiller</small></h2>
         <div id="profiles-grid" class="profile-grid"></div>
         <div id="empty-profiles" class="empty" style="display:none;">Aramana uygun kullanıcı bulunamadı.</div>
       </section>
@@ -1348,6 +1569,7 @@
     const loginLink = document.getElementById('login-link');
     const desktopLiveSidebarList = document.getElementById('desktop-live-sidebar-list');
     const sidebarCategoryWrap = document.getElementById('sidebar-category-wrap');
+    const activeFilterRow = document.getElementById('active-filter-row');
 
     const searchInput = document.getElementById('search-input');
     const toggleFiltersBtn = document.getElementById('toggle-filters-btn');
@@ -1601,7 +1823,7 @@
           categoryFilter.value = btn.dataset.category || '';
           renderCategoryRail();
           renderSidebarCategoryWrap();
-          applyAll();
+          applyAll(false);
         };
       });
     }
@@ -1646,9 +1868,22 @@
           categoryFilter.value = btn.dataset.category || '';
           renderCategoryRail();
           renderSidebarCategoryWrap();
-          applyAll();
+          applyAll(false);
         };
       });
+    }
+
+    function renderActiveFilterPills() {
+      const pills = [];
+      const query = searchInput.value.trim();
+      if (query) pills.push(`Arama: ${query}`);
+      if (countryFilter.value) pills.push(`Ülke: ${countryFilter.value}`);
+      if (cityFilter.value) pills.push(`Şehir: ${cityFilter.value}`);
+      if (genderFilter.value) pills.push(`Cinsiyet: ${genderFilter.value}`);
+      if (ageFilter.value) pills.push(`Yaş: ${ageFilter.value}`);
+      if (categoryFilter.value) pills.push(`Kategori: ${categoryFilter.value}`);
+
+      activeFilterRow.innerHTML = pills.map(text => `<span class="filter-pill">${safe(text)}</span>`).join('');
     }
 
     function inAgeRange(age, range) {
@@ -2326,6 +2561,7 @@
       });
 
       renderProfiles(searchedProfiles, filteredLiveStreams);
+      renderActiveFilterPills();
       bindRememberLinks();
     }
 
