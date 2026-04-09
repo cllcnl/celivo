@@ -12,6 +12,10 @@
       --muted: #cbd5e1;
       --muted-2: #94a3b8;
       --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --success: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
+      --danger: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
+      --primary: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%);
+      --card: linear-gradient(180deg, rgba(12,20,40,.9), rgba(6,11,25,.96));
     }
 
     body {
@@ -27,10 +31,17 @@
     }
 
     .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
       padding: 18px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
+      backdrop-filter: blur(18px);
+      background: rgba(2,6,23,.72);
+      border-bottom: 1px solid var(--border);
     }
 
     .brand {
@@ -40,6 +51,14 @@
       background: linear-gradient(90deg, #60a5fa, #8b5cf6, #ec4899);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .back-link {
@@ -50,22 +69,83 @@
       padding: 10px 16px;
       border-radius: 999px;
       font-size: 14px;
+      font-weight: 700;
+    }
+
+    .back-link.primary {
+      background: var(--primary);
+      border: none;
     }
 
     .page {
-      max-width: 1320px;
+      max-width: 1500px;
       margin: 0 auto;
-      padding: 8px 16px 40px;
+      padding: 18px 16px 40px;
+    }
+
+    .hero {
+      margin-bottom: 20px;
+      background:
+        radial-gradient(circle at right top, rgba(139,92,246,.18), transparent 30%),
+        radial-gradient(circle at left bottom, rgba(56,189,248,.12), transparent 30%),
+        linear-gradient(180deg, rgba(12,20,40,.88), rgba(6,11,25,.98));
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .hero-topline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      background: rgba(255,255,255,.05);
+    }
+
+    .hero-title {
+      margin: 0 0 10px;
+      font-size: 38px;
+      letter-spacing: -.04em;
+      line-height: 1.08;
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 15px;
+      max-width: 920px;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 1.3fr .8fr;
+      grid-template-columns: minmax(0, 1.3fr) 380px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .left-col {
+      min-width: 0;
+      display: grid;
       gap: 20px;
     }
 
+    .right-col {
+      min-width: 0;
+      display: grid;
+      gap: 20px;
+      position: sticky;
+      top: 96px;
+    }
+
     .card {
-      background: linear-gradient(180deg, rgba(12,20,40,.9), rgba(6,11,25,.96));
+      background: var(--card);
       border: 1px solid var(--border);
       border-radius: 28px;
       box-shadow: var(--shadow);
@@ -105,7 +185,7 @@
       position: absolute;
       top: 14px;
       left: 14px;
-      background: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
+      background: var(--danger);
       color: #fff;
       font-weight: 800;
       font-size: 12px;
@@ -143,6 +223,26 @@
       color: var(--muted);
       line-height: 1.65;
       font-size: 15px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
     }
 
     .actions {
@@ -222,10 +322,18 @@
       font-weight: 800;
       cursor: pointer;
       color: white;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: .15s ease;
     }
 
+    .btn:hover { transform: translateY(-1px); }
+
     .btn-primary {
-      background: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%);
+      background: var(--primary);
     }
 
     .btn-secondary {
@@ -234,11 +342,11 @@
     }
 
     .btn-danger {
-      background: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
+      background: var(--danger);
     }
 
     .btn-success {
-      background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
+      background: var(--success);
     }
 
     .btn-disabled {
@@ -249,6 +357,12 @@
 
     .btn-active {
       box-shadow: 0 0 0 2px rgba(56,189,248,.35) inset;
+    }
+
+    .btn.following {
+      background: rgba(16,185,129,.14);
+      border: 1px solid rgba(16,185,129,.28);
+      color: #d1fae5;
     }
 
     .panel-note {
@@ -295,6 +409,7 @@
       padding: 14px 18px;
       overflow-y: auto;
       max-height: 560px;
+      min-height: 320px;
     }
 
     .msg {
@@ -326,6 +441,7 @@
 
     .msg-body {
       flex: 1;
+      min-width: 0;
     }
 
     .msg-head {
@@ -364,6 +480,10 @@
       font-size: 15px;
     }
 
+    .input::placeholder {
+      color: var(--muted-2);
+    }
+
     .status {
       margin-top: 14px;
       color: var(--muted);
@@ -382,6 +502,241 @@
       top: -9999px;
     }
 
+    .streamer-card {
+      padding: 18px;
+    }
+
+    .streamer-head {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .avatar {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,.08);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted-2);
+      font-size: 12px;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .streamer-name {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .streamer-sub {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .role-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .streamer-bio {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .streamer-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat-box {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .stat-box .num {
+      font-weight: 800;
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .stat-box .label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .social-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .social-link {
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      padding: 9px 11px;
+      border-radius: 999px;
+    }
+
+    .social-link:hover {
+      color: white;
+      background: rgba(255,255,255,.08);
+    }
+
+    .other-live-card {
+      padding: 18px;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mini-card {
+      display: flex;
+      gap: 12px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 10px;
+      transition: .15s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .mini-card:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.06);
+    }
+
+    .mini-thumb {
+      width: 110px;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #0f172a;
+      flex-shrink: 0;
+    }
+
+    .mini-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .mini-meta {
+      min-width: 0;
+    }
+
+    .mini-title {
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+
+    .mini-sub {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .modal-close {
+      border: none;
+      background: rgba(255,255,255,.06);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .modal-body {
+      padding: 18px;
+    }
+
+    @media (max-width: 1180px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .right-col {
+        position: static;
+      }
+    }
+
     @media (max-width: 980px) {
       .layout {
         grid-template-columns: 1fr;
@@ -393,7 +748,27 @@
         min-height: auto;
       }
       .panel-grid,
-      .panel-grid-3 {
+      .panel-grid-3,
+      .streamer-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        flex-wrap: wrap;
+      }
+
+      .top-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .hero-title {
+        font-size: 30px;
+      }
+
+      .chat-form {
         grid-template-columns: 1fr;
       }
     }
@@ -402,128 +777,212 @@
 <body>
   <header class="topbar">
     <div class="brand">Celivo</div>
-    <a href="/index.html" class="back-link">← Ana sayfaya dön</a>
+    <div class="top-actions">
+      <a href="/index.html" class="back-link">← Ana sayfaya dön</a>
+      <a id="top-profile-link" href="/profile.html" class="back-link">Profil</a>
+      <a href="/profile.html" class="back-link primary">Yayına başla</a>
+    </div>
   </header>
 
   <main class="page">
-    <section class="layout">
-      <section class="card">
-        <div class="player" id="player">
-          <div class="live-badge">CANLI</div>
-          <div class="viewer-chip" id="viewer-chip">👁 0 izleyici</div>
-          <div class="player-placeholder">Yayın yükleniyor...</div>
-        </div>
+    <section class="hero">
+      <div class="hero-topline" id="hero-topline">● Canlı yayın aktif</div>
+      <h1 class="hero-title" id="hero-title">Yayın yükleniyor...</h1>
+      <div class="hero-sub" id="hero-sub">Canlı yayına katıl, yayıncıyı takip et ve sohbet bölümünde topluluğun parçası ol.</div>
+    </section>
 
-        <div class="content">
-          <h1 class="title" id="stream-title">Yayın yükleniyor...</h1>
-          <div class="sub" id="stream-sub">...</div>
+    <section class="layout">
+      <div class="left-col">
+        <section class="card">
+          <div class="player" id="player">
+            <div class="live-badge">CANLI</div>
+            <div class="viewer-chip" id="viewer-chip">👁 0 izleyici</div>
+            <div class="player-placeholder">Yayın yükleniyor...</div>
+          </div>
+
+          <div class="content">
+            <h1 class="title" id="stream-title">Yayın yükleniyor...</h1>
+            <div class="sub" id="stream-sub">...</div>
+            <div class="tag-row" id="stream-tags"></div>
+
+            <div class="actions">
+              <button id="follow-btn" class="btn btn-primary" type="button">Takip et</button>
+              <button id="donate-btn" class="btn btn-secondary" type="button">Bağış yap</button>
+              <button id="share-btn" class="btn btn-secondary" type="button">Paylaş</button>
+              <a id="profile-link-btn" href="/profile.html" class="btn btn-secondary">Profil</a>
+            </div>
+
+            <div id="broadcaster-panel" class="broadcaster-panel">
+              <h3 class="panel-title">Yayıncı kontrol paneli</h3>
+
+              <div class="panel-grid">
+                <button id="start-camera-btn" class="btn btn-success" type="button">Kamerayı Aç</button>
+                <button id="share-screen-btn" class="btn btn-primary" type="button">Ekran Paylaş</button>
+                <button id="toggle-mic-btn" class="btn btn-secondary" type="button">Mikrofon: Açık</button>
+                <button id="toggle-screen-audio-btn" class="btn btn-secondary" type="button">Ekran Sesi: Kapalı</button>
+              </div>
+
+              <div class="panel-block">
+                <div class="panel-grid">
+                  <div>
+                    <label class="mini-label" for="scene-mode">Sahne modu</label>
+                    <select id="scene-mode" class="select">
+                      <option value="camera_only">Sadece Kamera</option>
+                      <option value="screen_only">Sadece Ekran</option>
+                      <option value="screen_camera" selected>Ekran + Kamera</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="mini-label" for="pip-position">Kamera konumu</label>
+                    <select id="pip-position" class="select">
+                      <option value="top-left">Sol Üst</option>
+                      <option value="top-right">Sağ Üst</option>
+                      <option value="bottom-left">Sol Alt</option>
+                      <option value="bottom-right" selected>Sağ Alt</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="panel-grid">
+                  <div>
+                    <label class="mini-label" for="pip-size">Kamera kutusu boyutu</label>
+                    <input id="pip-size" class="range" type="range" min="18" max="40" value="24" />
+                  </div>
+
+                  <div>
+                    <label class="mini-label" for="camera-shape">Kamera şekli</label>
+                    <select id="camera-shape" class="select">
+                      <option value="rounded" selected>Yuvarlatılmış</option>
+                      <option value="circle">Daire</option>
+                      <option value="square">Kare</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-block">
+                <div class="panel-grid">
+                  <div>
+                    <label class="mini-label" for="background-mode">Kamera arkası görünüm</label>
+                    <select id="background-mode" class="select">
+                      <option value="normal" selected>Normal</option>
+                      <option value="solid_dark">Koyu Arka Plan</option>
+                      <option value="solid_blue">Mavi Arka Plan</option>
+                      <option value="preset_1">Hazır Görsel 1</option>
+                      <option value="preset_2">Hazır Görsel 2</option>
+                      <option value="preset_3">Hazır Görsel 3</option>
+                      <option value="custom_image">Özel Görsel</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="mini-label" for="upload-background-btn">Özel görsel</label>
+                    <button id="upload-background-btn" class="btn btn-secondary" type="button">Görsel Yükle</button>
+                    <input id="background-file-input" class="hidden-file" type="file" accept="image/*" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-grid-3">
+                <button id="apply-scene-btn" class="btn btn-primary" type="button">Sahneyi Uygula</button>
+                <button id="stop-preview-btn" class="btn btn-secondary" type="button">Önizlemeyi Durdur</button>
+                <button id="stop-stream-btn" class="btn btn-danger" type="button">Yayını Durdur</button>
+              </div>
+
+              <div class="panel-note">
+                Ekran paylaşımı ana sahne, kamera ise köşede yüz kamerası olarak birleşir. Mikrofon ve ekran sesi ayrı ayrı kontrol edilir. TURN desteği aktif.
+              </div>
+
+              <div id="screen-support-note" class="support-note" style="display:none;"></div>
+            </div>
+
+            <div class="status" id="page-status"></div>
+          </div>
+        </section>
+
+        <section class="card streamer-card">
+          <div class="streamer-head">
+            <div class="avatar" id="streamer-avatar">👤</div>
+            <div>
+              <div class="streamer-name" id="streamer-name">Yayıncı</div>
+              <div class="streamer-sub" id="streamer-sub">Profil bilgileri yükleniyor...</div>
+              <div class="role-pill" id="streamer-role">FREE</div>
+            </div>
+          </div>
+
+          <div class="streamer-bio" id="streamer-bio">Henüz biyografi eklenmedi.</div>
+
+          <div class="streamer-stats">
+            <div class="stat-box">
+              <div class="num" id="stat-followers">0</div>
+              <div class="label">Takipçi</div>
+            </div>
+            <div class="stat-box">
+              <div class="num" id="stat-following">0</div>
+              <div class="label">Takip edilen</div>
+            </div>
+            <div class="stat-box">
+              <div class="num" id="stat-viewers">0</div>
+              <div class="label">İzleyici</div>
+            </div>
+          </div>
+
+          <div class="social-row" id="social-row"></div>
 
           <div class="actions">
-            <button id="follow-btn" class="btn btn-primary" type="button">Takip et</button>
-            <a href="/profile.html" class="btn btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;">Profil</a>
+            <a id="profile-link-btn-2" href="/profile.html" class="btn btn-secondary">Profili gör</a>
+            <button id="follow-btn-2" class="btn btn-primary" type="button">Takip et</button>
+            <button id="donate-btn-2" class="btn btn-secondary" type="button">Bağış yap</button>
           </div>
+        </section>
 
-          <div id="broadcaster-panel" class="broadcaster-panel">
-            <h3 class="panel-title">Yayıncı kontrol paneli</h3>
+        <section class="card other-live-card">
+          <h3 class="panel-title" style="padding:18px 18px 0;">Diğer canlı yayınlar</h3>
+          <div class="mini-list" id="other-streams" style="padding:18px;"></div>
+        </section>
+      </div>
 
-            <div class="panel-grid">
-              <button id="start-camera-btn" class="btn btn-success" type="button">Kamerayı Aç</button>
-              <button id="share-screen-btn" class="btn btn-primary" type="button">Ekran Paylaş</button>
-              <button id="toggle-mic-btn" class="btn btn-secondary" type="button">Mikrofon: Açık</button>
-              <button id="toggle-screen-audio-btn" class="btn btn-secondary" type="button">Ekran Sesi: Kapalı</button>
-            </div>
-
-            <div class="panel-block">
-              <div class="panel-grid">
-                <div>
-                  <label class="mini-label" for="scene-mode">Sahne modu</label>
-                  <select id="scene-mode" class="select">
-                    <option value="camera_only">Sadece Kamera</option>
-                    <option value="screen_only">Sadece Ekran</option>
-                    <option value="screen_camera" selected>Ekran + Kamera</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="mini-label" for="pip-position">Kamera konumu</label>
-                  <select id="pip-position" class="select">
-                    <option value="top-left">Sol Üst</option>
-                    <option value="top-right">Sağ Üst</option>
-                    <option value="bottom-left">Sol Alt</option>
-                    <option value="bottom-right" selected>Sağ Alt</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="panel-grid">
-                <div>
-                  <label class="mini-label" for="pip-size">Kamera kutusu boyutu</label>
-                  <input id="pip-size" class="range" type="range" min="18" max="40" value="24" />
-                </div>
-
-                <div>
-                  <label class="mini-label" for="camera-shape">Kamera şekli</label>
-                  <select id="camera-shape" class="select">
-                    <option value="rounded" selected>Yuvarlatılmış</option>
-                    <option value="circle">Daire</option>
-                    <option value="square">Kare</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="panel-block">
-              <div class="panel-grid">
-                <div>
-                  <label class="mini-label" for="background-mode">Kamera arkası görünüm</label>
-                  <select id="background-mode" class="select">
-                    <option value="normal" selected>Normal</option>
-                    <option value="solid_dark">Koyu Arka Plan</option>
-                    <option value="solid_blue">Mavi Arka Plan</option>
-                    <option value="preset_1">Hazır Görsel 1</option>
-                    <option value="preset_2">Hazır Görsel 2</option>
-                    <option value="preset_3">Hazır Görsel 3</option>
-                    <option value="custom_image">Özel Görsel</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="mini-label" for="upload-background-btn">Özel görsel</label>
-                  <button id="upload-background-btn" class="btn btn-secondary" type="button">Görsel Yükle</button>
-                  <input id="background-file-input" class="hidden-file" type="file" accept="image/*" />
-                </div>
-              </div>
-            </div>
-
-            <div class="panel-grid-3">
-              <button id="apply-scene-btn" class="btn btn-primary" type="button">Sahneyi Uygula</button>
-              <button id="stop-preview-btn" class="btn btn-secondary" type="button">Önizlemeyi Durdur</button>
-              <button id="stop-stream-btn" class="btn btn-danger" type="button">Yayını Durdur</button>
-            </div>
-
-            <div class="panel-note">
-              Ekran paylaşımı ana sahne, kamera ise köşede yüz kamerası olarak birleşir. Mikrofon ve ekran sesi ayrı ayrı kontrol edilir. TURN desteği aktif.
-            </div>
-
-            <div id="screen-support-note" class="support-note" style="display:none;"></div>
+      <aside class="right-col">
+        <section class="card side-card">
+          <div class="side-header">
+            <h2 class="side-title">Canlı sohbet</h2>
           </div>
-
-          <div class="status" id="page-status"></div>
-        </div>
-      </section>
-
-      <aside class="card side-card">
-        <div class="side-header">
-          <h2 class="side-title">Canlı sohbet</h2>
-        </div>
-        <div class="chat-messages" id="chat-messages"></div>
-        <form class="chat-form" id="chat-form">
-          <input id="chat-input" class="input" type="text" placeholder="Mesaj yaz..." maxlength="400" />
-          <button class="btn btn-primary" type="submit">Gönder</button>
-        </form>
+          <div class="chat-messages" id="chat-messages"></div>
+          <form class="chat-form" id="chat-form">
+            <input id="chat-input" class="input" type="text" placeholder="Mesaj yaz..." maxlength="400" />
+            <button class="btn btn-primary" type="submit">Gönder</button>
+          </form>
+        </section>
       </aside>
     </section>
   </main>
+
+  <div class="modal" id="donate-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">Bağış yap</div>
+        <button class="modal-close" id="donate-close" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="color:var(--muted);line-height:1.6;margin-bottom:14px;">
+          Yayıncıyı desteklemek için tutar seç veya özel tutar gir.
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+          <button class="btn btn-secondary donate-preset" data-amount="25" type="button">₺25</button>
+          <button class="btn btn-secondary donate-preset" data-amount="50" type="button">₺50</button>
+          <button class="btn btn-secondary donate-preset" data-amount="100" type="button">₺100</button>
+          <button class="btn btn-secondary donate-preset" data-amount="250" type="button">₺250</button>
+        </div>
+
+        <input id="donate-amount" class="input" type="number" min="1" placeholder="Özel tutar gir" />
+        <div style="height:12px;"></div>
+        <button id="confirm-donate-btn" class="btn btn-primary" type="button" style="width:100%;">Bağışı onayla</button>
+        <div id="donate-status" class="status"></div>
+      </div>
+    </div>
+  </div>
 
   <video id="camera-source-video" class="hidden-media" autoplay muted playsinline></video>
   <video id="screen-source-video" class="hidden-media" autoplay muted playsinline></video>
@@ -573,6 +1032,29 @@
     const streamSubEl = document.getElementById('stream-sub');
     const pageStatusEl = document.getElementById('page-status');
     const followBtn = document.getElementById('follow-btn');
+    const followBtn2 = document.getElementById('follow-btn-2');
+    const donateBtn = document.getElementById('donate-btn');
+    const donateBtn2 = document.getElementById('donate-btn-2');
+    const shareBtn = document.getElementById('share-btn');
+    const streamTagsEl = document.getElementById('stream-tags');
+    const heroTitleEl = document.getElementById('hero-title');
+    const heroSubEl = document.getElementById('hero-sub');
+    const heroToplineEl = document.getElementById('hero-topline');
+    const topProfileLink = document.getElementById('top-profile-link');
+    const profileLinkBtn = document.getElementById('profile-link-btn');
+    const profileLinkBtn2 = document.getElementById('profile-link-btn-2');
+    const otherStreamsEl = document.getElementById('other-streams');
+
+    const streamerAvatarEl = document.getElementById('streamer-avatar');
+    const streamerNameEl = document.getElementById('streamer-name');
+    const streamerSubEl = document.getElementById('streamer-sub');
+    const streamerRoleEl = document.getElementById('streamer-role');
+    const streamerBioEl = document.getElementById('streamer-bio');
+    const statFollowersEl = document.getElementById('stat-followers');
+    const statFollowingEl = document.getElementById('stat-following');
+    const statViewersEl = document.getElementById('stat-viewers');
+    const socialRowEl = document.getElementById('social-row');
+
     let viewerChipEl = document.getElementById('viewer-chip');
 
     const broadcasterPanelEl = document.getElementById('broadcaster-panel');
@@ -596,6 +1078,12 @@
     const chatMessagesEl = document.getElementById('chat-messages');
     const chatFormEl = document.getElementById('chat-form');
     const chatInputEl = document.getElementById('chat-input');
+
+    const donateModal = document.getElementById('donate-modal');
+    const donateClose = document.getElementById('donate-close');
+    const donateAmountEl = document.getElementById('donate-amount');
+    const donateStatusEl = document.getElementById('donate-status');
+    const confirmDonateBtn = document.getElementById('confirm-donate-btn');
 
     const cameraSourceVideo = document.getElementById('camera-source-video');
     const screenSourceVideo = document.getElementById('screen-source-video');
@@ -665,6 +1153,29 @@
       return `${n}`;
     }
 
+    function getRoleLabel(roleValue) {
+      const map = { free: 'FREE', premium: 'PREMIUM', vip: 'VIP' };
+      return map[String(roleValue || 'free').toLowerCase()] || 'FREE';
+    }
+
+    function normalizeUrl(raw) {
+      const v = String(raw || '').trim();
+      if (!v) return '';
+      if (v.startsWith('http://') || v.startsWith('https://')) return v;
+      return 'https://' + v;
+    }
+
+    function getProfileSocials(profile) {
+      return [
+        { label: 'Instagram', value: profile?.instagram_url || profile?.instagram || '' },
+        { label: 'X', value: profile?.x_url || profile?.x || profile?.twitter || '' },
+        { label: 'YouTube', value: profile?.youtube_url || profile?.youtube || '' },
+        { label: 'TikTok', value: profile?.tiktok_url || profile?.tiktok || '' },
+        { label: 'Discord', value: profile?.discord_url || profile?.discord || '' },
+        { label: 'Website', value: profile?.website_url || profile?.website || '' }
+      ].filter(item => String(item.value || '').trim());
+    }
+
     function syncViewerChipRef() {
       viewerChipEl = document.getElementById('viewer-chip');
     }
@@ -674,6 +1185,7 @@
       if (viewerChipEl) {
         viewerChipEl.textContent = `👁 ${formatViewers(count)} izleyici`;
       }
+      statViewersEl.textContent = formatViewers(count);
     }
 
     function getThumb(profile) {
@@ -840,7 +1352,7 @@
     function renderImagePlayer(stream, profile) {
       playerEl.innerHTML = `
         <img src="${safe(getThumb(profile))}" alt="${safe(stream?.title || 'Yayın')}" />
-        <div class="live-badge">CANLI</div>
+        <div class="live-badge">${stream?.is_live ? 'CANLI' : 'KAPALI'}</div>
         <div class="viewer-chip" id="viewer-chip">👁 ${safe(formatViewers(stream?.viewer_count || 0))} izleyici</div>
       `;
       syncViewerChipRef();
@@ -849,7 +1361,7 @@
     function renderVideoPlayer(stream, muted = false) {
       playerEl.innerHTML = `
         <video id="live-video" autoplay playsinline ${muted ? 'muted' : ''}></video>
-        <div class="live-badge">CANLI</div>
+        <div class="live-badge">${stream?.is_live ? 'CANLI' : 'KAPALI'}</div>
         <div class="viewer-chip" id="viewer-chip">👁 ${safe(formatViewers(stream?.viewer_count || 0))} izleyici</div>
       `;
       syncViewerChipRef();
@@ -871,6 +1383,118 @@
       videoEl.play().catch(() => {});
     }
 
+    async function fetchProfile(userId) {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+
+      return data || null;
+    }
+
+    async function renderOtherStreams() {
+      if (!streamId) return;
+
+      const { data, error } = await supabase
+        .from('streams')
+        .select('*')
+        .eq('is_live', true)
+        .neq('id', streamId)
+        .order('viewer_count', { ascending: false })
+        .limit(6);
+
+      if (error || !data || !data.length) {
+        otherStreamsEl.innerHTML = `<div class="sub" style="padding:4px 0;">Şu an başka canlı yayın görünmüyor.</div>`;
+        return;
+      }
+
+      const items = await Promise.all(data.map(async (stream) => {
+        const profile = await fetchProfile(stream.streamer_id);
+        return { stream, profile };
+      }));
+
+      otherStreamsEl.innerHTML = items.map(({ stream, profile }) => `
+        <a class="mini-card" href="/stream.html?id=${encodeURIComponent(stream.id)}">
+          <div class="mini-thumb">
+            <img src="${safe(stream.thumbnail_url || profile?.avatar_url || getThumb(profile))}" alt="${safe(stream.title)}" />
+          </div>
+          <div class="mini-meta">
+            <div class="mini-title">${safe(stream.title || 'Canlı yayın')}</div>
+            <div class="mini-sub">
+              ${safe(profile?.username || stream.streamer_name || 'Yayıncı')} • ${safe(stream.category || 'Canlı yayın')}<br/>
+              👁 ${safe(formatViewers(stream.viewer_count || 0))}
+            </div>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    function renderStreamerCard(profile, stream) {
+      if (profile?.avatar_url) {
+        streamerAvatarEl.innerHTML = `<img src="${safe(profile.avatar_url)}" alt="${safe(profile.username || 'Yayıncı')}">`;
+      } else {
+        streamerAvatarEl.textContent = '👤';
+      }
+
+      streamerNameEl.textContent = profile?.username || stream?.streamer_name || 'Yayıncı';
+      streamerSubEl.textContent = `${profile?.country || ''}${profile?.city ? ' • ' + profile.city : ''}${profile?.gender ? ' • ' + profile.gender : ''}${profile?.age ? ' • ' + profile.age + ' yaş' : ''}`;
+      streamerRoleEl.textContent = getRoleLabel(profile?.role || profile?.subscription_status || 'free');
+      streamerBioEl.textContent = profile?.bio || 'Henüz biyografi eklenmedi.';
+      statFollowersEl.textContent = profile?.followers_count || 0;
+      statFollowingEl.textContent = profile?.following_count || 0;
+      statViewersEl.textContent = formatViewers(stream?.viewer_count || 0);
+
+      const socials = getProfileSocials(profile);
+      socialRowEl.innerHTML = socials.length
+        ? socials.map(item => `<a class="social-link" href="${safe(normalizeUrl(item.value))}" target="_blank" rel="noopener noreferrer">${safe(item.label)}</a>`).join('')
+        : '';
+    }
+
+    async function syncFollowCounts(profileId) {
+      try {
+        const [{ count: followersCount }, { count: followingCount }] = await Promise.all([
+          supabase.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', profileId),
+          supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', profileId)
+        ]);
+
+        const nextFollowers = Number(followersCount || 0);
+        const nextFollowing = Number(followingCount || 0);
+
+        await supabase
+          .from('profiles')
+          .update({
+            followers_count: nextFollowers,
+            following_count: nextFollowing
+          })
+          .eq('id', profileId);
+
+        return {
+          followers_count: nextFollowers,
+          following_count: nextFollowing
+        };
+      } catch (err) {
+        console.error('syncFollowCounts', err);
+        return {
+          followers_count: Number(currentProfile?.followers_count || 0),
+          following_count: Number(currentProfile?.following_count || 0)
+        };
+      }
+    }
+
+    function applyFollowUI() {
+      const text = isBroadcaster ? 'Kendi yayının' : (isFollowing ? 'Takip ediliyor' : 'Takip et');
+
+      followBtn.textContent = text;
+      followBtn2.textContent = text;
+
+      followBtn.classList.toggle('following', !isBroadcaster && isFollowing);
+      followBtn2.classList.toggle('following', !isBroadcaster && isFollowing);
+
+      followBtn.disabled = isBroadcaster;
+      followBtn2.disabled = isBroadcaster;
+    }
+
     async function loadStream() {
       if (!streamId) {
         pageStatusEl.textContent = 'Geçersiz yayın bağlantısı.';
@@ -890,22 +1514,40 @@
       }
 
       currentStream = stream;
+      currentProfile = await fetchProfile(stream.streamer_id);
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id, username, avatar_url, country, city, gender, age')
-        .eq('id', stream.streamer_id)
-        .maybeSingle();
-
-      currentProfile = profile || null;
-
-      renderImagePlayer(stream, profile);
+      renderImagePlayer(stream, currentProfile);
 
       streamTitleEl.textContent = stream.title || 'Canlı yayın';
+      heroTitleEl.textContent = stream.title || 'Canlı yayın';
+      heroSubEl.textContent = `${safe(currentProfile?.username || stream.streamer_name || 'Yayıncı')} yayınında canlı içerik, sohbet ve topluluk etkileşimi burada.`;
+      heroToplineEl.textContent = stream.is_live ? '● Canlı yayın aktif' : '● Yayın şu an kapalı';
+
       streamSubEl.innerHTML = `
-        <strong>${safe(stream.streamer_name || profile?.username || 'Yayıncı')}</strong> • ${safe(stream.category || 'Just Chatting')}<br/>
-        ${safe(profile?.country || '')}${profile?.city ? ' • ' + safe(profile.city) : ''}${profile?.gender ? ' • ' + safe(profile.gender) : ''}${profile?.age ? ' • ' + safe(profile.age + ' yaş') : ''}
+        <strong>${safe(stream.streamer_name || currentProfile?.username || 'Yayıncı')}</strong> • ${safe(stream.category || 'Just Chatting')}<br/>
+        ${safe(currentProfile?.country || '')}${currentProfile?.city ? ' • ' + safe(currentProfile.city) : ''}${currentProfile?.gender ? ' • ' + safe(currentProfile.gender) : ''}${currentProfile?.age ? ' • ' + safe(currentProfile.age + ' yaş') : ''}
       `;
+
+      streamTagsEl.innerHTML = [
+        stream.category || '',
+        currentProfile?.country || '',
+        currentProfile?.city || '',
+        stream.is_live ? 'Canlı' : 'Offline'
+      ].filter(Boolean).map(tag => `<span class="tag">${safe(tag)}</span>`).join('');
+
+      const profileHref = `/profile.html?id=${encodeURIComponent(stream.streamer_id)}`;
+      profileLinkBtn.href = profileHref;
+      profileLinkBtn2.href = profileHref;
+      topProfileLink.href = profileHref;
+
+      if (currentProfile) {
+        const counts = await syncFollowCounts(currentProfile.id);
+        currentProfile.followers_count = counts.followers_count;
+        currentProfile.following_count = counts.following_count;
+      }
+
+      renderStreamerCard(currentProfile, stream);
+      await renderOtherStreams();
     }
 
     async function loadFollowState() {
@@ -913,15 +1555,13 @@
       await ensureActorId();
 
       if (!currentStream) {
-        followBtn.textContent = 'Takip et';
+        applyFollowUI();
         return;
       }
 
       isBroadcaster = !!currentUser && currentUser.id === currentStream.streamer_id;
 
       if (isBroadcaster) {
-        followBtn.textContent = 'Kendi yayının';
-        followBtn.disabled = true;
         broadcasterPanelEl.classList.add('show');
         configureScreenShareUI();
         syncControlsFromState();
@@ -930,11 +1570,14 @@
           autoStartTried = true;
           setTimeout(() => startCamera(true), 350);
         }
+
+        applyFollowUI();
         return;
       }
 
       if (!currentUser) {
-        followBtn.textContent = 'Takip et';
+        isFollowing = false;
+        applyFollowUI();
         return;
       }
 
@@ -946,7 +1589,7 @@
         .maybeSingle();
 
       isFollowing = !!data;
-      followBtn.textContent = isFollowing ? 'Takibi bırak' : 'Takip et';
+      applyFollowUI();
     }
 
     async function toggleFollow() {
@@ -972,7 +1615,6 @@
         }
 
         isFollowing = false;
-        followBtn.textContent = 'Takip et';
         pageStatusEl.textContent = 'Takip bırakıldı.';
       } else {
         const { error } = await supabase
@@ -988,8 +1630,17 @@
         }
 
         isFollowing = true;
-        followBtn.textContent = 'Takibi bırak';
         pageStatusEl.textContent = 'Yayıncı takip edildi.';
+      }
+
+      applyFollowUI();
+
+      if (currentProfile?.id) {
+        const counts = await syncFollowCounts(currentProfile.id);
+        currentProfile.followers_count = counts.followers_count;
+        currentProfile.following_count = counts.following_count;
+        statFollowersEl.textContent = currentProfile.followers_count || 0;
+        statFollowingEl.textContent = currentProfile.following_count || 0;
       }
     }
 
@@ -1748,6 +2399,37 @@
       }
     }
 
+    function openDonateModal() {
+      donateModal.classList.add('show');
+      donateStatusEl.textContent = '';
+    }
+
+    function closeDonateModal() {
+      donateModal.classList.remove('show');
+      donateAmountEl.value = '';
+      donateStatusEl.textContent = '';
+    }
+
+    async function confirmDonation() {
+      const amount = Number(donateAmountEl.value || 0);
+      if (!amount || amount <= 0) {
+        donateStatusEl.textContent = 'Geçerli bir tutar gir.';
+        return;
+      }
+
+      donateStatusEl.textContent = `${amount} TL destek hazırlandı. Cüzdan tahsilatını sonraki aşamada gerçek akışa bağlayabiliriz.`;
+    }
+
+    async function shareCurrentStream() {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        pageStatusEl.textContent = 'Yayın bağlantısı kopyalandı.';
+      } catch (err) {
+        console.error(err);
+        pageStatusEl.textContent = 'Bağlantı kopyalanamadı.';
+      }
+    }
+
     uploadBackgroundBtn.addEventListener('click', () => {
       backgroundFileInput.click();
     });
@@ -1766,6 +2448,11 @@
     });
 
     followBtn.addEventListener('click', toggleFollow);
+    followBtn2.addEventListener('click', toggleFollow);
+    donateBtn.addEventListener('click', openDonateModal);
+    donateBtn2.addEventListener('click', openDonateModal);
+    shareBtn.addEventListener('click', shareCurrentStream);
+
     chatFormEl.addEventListener('submit', sendMessage);
     startCameraBtn.addEventListener('click', () => startCamera(false));
     shareScreenBtn.addEventListener('click', shareScreen);
@@ -1774,6 +2461,18 @@
     applySceneBtn.addEventListener('click', applySceneSettings);
     stopPreviewBtn.addEventListener('click', stopPreviewOnly);
     stopStreamBtn.addEventListener('click', stopLiveStream);
+
+    donateClose.addEventListener('click', closeDonateModal);
+    donateModal.addEventListener('click', (e) => {
+      if (e.target === donateModal) closeDonateModal();
+    });
+    confirmDonateBtn.addEventListener('click', confirmDonation);
+
+    document.querySelectorAll('.donate-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        donateAmountEl.value = btn.dataset.amount || '';
+      });
+    });
 
     window.addEventListener('pagehide', async () => {
       await markViewerInactive();
@@ -1808,6 +2507,7 @@
 
     setInterval(async () => {
       await loadMessages();
+      await renderOtherStreams();
     }, 4000);
   </script>
 </body>
