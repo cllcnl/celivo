@@ -1,3 +1,5 @@
+ 
+   
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -40,9 +42,9 @@
       gap: 10px;
       position: sticky;
       top: 0;
-      z-index: 60;
+      z-index: 70;
       backdrop-filter: blur(18px);
-      background: rgba(2,6,23,.78);
+      background: rgba(2,6,23,.82);
       border-bottom: 1px solid rgba(255,255,255,.06);
     }
 
@@ -91,9 +93,7 @@
       font-size: 14px;
     }
 
-    .top-search::placeholder {
-      color: var(--muted-2);
-    }
+    .top-search::placeholder { color: var(--muted-2); }
 
     .top-link,
     .toolbar-btn,
@@ -132,10 +132,41 @@
       transform: translateY(-1px);
     }
 
-    .page {
-      max-width: 1380px;
+    .shell {
+      max-width: 1500px;
       margin: 0 auto;
-      padding: 12px 14px 40px;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .desktop-sidebar {
+      position: sticky;
+      top: 82px;
+      height: calc(100vh - 96px);
+      overflow-y: auto;
+      background: linear-gradient(180deg, rgba(8,15,33,.96), rgba(3,8,20,.96));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,.12) transparent;
+    }
+
+    .desktop-sidebar::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .desktop-sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.12);
+      border-radius: 999px;
+    }
+
+    .page {
+      min-width: 0;
     }
 
     .toolbar-wrap {
@@ -176,9 +207,7 @@
       padding: 14px;
     }
 
-    .filters-panel.show {
-      display: block;
-    }
+    .filters-panel.show { display: block; }
 
     .filters-grid {
       display: grid;
@@ -204,9 +233,7 @@
       font-size: 15px;
     }
 
-    .select option {
-      color: #111827;
-    }
+    .select option { color: #111827; }
 
     .btn-small {
       border: none;
@@ -723,49 +750,6 @@
       border-radius: 20px;
     }
 
-    .side-menu {
-      position: fixed;
-      top: 0;
-      left: -310px;
-      width: 300px;
-      height: 100vh;
-      z-index: 100;
-      background: linear-gradient(180deg, rgba(8,15,33,.985), rgba(3,8,20,.985));
-      border-right: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 20px 60px rgba(0,0,0,.45);
-      transition: left .25s ease;
-      padding: 18px 16px;
-      overflow-y: auto;
-    }
-
-    .side-menu.show { left: 0; }
-
-    .side-menu-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
-    }
-
-    .side-menu-title {
-      font-size: 22px;
-      font-weight: 800;
-      background: linear-gradient(90deg, #60a5fa, #8b5cf6, #ec4899);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .close-menu-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      color: #fff;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
     .side-section { margin-bottom: 18px; }
 
     .side-label {
@@ -901,7 +885,50 @@
       color: var(--muted);
       font-size: 12px;
       line-height: 1.5;
-      padding: 10px 0 0;
+      padding-top: 10px;
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      left: -310px;
+      width: 300px;
+      height: 100vh;
+      z-index: 100;
+      background: linear-gradient(180deg, rgba(8,15,33,.985), rgba(3,8,20,.985));
+      border-right: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      transition: left .25s ease;
+      padding: 18px 16px;
+      overflow-y: auto;
+    }
+
+    .mobile-drawer.show { left: 0; }
+
+    .mobile-drawer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .mobile-drawer-title {
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #60a5fa, #8b5cf6, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .close-menu-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
     }
 
     .side-backdrop {
@@ -914,19 +941,37 @@
 
     .side-backdrop.show { display: block; }
 
-    @media (max-width: 1280px) {
+    @media (max-width: 1320px) {
       .section-card {
         flex: 0 0 calc((100% - 32px) / 3);
       }
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1180px) {
+      .desktop-sidebar {
+        display: none;
+      }
+
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
       .filters-grid {
         grid-template-columns: 1fr 1fr;
       }
 
       .profile-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1181px) {
+      .mobile-drawer {
+        display: none;
+      }
+
+      .menu-btn {
+        display: none;
       }
     }
 
@@ -970,15 +1015,45 @@
       .carousel-title { font-size: 18px; }
       .slider-header { align-items: flex-start; }
       .section-card { flex: 0 0 86%; }
+      .shell { padding: 12px; }
     }
   </style>
 </head>
 <body>
   <div id="side-backdrop" class="side-backdrop"></div>
 
-  <aside id="side-menu" class="side-menu">
-    <div class="side-menu-top">
-      <div class="side-menu-title">Celivo</div>
+  <aside class="desktop-sidebar">
+    <div class="side-section">
+      <div class="side-label">Gezin</div>
+      <div class="side-nav">
+        <a href="#featured-section">Popüler yayınlar</a>
+        <a href="#followed-section">Takip ettiğin yayıncılar</a>
+        <a href="#live-section">Canlı yayınlar</a>
+        <a href="#new-section">Yeni başlayan yayıncılar</a>
+        <a href="#scheduled-section">İleri tarihli yayınlar</a>
+        <a href="#profiles-section">Kullanıcılar</a>
+      </div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">Kategori</div>
+      <div class="side-nav" id="desktop-category-links">
+        <button type="button" data-category="">Tümü</button>
+      </div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">Şu an canlı kanallar</div>
+      <div id="desktop-live-sidebar-list" class="live-sidebar-list"></div>
+      <div class="sidebar-mini-note">
+        10 saniyede bir yenilenir. %40 popüler, %60 keşif mantığıyla ve tekrar etmeyen yayın/yayıncı seçimiyle hazırlanır.
+      </div>
+    </div>
+  </aside>
+
+  <aside id="mobile-drawer" class="mobile-drawer">
+    <div class="mobile-drawer-top">
+      <div class="mobile-drawer-title">Celivo</div>
       <button id="close-menu-btn" class="close-menu-btn" type="button">✕</button>
     </div>
 
@@ -996,16 +1071,16 @@
 
     <div class="side-section">
       <div class="side-label">Kategori</div>
-      <div class="side-nav" id="side-category-links">
+      <div class="side-nav" id="mobile-category-links">
         <button type="button" data-category="">Tümü</button>
       </div>
     </div>
 
     <div class="side-section">
       <div class="side-label">Şu an canlı kanallar</div>
-      <div id="live-sidebar-list" class="live-sidebar-list"></div>
+      <div id="mobile-live-sidebar-list" class="live-sidebar-list"></div>
       <div class="sidebar-mini-note">
-        10 saniyede bir yenilenir. Liste %40 popüler, %60 keşif mantığıyla ve tekrar etmeyen yayıncı/yayın seçimiyle hazırlanır.
+        10 saniyede bir yenilenir. %40 popüler, %60 keşif mantığıyla döner.
       </div>
     </div>
   </aside>
@@ -1025,96 +1100,98 @@
     <a class="top-link primary" href="/profile.html">Yayına başla</a>
   </header>
 
-  <main class="page">
-    <section class="toolbar-wrap">
-      <div class="toolbar-row">
-        <button id="toggle-filters-btn" class="toolbar-btn" type="button">Filtrele</button>
-        <button id="clear-filters-btn" class="toolbar-btn primary" type="button">Temizle</button>
-      </div>
-
-      <div id="filters-panel" class="filters-panel">
-        <div class="filters-grid">
-          <select id="country-filter" class="select">
-            <option value="">Ülke</option>
-          </select>
-
-          <select id="city-filter" class="select">
-            <option value="">Şehir</option>
-          </select>
-
-          <select id="gender-filter" class="select">
-            <option value="">Cinsiyet</option>
-            <option value="Erkek">Erkek</option>
-            <option value="Kadın">Kadın</option>
-            <option value="Belirtmek istemiyorum">Belirtmek istemiyorum</option>
-            <option value="Diğer">Diğer</option>
-          </select>
-
-          <select id="age-filter" class="select">
-            <option value="">Yaş aralığı</option>
-            <option value="13-17">13-17</option>
-            <option value="18-24">18-24</option>
-            <option value="25-34">25-34</option>
-            <option value="35-44">35-44</option>
-            <option value="45-54">45-54</option>
-            <option value="55+">55+</option>
-          </select>
-
-          <select id="category-filter" class="select">
-            <option value="">Kategori</option>
-          </select>
+  <div class="shell">
+    <main class="page">
+      <section class="toolbar-wrap">
+        <div class="toolbar-row">
+          <button id="toggle-filters-btn" class="toolbar-btn" type="button">Filtrele</button>
+          <button id="clear-filters-btn" class="toolbar-btn primary" type="button">Temizle</button>
         </div>
 
-        <div class="filters-actions">
-          <button id="apply-filters-btn" class="btn-small btn-primary" type="button">Filtreyi uygula</button>
-        </div>
-      </div>
-    </section>
+        <div id="filters-panel" class="filters-panel">
+          <div class="filters-grid">
+            <select id="country-filter" class="select">
+              <option value="">Ülke</option>
+            </select>
 
-    <section id="featured-section" class="section">
-      <h2 class="section-title">Popüler yayınlar <span id="live-count-badge" class="count-badge">(0)</span></h2>
+            <select id="city-filter" class="select">
+              <option value="">Şehir</option>
+            </select>
 
-      <div class="carousel-shell">
-        <div class="carousel-stage">
-          <button id="carousel-prev" class="carousel-nav" type="button">‹</button>
+            <select id="gender-filter" class="select">
+              <option value="">Cinsiyet</option>
+              <option value="Erkek">Erkek</option>
+              <option value="Kadın">Kadın</option>
+              <option value="Belirtmek istemiyorum">Belirtmek istemiyorum</option>
+              <option value="Diğer">Diğer</option>
+            </select>
 
-          <div class="carousel-viewport">
-            <div id="featured-track" class="carousel-track"></div>
+            <select id="age-filter" class="select">
+              <option value="">Yaş aralığı</option>
+              <option value="13-17">13-17</option>
+              <option value="18-24">18-24</option>
+              <option value="25-34">25-34</option>
+              <option value="35-44">35-44</option>
+              <option value="45-54">45-54</option>
+              <option value="55+">55+</option>
+            </select>
+
+            <select id="category-filter" class="select">
+              <option value="">Kategori</option>
+            </select>
           </div>
 
-          <button id="carousel-next" class="carousel-nav" type="button">›</button>
+          <div class="filters-actions">
+            <button id="apply-filters-btn" class="btn-small btn-primary" type="button">Filtreyi uygula</button>
+          </div>
         </div>
+      </section>
 
-        <div id="carousel-dots" class="carousel-dots"></div>
+      <section id="featured-section" class="section">
+        <h2 class="section-title">Popüler yayınlar <span id="live-count-badge" class="count-badge">(0)</span></h2>
 
-        <div class="category-rail-wrap">
-          <div id="category-rail" class="category-rail"></div>
+        <div class="carousel-shell">
+          <div class="carousel-stage">
+            <button id="carousel-prev" class="carousel-nav" type="button">‹</button>
+
+            <div class="carousel-viewport">
+              <div id="featured-track" class="carousel-track"></div>
+            </div>
+
+            <button id="carousel-next" class="carousel-nav" type="button">›</button>
+          </div>
+
+          <div id="carousel-dots" class="carousel-dots"></div>
+
+          <div class="category-rail-wrap">
+            <div id="category-rail" class="category-rail"></div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="followed-section" class="section">
-      <div id="followed-slider"></div>
-    </section>
+      <section id="followed-section" class="section">
+        <div id="followed-slider"></div>
+      </section>
 
-    <section id="live-section" class="section">
-      <div id="live-slider"></div>
-    </section>
+      <section id="live-section" class="section">
+        <div id="live-slider"></div>
+      </section>
 
-    <section id="new-section" class="section">
-      <div id="new-slider"></div>
-    </section>
+      <section id="new-section" class="section">
+        <div id="new-slider"></div>
+      </section>
 
-    <section id="scheduled-section" class="section">
-      <div id="scheduled-slider"></div>
-    </section>
+      <section id="scheduled-section" class="section">
+        <div id="scheduled-slider"></div>
+      </section>
 
-    <section id="profiles-section" class="section">
-      <h2 class="section-title">Kullanıcılar</h2>
-      <div id="profiles-grid" class="profile-grid"></div>
-      <div id="empty-profiles" class="empty" style="display:none;">Aramana uygun kullanıcı bulunamadı.</div>
-    </section>
-  </main>
+      <section id="profiles-section" class="section">
+        <h2 class="section-title">Kullanıcılar</h2>
+        <div id="profiles-grid" class="profile-grid"></div>
+        <div id="empty-profiles" class="empty" style="display:none;">Aramana uygun kullanıcı bulunamadı.</div>
+      </section>
+    </main>
+  </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
@@ -1149,10 +1226,12 @@
 
     const menuBtn = document.getElementById('menu-btn');
     const closeMenuBtn = document.getElementById('close-menu-btn');
-    const sideMenu = document.getElementById('side-menu');
+    const mobileDrawer = document.getElementById('mobile-drawer');
     const sideBackdrop = document.getElementById('side-backdrop');
-    const sideCategoryLinks = document.getElementById('side-category-links');
-    const liveSidebarList = document.getElementById('live-sidebar-list');
+    const desktopCategoryLinks = document.getElementById('desktop-category-links');
+    const mobileCategoryLinks = document.getElementById('mobile-category-links');
+    const desktopLiveSidebarList = document.getElementById('desktop-live-sidebar-list');
+    const mobileLiveSidebarList = document.getElementById('mobile-live-sidebar-list');
     const loginLink = document.getElementById('login-link');
 
     const searchInput = document.getElementById('search-input');
@@ -1237,12 +1316,12 @@
     }
 
     function openMenu() {
-      sideMenu.classList.add('show');
+      mobileDrawer.classList.add('show');
       sideBackdrop.classList.add('show');
     }
 
     function closeMenu() {
-      sideMenu.classList.remove('show');
+      mobileDrawer.classList.remove('show');
       sideBackdrop.classList.remove('show');
     }
 
@@ -1309,6 +1388,24 @@
       });
     }
 
+    function renderCategoryNav(container, categories) {
+      container.innerHTML = `
+        <button type="button" data-category="">Tümü</button>
+        ${categories.map(category => `
+          <button type="button" data-category="${safe(category)}">${safe(category)}</button>
+        `).join('')}
+      `;
+
+      Array.from(container.querySelectorAll('[data-category]')).forEach(btn => {
+        btn.onclick = () => {
+          categoryFilter.value = btn.dataset.category || '';
+          renderCategoryRail();
+          applyAll();
+          closeMenu();
+        };
+      });
+    }
+
     function fillCategoryFilter() {
       const currentValue = categoryFilter.value;
 
@@ -1324,26 +1421,9 @@
         categoryFilter.value = currentValue;
       }
 
-      renderSideCategoryLinks(FIXED_CATEGORIES);
+      renderCategoryNav(desktopCategoryLinks, FIXED_CATEGORIES);
+      renderCategoryNav(mobileCategoryLinks, FIXED_CATEGORIES);
       renderCategoryRail();
-    }
-
-    function renderSideCategoryLinks(categories) {
-      sideCategoryLinks.innerHTML = `
-        <button type="button" data-category="">Tümü</button>
-        ${categories.map(category => `
-          <button type="button" data-category="${safe(category)}">${safe(category)}</button>
-        `).join('')}
-      `;
-
-      Array.from(sideCategoryLinks.querySelectorAll('[data-category]')).forEach(btn => {
-        btn.onclick = () => {
-          categoryFilter.value = btn.dataset.category || '';
-          renderCategoryRail();
-          applyAll();
-          closeMenu();
-        };
-      });
     }
 
     function getCategoryIcon(category) {
@@ -1657,7 +1737,7 @@
 
       const getVisibleCount = () => {
         if (window.innerWidth <= 760) return 1;
-        if (window.innerWidth <= 1280) return 3;
+        if (window.innerWidth <= 1320) return 3;
         return 4;
       };
 
@@ -1824,7 +1904,6 @@
       for (const item of candidates) {
         if (selected.length >= count) break;
         if (usedStreamIds.has(item.id) || usedStreamerIds.has(item.streamer_id)) continue;
-
         selected.push(item);
         usedStreamIds.add(item.id);
         usedStreamerIds.add(item.streamer_id);
@@ -1839,7 +1918,6 @@
         for (const item of fallbackCandidates) {
           if (selected.length >= count) break;
           if (usedStreamIds.has(item.id) || usedStreamerIds.has(item.streamer_id)) continue;
-
           selected.push(item);
           usedStreamIds.add(item.id);
           usedStreamerIds.add(item.streamer_id);
@@ -1932,33 +2010,33 @@
     function renderLiveSidebarList(liveStreams) {
       const selection = buildSidebarLiveSelection(liveStreams);
 
-      if (!selection.length) {
-        liveSidebarList.innerHTML = `<div class="empty" style="padding:14px;">Şu anda canlı kanal yok.</div>`;
-        return;
-      }
-
-      liveSidebarList.innerHTML = selection.map(item => `
-        <a class="live-sidebar-item" href="/stream.html?id=${encodeURIComponent(item.id)}">
-          <div class="live-sidebar-avatar">
-            ${item.avatar_url ? `<img src="${safe(item.avatar_url)}" alt="${safe(item.username || item.streamer_name || 'Yayıncı')}">` : '👤'}
-          </div>
-
-          <div class="live-sidebar-meta">
-            <div class="live-sidebar-name">${safe(item.streamer_name || item.username || 'Yayıncı')}</div>
-            <div class="live-sidebar-sub">${safe(item.category || 'Just Chatting')}</div>
-            <div class="live-sidebar-stats">
-              <span class="live-dot"></span>
-              <span>Canlı</span>
-              <span>•</span>
-              <span>${safe(formatViewers(item.viewer_count || 0))} izliyor</span>
+      const html = !selection.length
+        ? `<div class="empty" style="padding:14px;">Şu anda canlı kanal yok.</div>`
+        : selection.map(item => `
+          <a class="live-sidebar-item" href="/stream.html?id=${encodeURIComponent(item.id)}">
+            <div class="live-sidebar-avatar">
+              ${item.avatar_url ? `<img src="${safe(item.avatar_url)}" alt="${safe(item.username || item.streamer_name || 'Yayıncı')}">` : '👤'}
             </div>
-          </div>
 
-          <div class="live-sidebar-badge ${item.sidebar_type === 'popular' ? 'popular' : 'discovery'}">
-            ${item.sidebar_type === 'popular' ? 'Popüler' : 'Keşfet'}
-          </div>
-        </a>
-      `).join('');
+            <div class="live-sidebar-meta">
+              <div class="live-sidebar-name">${safe(item.streamer_name || item.username || 'Yayıncı')}</div>
+              <div class="live-sidebar-sub">${safe(item.category || 'Just Chatting')}</div>
+              <div class="live-sidebar-stats">
+                <span class="live-dot"></span>
+                <span>Canlı</span>
+                <span>•</span>
+                <span>${safe(formatViewers(item.viewer_count || 0))} izliyor</span>
+              </div>
+            </div>
+
+            <div class="live-sidebar-badge ${item.sidebar_type === 'popular' ? 'popular' : 'discovery'}">
+              ${item.sidebar_type === 'popular' ? 'Popüler' : 'Keşfet'}
+            </div>
+          </a>
+        `).join('');
+
+      desktopLiveSidebarList.innerHTML = html;
+      mobileLiveSidebarList.innerHTML = html;
     }
 
     async function loadData() {
