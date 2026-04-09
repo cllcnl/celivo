@@ -110,11 +110,11 @@
 
     .top-link:hover,
     .toolbar-btn:hover,
-    .hero-btn:hover,
     .mini-btn:hover,
     .stream-card:hover,
     .profile-card:hover,
-    .carousel-card:hover {
+    .carousel-card:hover,
+    .category-chip:hover {
       transform: translateY(-1px);
     }
 
@@ -130,7 +130,7 @@
     }
 
     .toolbar-wrap {
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
 
     .toolbar-row {
@@ -246,7 +246,6 @@
       font-weight: 800;
     }
 
-    /* TWITCH BENZERİ YANA KAYDIRMALI VİTRİN */
     .carousel-shell {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -332,15 +331,6 @@
       opacity: 1;
       transform: scale(1);
       z-index: 2;
-    }
-
-    .carousel-overlay {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 16px;
-      background: linear-gradient(180deg, transparent 0%, rgba(2,6,23,.18) 20%, rgba(2,6,23,.78) 100%);
     }
 
     .live-badge {
@@ -440,6 +430,61 @@
     .carousel-dot.active {
       width: 28px;
       background: linear-gradient(90deg, #8b5cf6, #38bdf8);
+    }
+
+    .category-rail-wrap {
+      margin-top: 18px;
+    }
+
+    .category-rail {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 4px 2px 8px;
+      scrollbar-width: none;
+    }
+
+    .category-rail::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-chip {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      transition: .15s ease;
+      white-space: nowrap;
+    }
+
+    .category-chip svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      opacity: .95;
+    }
+
+    .category-chip .icon-stroke {
+      stroke: currentColor;
+    }
+
+    .category-chip .icon-fill {
+      fill: currentColor;
+    }
+
+    .category-chip.active {
+      background: var(--primary);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(56,189,248,.18);
     }
 
     .stream-grid,
@@ -780,7 +825,7 @@
     <div class="side-section">
       <div class="side-label">Kategori</div>
       <div class="side-nav" id="side-category-links">
-        <button type="button" data-category="">Tüm kategoriler</button>
+        <button type="button" data-category="">Tümü</button>
       </div>
     </div>
   </aside>
@@ -860,6 +905,10 @@
         </div>
 
         <div id="carousel-dots" class="carousel-dots"></div>
+
+        <div class="category-rail-wrap">
+          <div id="category-rail" class="category-rail"></div>
+        </div>
       </div>
     </section>
 
@@ -892,6 +941,16 @@
     let carouselIndex = 0;
     let visibleCards = window.innerWidth <= 900 ? 1 : 2;
 
+    const FIXED_CATEGORIES = [
+      'Just Chatting',
+      'Oyun',
+      'Espor',
+      'Müzik',
+      'IRL',
+      'Kreatif',
+      'Futbol'
+    ];
+
     const menuBtn = document.getElementById('menu-btn');
     const closeMenuBtn = document.getElementById('close-menu-btn');
     const sideMenu = document.getElementById('side-menu');
@@ -914,6 +973,7 @@
     const carouselDots = document.getElementById('carousel-dots');
     const carouselPrev = document.getElementById('carousel-prev');
     const carouselNext = document.getElementById('carousel-next');
+    const categoryRail = document.getElementById('category-rail');
 
     const streamsGrid = document.getElementById('streams-grid');
     const profilesGrid = document.getElementById('profiles-grid');
@@ -1000,34 +1060,28 @@
       });
     }
 
-    function fillCategoryFilter(streams) {
+    function fillCategoryFilter() {
       const currentValue = categoryFilter.value;
 
-      const categories = [...new Set(
-        (streams || [])
-          .map(s => String(s.category || '').trim())
-          .filter(Boolean)
-      )].sort((a, b) => a.localeCompare(b, 'tr'));
-
       categoryFilter.innerHTML = '<option value="">Kategori</option>';
-
-      categories.forEach(category => {
+      FIXED_CATEGORIES.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
         option.textContent = category;
         categoryFilter.appendChild(option);
       });
 
-      if (categories.includes(currentValue)) {
+      if (FIXED_CATEGORIES.includes(currentValue)) {
         categoryFilter.value = currentValue;
       }
 
-      renderSideCategoryLinks(categories);
+      renderSideCategoryLinks(FIXED_CATEGORIES);
+      renderCategoryRail();
     }
 
     function renderSideCategoryLinks(categories) {
       sideCategoryLinks.innerHTML = `
-        <button type="button" data-category="">Tüm kategoriler</button>
+        <button type="button" data-category="">Tümü</button>
         ${categories.map(category => `
           <button type="button" data-category="${safe(category)}">${safe(category)}</button>
         `).join('')}
@@ -1036,8 +1090,90 @@
       Array.from(sideCategoryLinks.querySelectorAll('[data-category]')).forEach(btn => {
         btn.onclick = () => {
           categoryFilter.value = btn.dataset.category || '';
+          renderCategoryRail();
           applyAll();
           closeMenu();
+        };
+      });
+    }
+
+    function getCategoryIcon(category) {
+      const icons = {
+        'Tümü': `
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect class="icon-stroke" x="4" y="4" width="6" height="6" rx="1.5" stroke-width="1.8"/>
+            <rect class="icon-stroke" x="14" y="4" width="6" height="6" rx="1.5" stroke-width="1.8"/>
+            <rect class="icon-stroke" x="4" y="14" width="6" height="6" rx="1.5" stroke-width="1.8"/>
+            <rect class="icon-stroke" x="14" y="14" width="6" height="6" rx="1.5" stroke-width="1.8"/>
+          </svg>
+        `,
+        'Just Chatting': `
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path class="icon-stroke" d="M7 18L4 20V6.5C4 5.67 4.67 5 5.5 5h13C19.33 5 20 5.67 20 6.5v8c0 .83-.67 1.5-1.5 1.5H9l-2 2Z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path class="icon-stroke" d="M8 10h8M8 13h5" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        `,
+        'Oyun': `
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path class="icon-stroke" d="M8.5 8h7a4 4 0 0 1 3.93 3.24l.68 3.26A2.5 2.5 0 0 1 17.66 17l-1.26-1.26a2 2 0 0 0-1.41-.58H9.01c-.53 0-1.04.21-1.41.58L6.34 17a2.5 2.5 0 0 1-2.45-2.5l.68-3.26A4 4 0 0 1 8.5 8Z" stroke-width="1.8" stroke-linejoin="round"/>
+            <path class="icon-stroke" d="M9 11v3M7.5 12.5h3M15.5 11.5h.01M17.5 13.5h.01" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        `,
+        'Espor': `
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path class="icon-stroke" d="M8 5h8v2a4 4 0 0 1-4 4 4 4 0 0 1-4-4V5Z" stroke-width="1.8" stroke-linejoin="round"/>
+            <path class="icon-stroke" d="M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3M12 11v4M9 19h6M10 15h4v4h-4z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        `,
+        'Müzik': `
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path class="icon-stroke" d="M14 5v9.5a2.5 2.5 0 1 1-1.5-2.29V7.2L19 6v7.5a2.5 2.5 0 1 1-1.5-2.29V4.8L14 5Z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        `,
+        'IRL': `
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path class="icon-stroke" d="M12 20s6-4.35 6-10a6 6 0 1 0-12 0c0 5.65 6 10 6 10Z" stroke-width="1.8" stroke-linejoin="round"/>
+            <circle class="icon-stroke" cx="12" cy="10" r="2.5" stroke-width="1.8"/>
+          </svg>
+        `,
+        'Kreatif': `
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path class="icon-stroke" d="M14.5 5.5l4 4M13 7l4 4M5 19l3.5-.5 8.2-8.2a1.5 1.5 0 0 0 0-2.12l-.88-.88a1.5 1.5 0 0 0-2.12 0L5.5 15.5 5 19Z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        `,
+        'Futbol': `
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle class="icon-stroke" cx="12" cy="12" r="8" stroke-width="1.8"/>
+            <path class="icon-stroke" d="M12 8.7l2.4 1.75-.9 2.85h-3l-.9-2.85L12 8.7Z" stroke-width="1.6" stroke-linejoin="round"/>
+            <path class="icon-stroke" d="M9.6 10.45 7.5 9.7M14.4 10.45l2.1-.75M10.6 13.3 9.1 15.2M13.4 13.3l1.5 1.9" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        `
+      };
+
+      return icons[category] || icons['Tümü'];
+    }
+
+    function renderCategoryRail() {
+      const activeCategory = categoryFilter.value || '';
+
+      categoryRail.innerHTML = `
+        <button class="category-chip ${activeCategory === '' ? 'active' : ''}" type="button" data-category="">
+          ${getCategoryIcon('Tümü')}
+          <span>Tümü</span>
+        </button>
+        ${FIXED_CATEGORIES.map(category => `
+          <button class="category-chip ${activeCategory === category ? 'active' : ''}" type="button" data-category="${safe(category)}">
+            ${getCategoryIcon(category)}
+            <span>${safe(category)}</span>
+          </button>
+        `).join('')}
+      `;
+
+      Array.from(categoryRail.querySelectorAll('[data-category]')).forEach(btn => {
+        btn.onclick = () => {
+          categoryFilter.value = btn.dataset.category || '';
+          renderCategoryRail();
+          applyAll();
         };
       });
     }
@@ -1334,7 +1470,7 @@
         };
       });
 
-      fillCategoryFilter(allStreams);
+      fillCategoryFilter();
       applyAll();
     }
 
@@ -1386,6 +1522,7 @@
       ageFilter.value = '';
       categoryFilter.value = '';
       searchInput.value = '';
+      renderCategoryRail();
       applyAll();
     };
 
@@ -1398,10 +1535,14 @@
     cityFilter.onchange = applyAll;
     genderFilter.onchange = applyAll;
     ageFilter.onchange = applyAll;
-    categoryFilter.onchange = applyAll;
+    categoryFilter.onchange = () => {
+      renderCategoryRail();
+      applyAll();
+    };
 
     carouselPrev.onclick = () => {
-      const maxIndex = getMaxCarouselIndex(allStreams.filter(stream => liveMatchesFilters(stream)).filter(stream => streamMatchesSearch(stream, searchInput.value.trim().toLowerCase())).length);
+      const total = featuredTrack.querySelectorAll('.carousel-card').length;
+      const maxIndex = getMaxCarouselIndex(total);
       carouselIndex = Math.max(0, carouselIndex - 1);
       if (carouselIndex > maxIndex) carouselIndex = maxIndex;
       updateCarouselPosition();
