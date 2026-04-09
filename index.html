@@ -15,7 +15,7 @@
       --shadow: 0 20px 50px rgba(0,0,0,.35);
       --primary: linear-gradient(90deg, #8b5cf6 0%, #38bdf8 100%);
       --danger: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
-      --bg-card: linear-gradient(180deg, rgba(12,20,40,.9), rgba(6,11,25,.96));
+      --bg-card: linear-gradient(180deg, rgba(12,20,40,.92), rgba(6,11,25,.98));
     }
 
     html { scroll-behavior: smooth; }
@@ -34,22 +34,22 @@
 
     .topbar {
       padding: 12px 14px;
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       position: sticky;
       top: 0;
       z-index: 50;
       backdrop-filter: blur(18px);
-      background: rgba(2,6,23,.72);
+      background: rgba(2,6,23,.78);
       border-bottom: 1px solid rgba(255,255,255,.06);
     }
 
-    .brand-wrap {
+    .left-wrap {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       min-width: 0;
     }
 
@@ -75,12 +75,24 @@
       white-space: nowrap;
     }
 
-    .top-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-end;
+    .top-search-wrap {
+      position: relative;
+      min-width: 0;
+    }
+
+    .top-search {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: white;
+      padding: 13px 16px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .top-search::placeholder {
+      color: var(--muted-2);
     }
 
     .top-link {
@@ -96,9 +108,14 @@
       white-space: nowrap;
     }
 
-    .top-link:hover {
+    .top-link:hover,
+    .toolbar-btn:hover,
+    .hero-btn:hover,
+    .mini-btn:hover,
+    .stream-card:hover,
+    .profile-card:hover,
+    .carousel-card:hover {
       transform: translateY(-1px);
-      background: rgba(255,255,255,.09);
     }
 
     .top-link.primary {
@@ -109,114 +126,18 @@
     .page {
       max-width: 1320px;
       margin: 0 auto;
-      padding: 10px 14px 40px;
+      padding: 12px 14px 40px;
     }
 
-    .hero {
-      margin-bottom: 18px;
-      background:
-        radial-gradient(circle at right top, rgba(139,92,246,.18), transparent 30%),
-        radial-gradient(circle at left bottom, rgba(56,189,248,.12), transparent 30%),
-        linear-gradient(180deg, rgba(12,20,40,.88), rgba(6,11,25,.98));
-      border: 1px solid var(--border);
-      border-radius: 26px;
-      box-shadow: var(--shadow);
-      padding: 22px;
+    .toolbar-wrap {
+      margin-bottom: 24px;
     }
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
-      margin-bottom: 14px;
-    }
-
-    .hero h1 {
-      margin: 0 0 10px;
-      font-size: 56px;
-      line-height: 1;
-      letter-spacing: -.05em;
-      max-width: 780px;
-    }
-
-    .hero p {
-      margin: 0;
-      max-width: 760px;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 16px;
-    }
-
-    .hero-actions {
+    .toolbar-row {
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-    }
-
-    .hero-btn {
-      border: none;
-      border-radius: 16px;
-      padding: 14px 18px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      color: white;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: .15s ease;
-    }
-
-    .hero-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .hero-btn.primary {
-      background: var(--primary);
-    }
-
-    .hero-btn.secondary {
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--border);
-    }
-
-    .searchbar-wrap {
-      margin: 18px 0 26px;
-    }
-
-    .searchbar {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
+      justify-content: flex-end;
       gap: 10px;
-      align-items: center;
-    }
-
-    .input, .select {
-      width: 100%;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      color: white;
-      padding: 14px 16px;
-      outline: none;
-      font-size: 15px;
-    }
-
-    .input::placeholder {
-      color: var(--muted-2);
-    }
-
-    .select option {
-      color: #111827;
+      flex-wrap: wrap;
     }
 
     .toolbar-btn {
@@ -224,17 +145,12 @@
       background: rgba(255,255,255,.06);
       color: white;
       border-radius: 18px;
-      padding: 14px 18px;
+      padding: 12px 16px;
       font-size: 14px;
       font-weight: 800;
       cursor: pointer;
       white-space: nowrap;
       transition: .15s ease;
-    }
-
-    .toolbar-btn:hover {
-      transform: translateY(-1px);
-      background: rgba(255,255,255,.09);
     }
 
     .toolbar-btn.primary {
@@ -269,6 +185,21 @@
       margin-top: 12px;
     }
 
+    .input, .select {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      color: white;
+      padding: 14px 16px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .select option {
+      color: #111827;
+    }
+
     .btn-small {
       border: none;
       border-radius: 14px;
@@ -289,13 +220,17 @@
     }
 
     .section-title {
-      margin: 28px 0 16px;
+      margin: 0 0 16px;
       font-size: 28px;
       letter-spacing: -.03em;
       display: flex;
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
+    }
+
+    .section {
+      margin-bottom: 28px;
     }
 
     .count-badge {
@@ -311,45 +246,101 @@
       font-weight: 800;
     }
 
-    .popular-showcase {
-      display: grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 18px;
-      margin-bottom: 26px;
-    }
-
-    .featured-main,
-    .featured-side {
+    /* TWITCH BENZERİ YANA KAYDIRMALI VİTRİN */
+    .carousel-shell {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 26px;
+      border-radius: 28px;
       box-shadow: var(--shadow);
+      padding: 18px;
       overflow: hidden;
     }
 
-    .featured-main {
+    .carousel-stage {
+      position: relative;
+      display: grid;
+      grid-template-columns: 52px 1fr 52px;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .carousel-nav {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .carousel-nav:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+    }
+
+    .carousel-viewport {
+      overflow: hidden;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .carousel-track {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      transition: transform .35s ease;
+      will-change: transform;
+      padding: 6px 0;
+    }
+
+    .carousel-card {
+      flex: 0 0 calc(50% - 9px);
+      min-width: 0;
       text-decoration: none;
       color: inherit;
-      transition: .15s ease;
-    }
-
-    .featured-main:hover {
-      transform: translateY(-2px);
-    }
-
-    .cover {
       position: relative;
-      width: 100%;
+      transition: .18s ease;
+    }
+
+    .carousel-media {
+      position: relative;
       aspect-ratio: 16 / 9;
+      border-radius: 22px;
       overflow: hidden;
       background: #0f172a;
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: 0 20px 40px rgba(0,0,0,.22);
     }
 
-    .cover img {
+    .carousel-media img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+
+    .carousel-card.side {
+      opacity: .82;
+      transform: scale(.94);
+    }
+
+    .carousel-card.active {
+      opacity: 1;
+      transform: scale(1);
+      z-index: 2;
+    }
+
+    .carousel-overlay {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 16px;
+      background: linear-gradient(180deg, transparent 0%, rgba(2,6,23,.18) 20%, rgba(2,6,23,.78) 100%);
     }
 
     .live-badge {
@@ -362,6 +353,7 @@
       font-size: 12px;
       padding: 8px 12px;
       border-radius: 999px;
+      z-index: 2;
     }
 
     .viewer-chip {
@@ -374,81 +366,80 @@
       font-size: 13px;
       padding: 8px 12px;
       border-radius: 999px;
+      z-index: 2;
     }
 
-    .featured-content {
-      padding: 18px;
-    }
-
-    .featured-content h2 {
-      margin: 0 0 8px;
-      font-size: 28px;
-      line-height: 1.15;
-      letter-spacing: -.03em;
-    }
-
-    .meta {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .featured-side-inner {
-      padding: 18px;
-    }
-
-    .featured-side h3 {
-      margin: 0 0 14px;
-      font-size: 18px;
-    }
-
-    .mini-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .mini-card {
+    .carousel-meta {
       display: flex;
+      align-items: center;
       gap: 12px;
-      text-decoration: none;
-      color: inherit;
-      background: rgba(255,255,255,.03);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 10px;
-      transition: .15s ease;
+      margin-top: 14px;
+      min-width: 0;
     }
 
-    .mini-card:hover {
-      transform: translateY(-2px);
-      background: rgba(255,255,255,.05);
-    }
-
-    .mini-thumb {
-      width: 110px;
-      aspect-ratio: 16/9;
-      border-radius: 12px;
+    .avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
       overflow: hidden;
       background: #0f172a;
+      border: 1px solid rgba(255,255,255,.08);
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted-2);
+      font-size: 12px;
     }
 
-    .mini-thumb img {
+    .avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    .mini-meta .title {
-      font-weight: 800;
-      margin-bottom: 4px;
-      line-height: 1.35;
+    .carousel-text {
+      min-width: 0;
     }
 
-    .mini-meta .sub {
+    .carousel-title {
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .carousel-sub {
       color: var(--muted);
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1.5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(255,255,255,.18);
+      cursor: pointer;
+    }
+
+    .carousel-dot.active {
+      width: 28px;
+      background: linear-gradient(90deg, #8b5cf6, #38bdf8);
     }
 
     .stream-grid,
@@ -470,9 +461,19 @@
       transition: .15s ease;
     }
 
-    .stream-card:hover,
-    .profile-card:hover {
-      transform: translateY(-2px);
+    .cover {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #0f172a;
+    }
+
+    .cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .card-body {
@@ -531,11 +532,6 @@
       transition: .15s ease;
     }
 
-    .mini-btn:hover {
-      transform: translateY(-1px);
-      background: rgba(255,255,255,.09);
-    }
-
     .mini-btn.primary {
       background: var(--primary);
       border: none;
@@ -549,27 +545,6 @@
       display: flex;
       align-items: center;
       gap: 12px;
-    }
-
-    .avatar {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      overflow: hidden;
-      background: #0f172a;
-      border: 1px solid rgba(255,255,255,.08);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted-2);
-      font-size: 12px;
-    }
-
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
 
     .role-pill {
@@ -699,27 +674,40 @@
         grid-template-columns: 1fr 1fr;
       }
 
-      .popular-showcase {
-        grid-template-columns: 1fr;
-      }
-
       .stream-grid,
       .profile-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
+    @media (max-width: 900px) {
+      .topbar {
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .top-link.primary {
+        display: none;
+      }
+
+      .carousel-card {
+        flex: 0 0 100%;
+      }
+
+      .carousel-card.side {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
     @media (max-width: 760px) {
       .topbar {
         padding: 12px;
+        grid-template-columns: auto 1fr auto auto;
+        gap: 8px;
       }
 
       .brand {
         font-size: 24px;
-      }
-
-      .top-actions {
-        gap: 8px;
       }
 
       .top-link {
@@ -727,16 +715,12 @@
         font-size: 12px;
       }
 
-      .hero {
-        padding: 18px;
+      .toolbar-row {
+        justify-content: stretch;
       }
 
-      .hero h1 {
-        font-size: 42px;
-      }
-
-      .searchbar {
-        grid-template-columns: 1fr;
+      .toolbar-btn {
+        flex: 1;
       }
 
       .filters-grid {
@@ -748,8 +732,20 @@
         grid-template-columns: 1fr;
       }
 
-      .featured-content h2 {
-        font-size: 22px;
+      .section-title {
+        font-size: 24px;
+      }
+
+      .carousel-stage {
+        grid-template-columns: 1fr;
+      }
+
+      .carousel-nav {
+        display: none;
+      }
+
+      .carousel-title {
+        font-size: 18px;
       }
     }
   </style>
@@ -766,7 +762,7 @@
     <div class="side-section">
       <div class="side-label">Gezin</div>
       <div class="side-nav">
-        <a href="#featured-section">Öne çıkan yayınlar</a>
+        <a href="#featured-section">Popüler yayınlar</a>
         <a href="#all-streams-section">Tüm canlı yayınlar</a>
         <a href="#profiles-section">Kullanıcılar</a>
       </div>
@@ -790,32 +786,22 @@
   </aside>
 
   <header class="topbar">
-    <div class="brand-wrap">
+    <div class="left-wrap">
       <button id="menu-btn" class="menu-btn" type="button">☰</button>
       <div class="brand">Celivo</div>
     </div>
 
-    <div class="top-actions">
-      <a class="top-link" href="/profile.html">Profil</a>
-      <a class="top-link primary" href="/profile.html">Yayına başla</a>
+    <div class="top-search-wrap">
+      <input id="search-input" class="top-search" type="text" placeholder="Yayıncı, kullanıcı adı, başlık veya kategori ara..." />
     </div>
+
+    <a class="top-link" href="/profile.html">Profil</a>
+    <a class="top-link primary" href="/profile.html">Yayına başla</a>
   </header>
 
   <main class="page">
-    <section class="hero">
-      <div class="hero-badge">● Celivo şu an canlı</div>
-      <h1>Sadece izleme. Yayının parçası ol.</h1>
-      <p>Celivo’da yayın sadece izlenmez. Sohbete katıl, yayıncıyı takip et, ilgine göre yayınları filtrele, canlı kanalları keşfet ve akışın içinde kal.</p>
-
-      <div class="hero-actions">
-        <a href="#featured-section" class="hero-btn primary">Yayınlara katıl</a>
-        <a href="/profile.html" class="hero-btn secondary">Hemen yayına başla</a>
-      </div>
-    </section>
-
-    <section class="searchbar-wrap">
-      <div class="searchbar">
-        <input id="search-input" class="input" type="text" placeholder="Yayıncı, kullanıcı adı, başlık veya kategori ara..." />
+    <section class="toolbar-wrap">
+      <div class="toolbar-row">
         <button id="toggle-filters-btn" class="toolbar-btn" type="button">Filtrele</button>
         <button id="clear-filters-btn" class="toolbar-btn primary" type="button">Temizle</button>
       </div>
@@ -859,18 +845,31 @@
       </div>
     </section>
 
-    <section id="featured-section">
-      <h2 class="section-title">Öne çıkan canlı yayın <span id="live-count-badge" class="count-badge">(0)</span></h2>
-      <div class="popular-showcase" id="featured-wrap"></div>
+    <section id="featured-section" class="section">
+      <h2 class="section-title">Popüler yayınlar <span id="live-count-badge" class="count-badge">(0)</span></h2>
+
+      <div class="carousel-shell">
+        <div class="carousel-stage">
+          <button id="carousel-prev" class="carousel-nav" type="button">‹</button>
+
+          <div class="carousel-viewport">
+            <div id="featured-track" class="carousel-track"></div>
+          </div>
+
+          <button id="carousel-next" class="carousel-nav" type="button">›</button>
+        </div>
+
+        <div id="carousel-dots" class="carousel-dots"></div>
+      </div>
     </section>
 
-    <section id="all-streams-section">
+    <section id="all-streams-section" class="section">
       <h2 class="section-title">Tüm canlı yayınlar</h2>
       <div id="streams-grid" class="stream-grid"></div>
       <div id="empty-streams" class="empty" style="display:none;">Filtreye uygun canlı yayın bulunamadı.</div>
     </section>
 
-    <section id="profiles-section">
+    <section id="profiles-section" class="section">
       <h2 class="section-title">Kullanıcılar</h2>
       <div id="profiles-grid" class="profile-grid"></div>
       <div id="empty-profiles" class="empty" style="display:none;">Aramana uygun kullanıcı bulunamadı.</div>
@@ -890,6 +889,8 @@
     let countries = [];
     let citiesByCountry = {};
     let refreshTimer = null;
+    let carouselIndex = 0;
+    let visibleCards = window.innerWidth <= 900 ? 1 : 2;
 
     const menuBtn = document.getElementById('menu-btn');
     const closeMenuBtn = document.getElementById('close-menu-btn');
@@ -909,7 +910,11 @@
     const ageFilter = document.getElementById('age-filter');
     const categoryFilter = document.getElementById('category-filter');
 
-    const featuredWrap = document.getElementById('featured-wrap');
+    const featuredTrack = document.getElementById('featured-track');
+    const carouselDots = document.getElementById('carousel-dots');
+    const carouselPrev = document.getElementById('carousel-prev');
+    const carouselNext = document.getElementById('carousel-next');
+
     const streamsGrid = document.getElementById('streams-grid');
     const profilesGrid = document.getElementById('profiles-grid');
     const emptyStreams = document.getElementById('empty-streams');
@@ -971,7 +976,6 @@
 
       countries = await countriesRes.json();
       citiesByCountry = await citiesRes.json();
-
       fillCountryFilter();
     }
 
@@ -1097,53 +1101,94 @@
       liveCountBadge.textContent = `(${count})`;
     }
 
-    function renderFeatured(streams) {
-      if (!streams.length) {
-        featuredWrap.innerHTML = '<div class="empty">Öne çıkan canlı yayın yok.</div>';
+    function getMaxCarouselIndex(total) {
+      if (visibleCards === 1) return Math.max(0, total - 1);
+      return Math.max(0, total - 2);
+    }
+
+    function updateCarouselPosition() {
+      const cards = Array.from(featuredTrack.querySelectorAll('.carousel-card'));
+      if (!cards.length) {
+        carouselPrev.disabled = true;
+        carouselNext.disabled = true;
+        carouselDots.innerHTML = '';
         return;
       }
 
-      const [main, ...rest] = streams;
-      const side = rest.slice(0, 4);
+      const maxIndex = getMaxCarouselIndex(cards.length);
+      if (carouselIndex > maxIndex) carouselIndex = maxIndex;
 
-      featuredWrap.innerHTML = `
-        <a class="featured-main" href="/stream.html?id=${main.id}">
-          <div class="cover">
-            <img src="${safe(getThumb(main))}" alt="${safe(main.title)}" />
+      const firstCard = cards[0];
+      const style = window.getComputedStyle(featuredTrack);
+      const gap = parseFloat(style.columnGap || style.gap || 18);
+      const cardWidth = firstCard.offsetWidth + gap;
+      const translateX = cardWidth * carouselIndex;
+
+      featuredTrack.style.transform = `translateX(-${translateX}px)`;
+
+      cards.forEach((card, idx) => {
+        card.classList.remove('active', 'side');
+        if (visibleCards === 1) {
+          if (idx === carouselIndex) card.classList.add('active');
+        } else {
+          if (idx === carouselIndex || idx === carouselIndex + 1) {
+            card.classList.add('active');
+          } else if (idx === carouselIndex - 1 || idx === carouselIndex + 2) {
+            card.classList.add('side');
+          }
+        }
+      });
+
+      carouselPrev.disabled = carouselIndex <= 0;
+      carouselNext.disabled = carouselIndex >= maxIndex;
+
+      const dotCount = maxIndex + 1;
+      carouselDots.innerHTML = Array.from({ length: dotCount }).map((_, idx) => `
+        <button class="carousel-dot ${idx === carouselIndex ? 'active' : ''}" data-index="${idx}" type="button"></button>
+      `).join('');
+
+      Array.from(carouselDots.querySelectorAll('.carousel-dot')).forEach(dot => {
+        dot.onclick = () => {
+          carouselIndex = Number(dot.dataset.index || 0);
+          updateCarouselPosition();
+        };
+      });
+    }
+
+    function renderFeaturedCarousel(streams) {
+      featuredTrack.innerHTML = '';
+
+      if (!streams.length) {
+        featuredTrack.innerHTML = `<div class="empty" style="width:100%;">Popüler yayın bulunamadı.</div>`;
+        carouselPrev.disabled = true;
+        carouselNext.disabled = true;
+        carouselDots.innerHTML = '';
+        return;
+      }
+
+      featuredTrack.innerHTML = streams.map((stream, index) => `
+        <a class="carousel-card" href="/stream.html?id=${stream.id}">
+          <div class="carousel-media">
+            <img src="${safe(getThumb(stream, index))}" alt="${safe(stream.title)}" />
             <div class="live-badge">CANLI</div>
-            <div class="viewer-chip">👁 ${safe(formatViewers(main.viewer_count))} izleyici</div>
+            <div class="viewer-chip">👁 ${safe(formatViewers(stream.viewer_count))} izleyici</div>
           </div>
-          <div class="featured-content">
-            <h2>${safe(main.title)}</h2>
-            <div class="meta">
-              ${safe(main.streamer_name || main.username || 'Yayıncı')} • ${safe(main.category || 'Just Chatting')}<br/>
-              ${safe(main.country || '')}${main.city ? ' • ' + safe(main.city) : ''}${main.gender ? ' • ' + safe(main.gender) : ''}
+
+          <div class="carousel-meta">
+            <div class="avatar">
+              ${stream.avatar_url ? `<img src="${safe(stream.avatar_url)}" alt="${safe(stream.username || stream.streamer_name || 'Yayıncı')}">` : '👤'}
+            </div>
+            <div class="carousel-text">
+              <div class="carousel-title">${safe(stream.title)}</div>
+              <div class="carousel-sub">
+                ${safe(stream.streamer_name || stream.username || 'Yayıncı')} • ${safe(stream.category || 'Just Chatting')}
+              </div>
             </div>
           </div>
         </a>
+      `).join('');
 
-        <div class="featured-side">
-          <div class="featured-side-inner">
-            <h3>Popüler yayınlar</h3>
-            <div class="mini-list">
-              ${side.length ? side.map((stream, index) => `
-                <a class="mini-card" href="/stream.html?id=${stream.id}">
-                  <div class="mini-thumb">
-                    <img src="${safe(getThumb(stream, index + 1))}" alt="${safe(stream.title)}" />
-                  </div>
-                  <div class="mini-meta">
-                    <div class="title">${safe(stream.title)}</div>
-                    <div class="sub">
-                      ${safe(stream.streamer_name || stream.username || 'Yayıncı')} • ${safe(stream.category || '')}<br/>
-                      👁 ${safe(formatViewers(stream.viewer_count))}
-                    </div>
-                  </div>
-                </a>
-              `).join('') : '<div class="card-sub">Başka popüler yayın yok.</div>'}
-            </div>
-          </div>
-        </div>
-      `;
+      updateCarouselPosition();
     }
 
     function renderStreams(streams) {
@@ -1304,7 +1349,7 @@
       const searchedProfiles = allProfiles
         .filter(profile => profileMatchesSearch(profile, q));
 
-      renderFeatured(filteredStreams);
+      renderFeaturedCarousel(filteredStreams);
       renderStreams(filteredStreams);
       renderProfiles(searchedProfiles, allStreams);
     }
@@ -1313,6 +1358,11 @@
       if (refreshTimer) return;
       loadData();
       refreshTimer = setInterval(loadData, 3000);
+    }
+
+    function handleResize() {
+      visibleCards = window.innerWidth <= 900 ? 1 : 2;
+      updateCarouselPosition();
     }
 
     menuBtn.onclick = openMenu;
@@ -1349,6 +1399,21 @@
     genderFilter.onchange = applyAll;
     ageFilter.onchange = applyAll;
     categoryFilter.onchange = applyAll;
+
+    carouselPrev.onclick = () => {
+      const maxIndex = getMaxCarouselIndex(allStreams.filter(stream => liveMatchesFilters(stream)).filter(stream => streamMatchesSearch(stream, searchInput.value.trim().toLowerCase())).length);
+      carouselIndex = Math.max(0, carouselIndex - 1);
+      if (carouselIndex > maxIndex) carouselIndex = maxIndex;
+      updateCarouselPosition();
+    };
+
+    carouselNext.onclick = () => {
+      const total = featuredTrack.querySelectorAll('.carousel-card').length;
+      carouselIndex = Math.min(getMaxCarouselIndex(total), carouselIndex + 1);
+      updateCarouselPosition();
+    };
+
+    window.addEventListener('resize', handleResize);
 
     startAutoRefresh();
   </script>
